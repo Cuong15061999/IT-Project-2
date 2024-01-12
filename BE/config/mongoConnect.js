@@ -31,6 +31,7 @@ const mongoconnect = {
         username: 'admin',
         password: 'admin',
         email: 'admin@gmail.com',
+        role: 'admin'
       }).save()
       .then(() => {
         console.log('Create initial admin user for the project');
