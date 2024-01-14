@@ -5,6 +5,7 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var connect = require('./config/mongoConnect');
 
+var authRouter = require('./routes/authRoutes')
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var eventsRouter = require('./routes/events');
@@ -25,6 +26,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 connect.connectDB();
 
 app.use('/', indexRouter);
+// app.use('/auth', authRouter);
 app.use('/users', usersRouter);
 app.use('/events', eventsRouter);
 
