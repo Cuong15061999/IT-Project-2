@@ -1,0 +1,29 @@
+# Editors
+\.idea/
+
+# Dependency directory
+node_modules
+
+
+# API keys and secrets
+.env
+
+# Public directory
+public
+
+
+local.yml
+builds
+cache
+.cache
+*.toml
+*.log
+*.exe
+*.deb
+*.rpm
+*.pkg
+*.dll
+
+public_key.pem
+.plat-import-sdk
+logs/
