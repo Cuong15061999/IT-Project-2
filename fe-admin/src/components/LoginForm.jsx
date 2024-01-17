@@ -3,6 +3,7 @@ import "./LoginForm.css"
 import { FaUser, FaLock } from "react-icons/fa";
 import { FcGoogle } from "react-icons/fc";
 import { useGoogleLogin } from '@react-oauth/google';
+import { GoogleLogin } from '@react-oauth/google';
 
 
 export const LoginForm = () => {
@@ -30,6 +31,14 @@ export const LoginForm = () => {
         <button type="submit">Login</button>
         <div><p className='text'> Or Login Using</p></div>
         <button type="submit" onClick={() => loginGoogle()} className='google-submit'> <FcGoogle className='gg-icon' />  Google</button>
+        {/* <GoogleLogin
+          onSuccess={credentialResponse => {
+            console.log(credentialResponse);
+          }}
+          onError={() => {
+            console.log('Login Failed');
+          }}
+        /> */}
       </form>
     </div>
   )
