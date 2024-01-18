@@ -11,7 +11,30 @@ router.get('/', isAuth, (req, res) => {
 });
 
 router.post ('/login', authServices.login);
+
 router.post ('/register', authServices.register);
+
 router.post('/refresh', authServices.refreshToken);
 
+router.get(
+  '/google-login',
+  passport.authenticate('google', {
+    scope: ['profile', 'email']
+  })
+);
+
+
+router.get('/google/callback',passport.authenticate('google',{
+  failureRedirect : '/denied',
+}),function(req, res){
+  req.session.User = {
+    id: req.user._id,
+    fullname: req.user.name,
+    role: req.user.role,
+    image: req.user.image,
+  }
+  console.log.apply(req.session.User);
+  res.redirect('/');
+}
+);
 module.exports = router;
