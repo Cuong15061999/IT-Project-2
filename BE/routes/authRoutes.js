@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var authServices = require('../services/authServices');
+const passport = require('passport');
 
 /* GET home page. */
 const authMiddleware = require('../services/middlewares/authMiddlewares');
