@@ -1,7 +1,7 @@
 const passport = require('passport');
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
-const Student = require('./../models/student')
-const secrets = require('./../secret')
+const Student = require('./../model/student')
+const secret = require('./../secret')
 
 
 
@@ -18,8 +18,8 @@ passport.deserializeUser((id, done) => {
 
 passport.use(
   new GoogleStrategy({
-    clientID: secrets.googleClientID,
-    clientSecret: secrets.googleClientSecret,
+    clientID: secret.googleClientID,
+    clientSecret: secret.googleClientSecret,
     callbackURL: '/auth/google/callback', 
   }, (accessToken,refeshToken,profile, done) => {
     var check = profile.emails[0].value.indexOf('@student.tdtu.edu.vn');

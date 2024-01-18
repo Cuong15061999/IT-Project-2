@@ -18,14 +18,14 @@ router.post ('/register', authServices.register);
 router.post('/refresh', authServices.refreshToken);
 
 router.get(
-  '/google-login',
+  '/google',
   passport.authenticate('google', {
     scope: ['profile', 'email']
   })
 );
 
 
-router.get('/google/callback',passport.authenticate('google',{
+router.get('/google/callback', passport.authenticate('auth/google',{
   failureRedirect : '/denied',
 }),function(req, res){
   req.session.User = {
