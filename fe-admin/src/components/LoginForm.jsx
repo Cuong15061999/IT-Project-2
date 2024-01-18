@@ -3,13 +3,24 @@ import "./LoginForm.css"
 import { FaUser, FaLock } from "react-icons/fa";
 import { FcGoogle } from "react-icons/fc";
 import { useGoogleLogin } from '@react-oauth/google';
-import { GoogleLogin } from '@react-oauth/google';
+// import { GoogleLogin } from '@react-oauth/google';
+import axios from 'axios';
 
 
 export const LoginForm = () => {
   const loginGoogle = useGoogleLogin({
     onSuccess: tokenResponse => console.log(tokenResponse),
-  });
+  }
+  // const loginGoogle = () => { axios.get('http://localhost:3001/auth/google')
+  // .then(function (response) {
+  //   // handle success
+  //   console.log(response);
+  // })
+  // .catch(function (error) {
+  //   // handle error
+  //   console.log(error);
+  // })}
+  )
   return (
     <div className='wrapper'>
       <form action="" method="post">
@@ -31,14 +42,6 @@ export const LoginForm = () => {
         <button type="submit">Login</button>
         <div><p className='text'> Or Login Using</p></div>
         <button type="submit" onClick={() => loginGoogle()} className='google-submit'> <FcGoogle className='gg-icon' />  Google</button>
-        {/* <GoogleLogin
-          onSuccess={credentialResponse => {
-            console.log(credentialResponse);
-          }}
-          onError={() => {
-            console.log('Login Failed');
-          }}
-        /> */}
       </form>
     </div>
   )
