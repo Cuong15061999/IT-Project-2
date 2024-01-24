@@ -1,6 +1,4 @@
-var mongoose = require('mongoose');
-
-var EventSchema = new mongoose.Schema({
+var mongoose = require('mongoose');var EventSchema = new mongoose.Schema({
   name: { type: String, required: true },
   host: { type: mongoose.Types.ObjectId, required: true }, // the one who create this event
   participatingTeachers: [{ type: mongoose.Types.ObjectId, default: [] }], // list of teacher who join this event
@@ -23,3 +21,4 @@ var EventSchema = new mongoose.Schema({
 
 var Event = mongoose.model('Event', EventSchema);
 module.exports = Event;
+
