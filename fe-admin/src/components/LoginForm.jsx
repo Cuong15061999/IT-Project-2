@@ -9,7 +9,17 @@ import { GoogleLogin } from '@react-oauth/google';
 export const LoginForm = () => {
   const loginGoogle = useGoogleLogin({
     onSuccess: tokenResponse => console.log(tokenResponse),
-  });
+  }
+  // const loginGoogle = () => { axios.get('http://localhost:3000/auth/google')
+  // .then(function (response) {
+  //   // handle success
+  //   console.log(response);
+  // })
+  // .catch(function (error) {
+  //   // handle error
+  //   console.log(error);
+  // })}
+  )
   return (
     <div className='wrapper'>
       <form action="" method="post">
