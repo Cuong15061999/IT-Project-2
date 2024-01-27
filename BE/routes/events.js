@@ -1,5 +1,6 @@
 var express = require('express');
 const eventServices = require('../services/eventServices')
+const sendEmailService = require('../services/emailServices')
 var router = express.Router();
 
 /* GET All event. */
@@ -10,6 +11,18 @@ router.get('/', async function (req, res, next) {
       data: allEvents,
       message: 'Get all events',
     });
+  } catch (error) {
+    res.status(500).json({
+      message: error.message
+    })
+  }
+});
+
+/* GET All event. */
+router.post('/sendEmail', async function (req, res, next) {
+  try {
+    const response = await sendEmailService.setEmail(req.body.listemails, req.body.content, req.body.subject);
+    return res.status(200).json(response);
   } catch (error) {
     res.status(500).json({
       message: error.message

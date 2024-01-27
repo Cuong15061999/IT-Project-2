@@ -20,9 +20,13 @@ passport.use(
   new GoogleStrategy({
     clientID: secret.googleClientID,
     clientSecret: secret.googleClientSecret,
-    callbackURL: 'http://localhost:3001/auth/google/callback', 
-  }, (accessToken, refeshToken, profile, done) => {
-
+    callbackURL: '/auth/google/callback', 
+  }, (accessToken,refeshToken,profile, done) => {
+    // var check = profile.emails[0].value.indexOf('@student.tdtu.edu.vn');
+    // if(check == -1){
+    //   console.log('Không tồn tại chuỗi' );
+    //   return done(null, false);
+    // }
     if (profile.id) {
       User.findOne({googleId: profile.id})
         .then((existingUser) => {

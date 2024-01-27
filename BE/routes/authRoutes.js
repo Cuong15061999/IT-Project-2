@@ -18,7 +18,7 @@ router.post ('/register', authServices.register);
 router.post('/refresh', authServices.refreshToken);
 
 router.get(
-  '/google-login',
+  '/google',
   passport.authenticate('google', {
     scope: ['profile', 'email']
   })
