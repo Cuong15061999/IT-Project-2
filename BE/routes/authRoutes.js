@@ -28,7 +28,9 @@ router.get(
 router.get('/google/callback',
   passport.authenticate('google', { failureRedirect: '/' }),
   function(req, res) {
-    res.redirect('/');
+    const token = jwt.sign(user, 'your-secret-key', { expiresIn: '1h' });
+
+    res.redirect(`/?token=${token}`);
   }
 );
 
