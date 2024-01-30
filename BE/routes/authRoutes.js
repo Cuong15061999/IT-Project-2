@@ -3,6 +3,7 @@ var router = express.Router();
 var authServices = require('../services/authServices');
 const passport = require('passport');
 const jwt = require('jsonwebtoken');
+var secret = require('../secret.js')
 
 /* GET home page. */
 // const isAuth = authMiddleware.isAuth;
@@ -28,7 +29,11 @@ router.get(
 router.get('/google/callback',
   passport.authenticate('google', { failureRedirect: '/' }),
   function(req, res) {
-    const token = jwt.sign(user, 'your-secret-key', { expiresIn: '1h' });
+    const user = {
+      id: req.user.id
+    };
+    // const token = ''
+    const  token = jwt.sign(user, secret.cookieSecret, { expiresIn: '1h' });
 
     res.redirect(`/?token=${token}`);
   }
