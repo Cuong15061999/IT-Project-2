@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { styled, useTheme } from '@mui/material/styles';
+import { styled } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import MuiDrawer from '@mui/material/Drawer';
 import List from '@mui/material/List';
@@ -12,6 +12,7 @@ import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
+import { useAppStore } from '../appStore';
 
 import HomeIcon from '@mui/icons-material/Home';
 import DashboardIcon from '@mui/icons-material/Dashboard';
@@ -69,24 +70,25 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 );
 
 export default function MiniDrawer() {
-  const theme = useTheme();
-  const [open, setOpen] = React.useState(true);
+  const open = useAppStore((state) => state.dopen);
   const navigate = useNavigate();
   const iconNav = (text) => {
     switch(text) {
-      case 'Home': return <HomeIcon></HomeIcon>
       case 'Dashboard': return <DashboardIcon></DashboardIcon>
       case 'Event': return <CelebrationIcon></CelebrationIcon>
       case 'User': return <GroupIcon></GroupIcon>
+      default : return <HomeIcon></HomeIcon>
+
     }
   }
 
   return (
     <Box sx={{ display: 'flex' }}>
       <CssBaseline />
+      <Box height={30}></Box>
       <Drawer variant="permanent" open={open}>
         <DrawerHeader>
-          <IconButton onClick={() => setOpen(!open)}>
+          <IconButton>
             {open === false ? <ChevronRightIcon /> : <ChevronLeftIcon />}
           </IconButton>
         </DrawerHeader>
