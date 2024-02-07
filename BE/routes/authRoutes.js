@@ -2,12 +2,13 @@ var express = require('express');
 var router = express.Router();
 var authServices = require('../services/authServices');
 const passport = require('passport');
+const jwt = require('jsonwebtoken');
+var secret = require('../secret.js')
 
 /* GET home page. */
-const authMiddleware = require('../services/middlewares/authMiddlewares');
-const isAuth = authMiddleware.isAuth;
+// const isAuth = authMiddleware.isAuth;
 
-router.get('/', isAuth, (req, res) => {
+router.get('/', (req, res) => {
   res.render('index', { title: 'LOGIN PAGE'});
 });
 
@@ -25,17 +26,18 @@ router.get(
 );
 
 
-router.get('/google/callback', passport.authenticate('auth/google',{
-  failureRedirect : '/denied',
-}),function(req, res){
-  req.session.User = {
-    id: req.user._id,
-    fullname: req.user.name,
-    role: req.user.role,
-    image: req.user.image,
+router.get('/google/callback',
+  passport.authenticate('google', { failureRedirect: '/' }),
+  function(req, res) {
+    const user = {
+      id: req.user.id
+    };
+    // const token = ''
+    const  token = jwt.sign(user, secret.cookieSecret, { expiresIn: '1h' });
+
+    res.redirect(`/?token=${token}`);
   }
-  console.log.apply(req.session.User);
-  res.redirect('/');
-}
 );
+
+
 module.exports = router;

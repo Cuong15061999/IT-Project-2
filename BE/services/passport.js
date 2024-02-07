@@ -1,18 +1,19 @@
 const passport = require('passport');
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
-const Student = require('./../model/student')
+const User = require('./../model/userModel')
 const secret = require('./../secret')
 
 
 
-passport.serializeUser((student, done) => {
-  done(null, student.id);
+
+passport.serializeUser((user, done) => {
+  done(null, user.id);
 });
 
 passport.deserializeUser((id, done) => {
-  Student.findById(id)
-    .then(student => {
-      done(null, student);
+  User.findById(id)
+    .then(user => {
+      done(null, user);
     })
 });
 
@@ -22,18 +23,21 @@ passport.use(
     clientSecret: secret.googleClientSecret,
     callbackURL: '/auth/google/callback', 
   }, (accessToken,refeshToken,profile, done) => {
-    var check = profile.emails[0].value.indexOf('@student.tdtu.edu.vn');
-    if(check == -1){
-      console.log('Không tồn tại chuỗi' );
-      return done(null, false);
-    }
+    // var check = profile.emails[0].value.indexOf('@student.tdtu.edu.vn');
+    // if(check == -1){
+    //   console.log('Không tồn tại chuỗi' );
+    //   return done(null, false);
+    // }
     if (profile.id) {
-      Student.findOne({googleId: profile.id})
-        .then((existingStudent) => {
-          if (existingStudent) {
-            done(null, existingStudent);
+      User.findOne({googleId: profile.id})
+        .then((existingUser) => {
+          if (existingUser) {
+            const abc ='';
+            // If have an user, it will direct to dec
+            done(null, existingUser);
+            // done (null, abc)
           } else {
-            new Student({
+            new User({
               googleId: profile.id,
               email: profile.emails[0].value,
               name: profile.name.familyName + ' ' + profile.name.givenName,
@@ -43,11 +47,12 @@ passport.use(
               falculty: 'none',
             })
               .save()
-              .then(student => {
-                done(null, student);
-              });
+              .then(user => {
+                done(null, user)
+              }).catch(error => done(error, false, { message: 'Error saving user' }));
           }
         })
+        .catch(error => done(error, false, { message: 'Error finding user' }));
     }
   })
 );
