@@ -131,7 +131,8 @@ export default function UserList() {
   };
 
   return (
-    <Paper sx={{ width: '98%', overflow: 'hidden' }}>
+    <Paper sx={{ p: 1, width: '98%', overflow: 'hidden' }}>
+      <h1>User List</h1>
       <div>
         <Modal
           open={open}
@@ -152,7 +153,6 @@ export default function UserList() {
           </Box>
         </Modal>
       </div>
-      <Box height={10} />
       <Stack direction="row" spacing={2} className="my-2 mb-2">
         <Autocomplete
           disablePortal
@@ -175,7 +175,7 @@ export default function UserList() {
         </Button>
       </Stack>
       <Box height={10} />
-      <TableContainer sx={{ maxHeight: 600 }}>
+      <TableContainer sx={{ minHeight: 60 + 'vh', maxHeight: 80 + 'vh' }}>
         <Table stickyHeader aria-label="sticky table">
           <TableHead>
             <TableRow>

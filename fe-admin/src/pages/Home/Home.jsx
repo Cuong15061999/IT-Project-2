@@ -12,7 +12,7 @@ export const Home = () => {
       <Box height={45}></Box>
       <Box sx={{ display: 'flex' }}>
         <SideNav></SideNav>
-        <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
+        <Box component="main" sx={{ flexGrow: 1, p: 3, backgroundColor: "#ECEFF4", minHeight: "100vh" }}>
           <h1>Home</h1>
           <Typography paragraph>
             CONTENT OF THE PAGE
