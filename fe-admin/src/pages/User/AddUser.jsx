@@ -62,6 +62,8 @@ export default function AddUser({ closeEvent }) {
       }
     } catch (error) {
       console.error('Error fetching data:', error);
+      closeEvent();
+      Swal.fire("Error!", `Some error happen: ${error.response.data.message}`, "error");
     }
   }
 

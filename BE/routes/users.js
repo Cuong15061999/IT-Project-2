@@ -49,7 +49,7 @@ router.post('/', async function (req, res, next) {
       });
     } else {
       res.status(404).json({
-        message: 'user already have',
+        message: 'User already exist',
       });
     }
   } catch (error) {
