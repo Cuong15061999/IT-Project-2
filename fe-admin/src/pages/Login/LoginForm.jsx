@@ -3,13 +3,27 @@ import "./LoginForm.css"
 import { FaUser, FaLock } from "react-icons/fa";
 import { FcGoogle } from "react-icons/fc";
 import { useGoogleLogin } from '@react-oauth/google';
+import Cookies from 'js-cookie';
+import { Navigate, useNavigate } from 'react-router-dom/dist';
 // import { GoogleLogin } from '@react-oauth/google';
 // import axios from 'axios';
 
 
+
 export const LoginForm = () => {
+  const navigate = useNavigate();
+
+  const handleAfterLoginWithGoogle = (tokenResponse) => {
+    if (Object.entries(tokenResponse).length) {
+      Cookies.set('access_token', tokenResponse.access_token, { expires: tokenResponse.expires_in / 86400 });
+      navigate('/', { replace: true });
+      return;
+    }
+    navigate('/login', { replace: true });
+  }
+
   const loginGoogle = useGoogleLogin({
-    onSuccess: tokenResponse => console.log(tokenResponse),
+    onSuccess: handleAfterLoginWithGoogle,
   }
     // const loginGoogle = () => { axios.get('http://localhost:3001/auth/google')
     // .then(function (response) {
@@ -21,6 +35,7 @@ export const LoginForm = () => {
     //   console.log(error);
     // })}
   )
+
   return (
     <div className='pagesLogin'>
       <div className='wrapper'>

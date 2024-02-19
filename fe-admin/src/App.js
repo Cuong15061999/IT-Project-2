@@ -6,18 +6,17 @@ import { User } from './pages/User/User'
 import { Dashboard } from './pages/Dashboard/Dashboard';
 
 import { Routes, Route } from 'react-router-dom'
+import RequireAuth from './components/RequireAuth';
 
 function App() {
   return (
     <div className='AppMain'>
       <Routes>
-        <Route path='/' element={<Home></Home>}></Route>
-        <Route path='/Dashboard' element={<Dashboard></Dashboard>}></Route>
-        <Route path='/Event' element={<Event></Event>}></Route>
-        <Route path='/User' element={<User></User>}></Route>
-
-
-        <Route path='/Login' element={<LoginForm></LoginForm>}></Route>
+        <Route path='/' element={<RequireAuth><Home></Home></RequireAuth>}></Route>
+        <Route path='/dashboard' element={<RequireAuth><Dashboard></Dashboard></RequireAuth>}></Route>
+        <Route path='/event' element={<RequireAuth><Event></Event></RequireAuth>}></Route>
+        <Route path='/user' element={<RequireAuth><User></User></RequireAuth>}></Route>
+        <Route path='/login' element={<RequireAuth><LoginForm></LoginForm></RequireAuth>}></Route>
       </Routes>
     </div>
   );

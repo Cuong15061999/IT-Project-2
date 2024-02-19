@@ -10,6 +10,8 @@ import MenuItem from '@mui/material/MenuItem';
 import Menu from '@mui/material/Menu';
 import Avatar from '@mui/material/Avatar';
 import { useAppStore } from '../appStore';
+import Cookies from 'js-cookie';
+import { useNavigate } from 'react-router-dom/dist';
 
 const AppBar = styled(MuiAppBar, {
   shouldForwardProp: (prop) => prop !== 'open',
@@ -18,7 +20,8 @@ const AppBar = styled(MuiAppBar, {
 }));
 
 export default function MenuAppBar() {
-  const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
+  const navigate = useNavigate();
+  const settings = ['Profile', 'Account', 'Dashboard'];
 
   const [anchorEl, setAnchorEl] = React.useState(null);
   const updateOpen = useAppStore((state) => state.updateOpen);
@@ -28,9 +31,14 @@ export default function MenuAppBar() {
     setAnchorEl(event.currentTarget);
   };
 
-  const handleClose = () => {
+  const handleClose = (e) => {
     setAnchorEl(null);
   };
+
+  const handleLogout = () => {
+    Cookies.remove('access_token');
+    navigate('/login', { replace: true });
+  }
 
   return (
     <Box sx={{ flexGrow: 1 }}>
@@ -47,7 +55,7 @@ export default function MenuAppBar() {
             <MenuIcon />
           </IconButton>
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            Events Management Faculty of IT 
+            Events Management Faculty of IT
           </Typography>
           <div>
             <IconButton
@@ -81,6 +89,9 @@ export default function MenuAppBar() {
                   <Typography textAlign="center">{setting}</Typography>
                 </MenuItem>
               ))}
+              <MenuItem onClick={handleLogout}>
+                <Typography textAlign="center">Logout</Typography>
+              </MenuItem>
             </Menu>
           </div>
         </Toolbar>
