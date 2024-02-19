@@ -4,11 +4,7 @@ import { FaUser, FaLock } from "react-icons/fa";
 import { FcGoogle } from "react-icons/fc";
 import { useGoogleLogin } from '@react-oauth/google';
 import Cookies from 'js-cookie';
-import { Navigate, useNavigate } from 'react-router-dom/dist';
-// import { GoogleLogin } from '@react-oauth/google';
-// import axios from 'axios';
-
-
+import { useNavigate } from 'react-router-dom/dist';
 
 export const LoginForm = () => {
   const navigate = useNavigate();
@@ -25,15 +21,6 @@ export const LoginForm = () => {
   const loginGoogle = useGoogleLogin({
     onSuccess: handleAfterLoginWithGoogle,
   }
-    // const loginGoogle = () => { axios.get('http://localhost:3001/auth/google')
-    // .then(function (response) {
-    //   // handle success
-    //   console.log(response);
-    // })
-    // .catch(function (error) {
-    //   // handle error
-    //   console.log(error);
-    // })}
   )
 
   return (
@@ -52,7 +39,7 @@ export const LoginForm = () => {
 
           <div className='remember-forgot'>
             <label><input type="checkbox" /> Remember me</label>
-            <a href="#">Forgot password?</a>
+            <a href="https://www.example.com">Forgot password?</a>
           </div>
 
           <button type="submit">Login</button>
