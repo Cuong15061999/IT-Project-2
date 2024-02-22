@@ -7,29 +7,50 @@ import Cookies from 'js-cookie';
 import { useNavigate } from 'react-router-dom/dist';
 import axios from 'axios';
 // import { GoogleLogin } from '@react-oauth/google';
-// import axios from 'axios';
 
 
 
 export const LoginForm = () => {
   const navigate = useNavigate();
+  const getInfoGoogle = async (token) => {
+    try {
+      const urlGetInfoGoogle = 'https://www.googleapis.com/oauth2/v3/userinfo';
+      const access_token = `Bearer ${token}`;
+      const { data: userInfo } = await axios.get(urlGetInfoGoogle, {
+        headers: {
+          Authorization: access_token,
+        }
+      })
+      return userInfo || {};
+    } catch (error) {
+      console.log(error)
+      return {}
+    }
+  }
+
+  const validateAccountGoogle = async (userInfoLogin) => {
+    try {
+      const urlGetInfoGoogle = 'http://localhost:3001/auth/google';
+      const { data: user } = await axios.post(urlGetInfoGoogle, userInfoLogin);
+      return user || null;
+    } catch (error) {
+      console.log(error)
+      return null
+    }
+  }
 
   const handleAfterLoginWithGoogle = async (tokenResponse) => {
     if (Object.entries(tokenResponse).length) {
       // after login with google success, call api to get user info this account that user logged in from google api 
-      const { data: userInfo } = await axios.get('https://www.googleapis.com/oauth2/v3/userinfo', {
-        headers: {
-          Authorization: `Bearer ${tokenResponse.access_token}`,
-        }
-      })
+      const googleInfo = await getInfoGoogle(tokenResponse.access_token);
 
-      // TODO: call api and send this data to verify/save/sync this data with BE
+      const userInfo = await validateAccountGoogle(googleInfo);
+      if (userInfo) {
+        const expires_time = 7; //day
+        Cookies.set('userLogin', userInfo, { expires: expires_time });
+      }
 
-      // next save access_token and user_id logged in to cookies
-      // Cookies.set('access_token', tokenResponse.access_token, { expires: tokenResponse.expires_in / 86400 });
-
-      // after set data to cookie => redirect to home
-      // navigate('/', { replace: true });
+      navigate('/', { replace: true });
       return;
     }
   }
