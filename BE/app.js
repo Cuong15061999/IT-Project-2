@@ -12,10 +12,8 @@ var authRouter = require('./routes/authRoutes')
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var eventsRouter = require('./routes/events');
-const passport = require('passport');
 const session = require('express-session');
 
-require('./services/passport');
 
 var app = express();
 
@@ -35,8 +33,6 @@ app.use(session({
   resave: false,
   saveUninitialized: false
 }));
-app.use(passport.initialize());
-app.use(passport.session());
 
 //Connect to Mongodb compass
 connect.connectDB();
