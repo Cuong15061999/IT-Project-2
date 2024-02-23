@@ -3,9 +3,9 @@ var mongoose = require('mongoose');var EventSchema = new mongoose.Schema({
   host: { type: mongoose.Types.ObjectId, required: true, ref: 'User' }, // the one who create this event
   participatingTeachers: [{ type: mongoose.Types.ObjectId, default: [], ref: 'User' }], // list of teacher who join this event
   participatingStudents: [{ type: mongoose.Types.ObjectId, default: [], ref: 'User' }], // list of student who join this event
-  linkEvents: [{ type: mongoose.Types.ObjectId, default: [] }], // sub events or sub job for this event
+  linkEvents: [{ type: mongoose.Types.ObjectId, default: [], ref: 'Event' }], // sub events or sub job for this event
   trainingPoints: { type: Number, required: true, default: 0 }, // diem ren luyen 
-  status: { type: String, required: true, default: 'undone' }, // undone, proccessing, finish
+  status: { type: String, required: true, default: 'undone' }, // undone, ongoing, finished
 
   startAt: { type: Date, required: true, default: new Date().toJSON().slice(0, 10) },
   endAt: {

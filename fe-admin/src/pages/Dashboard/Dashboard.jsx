@@ -3,20 +3,15 @@ import './Dashboard.css'
 import Box from '@mui/material/Box';
 import { Typography } from '@mui/material';
 import Card from '@mui/material/Card';
-import CardContent from '@mui/material/CardContent';
 import SideNav from '../../components/Drawer'
 import NavBar from '../../components/NavBar'
 import Grid from '@mui/material/Grid';
 import Stack from '@mui/material/Stack';
-import EventAvailableIcon from '@mui/icons-material/EventAvailable';
-import EventBusyIcon from '@mui/icons-material/EventBusy';
-import EventNoteIcon from '@mui/icons-material/EventNote';
-import EventRepeatIcon from '@mui/icons-material/EventRepeat';
 import { PieChart } from '@mui/x-charts/PieChart';
-import CountUp from 'react-countup';
 import { DataGrid } from '@mui/x-data-grid';
 import Button from '@mui/material/Button';
 import InfoIcon from '@mui/icons-material/Info';
+import SummaryCard from './SummaryCard';
 
 const columns = [
   { field: 'name', headerName: 'Name', flex: 2 },
@@ -64,60 +59,7 @@ export const Dashboard = () => {
         <SideNav></SideNav>
         <Box component="main" sx={{ flexGrow: 1, p: 3, backgroundColor: "#ECEFF4" }}>
           <h1>Dashboard</h1>
-          <Grid container spacing={2}>
-            <Grid item xs={12}>
-              <Stack spacing={2} direction={'row'}>
-                <Card sx={{ minWidth: 24 + "%" }} className='card-total'>
-                  <CardContent>
-                    <Typography gutterBottom variant="h5" component="div" margin={0}>
-                      Total Events
-                    </Typography>
-                    <div>
-                      <EventNoteIcon></EventNoteIcon>
-                      <span className='card-icon-num'><CountUp delay={0.3} end={100} duration={0.8} /></span>
-                      <span className='card-icon-year'>/ year 2024</span>
-                    </div>
-                  </CardContent>
-                </Card>
-                <Card sx={{ minWidth: 24 + "%" }} className='card-finish'>
-                  <CardContent >
-                    <Typography gutterBottom variant="h5" component="div" margin={0}>
-                      Finished Events
-                    </Typography>
-                    <div>
-                      <EventAvailableIcon></EventAvailableIcon>
-                      <span className='card-icon-num'><CountUp delay={0.3} end={20} duration={0.8} /></span>
-                      <span className='card-icon-year'>/ year 2024</span>
-                    </div>
-                  </CardContent>
-                </Card>
-                <Card sx={{ minWidth: 24 + "%" }} className='card-ongoing'>
-                  <CardContent >
-                    <Typography gutterBottom variant="h5" component="div" margin={0}>
-                      Ongoing Events
-                    </Typography>
-                    <div>
-                      <EventRepeatIcon></EventRepeatIcon>
-                      <span className='card-icon-num'><CountUp delay={0.3} end={50} duration={0.8} /></span>
-                      <span className='card-icon-year'>/ year 2024</span>
-                    </div>
-                  </CardContent>
-                </Card>
-                <Card sx={{ minWidth: 24 + "%" }} className='card-unstarted'>
-                  <CardContent >
-                    <Typography gutterBottom variant="h5" component="div" margin={0}>
-                      Unstarted Events
-                    </Typography>
-                    <div>
-                      <EventBusyIcon></EventBusyIcon>
-                      <span className='card-icon-num'><CountUp delay={0.3} end={30} duration={0.8} /></span>
-                      <span className='card-icon-year'>/ year 2024</span>
-                    </div>
-                  </CardContent>
-                </Card>
-              </Stack>
-            </Grid>
-          </Grid>
+          <SummaryCard></SummaryCard>
           <Box height={20}></Box>
           <Grid container spacing={2}>
             <Grid item xs={8}>

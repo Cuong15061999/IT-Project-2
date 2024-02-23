@@ -35,6 +35,52 @@ class eventServices {
       .limit(10); // Limit the result to 10 events
   }
 
+  //Get events summary (total events, total finished events, total ongoing events, total unstarted events)
+  async getSummaryEvents() {
+    const year = new Date().getFullYear();
+    // total events
+    const totalEvents = await eventModel.find({
+      created: {
+        $gte: new Date(year, 0, 1), // Start of the year
+        $lt: new Date(year + 1, 0, 1), // Start of the next year
+      },
+    });
+    // total finished events
+    const totalFinishedEvents = await eventModel.find({
+      created: {
+        $gte: new Date(year, 0, 1), // Start of the year
+        $lt: new Date(year + 1, 0, 1), // Start of the next year
+      },
+      status: "finished"
+    });
+
+    // total ongoing events
+    const totalOngoingEvents = await eventModel.find({
+      created: {
+        $gte: new Date(year, 0, 1), // Start of the year
+        $lt: new Date(year + 1, 0, 1), // Start of the next year
+      },
+      status: "ongoing"
+    });
+
+    // total undone events
+    const totalUndoneEvents = await eventModel.find({
+      created: {
+        $gte: new Date(year, 0, 1), // Start of the year
+        $lt: new Date(year + 1, 0, 1), // Start of the next year
+      },
+      status: "undone"
+    });
+
+    return {
+      totalEvents: totalEvents.length,
+      totalFinishedEvents: totalFinishedEvents.length,
+      totalOngoingEvents: totalOngoingEvents.length,
+      totalUndoneEvents: totalUndoneEvents.length,
+    }
+  }
+
+
   //Get specific event
   async getEvent(id) {
     const event = await eventModel.findById(id);

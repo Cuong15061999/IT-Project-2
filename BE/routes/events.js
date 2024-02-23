@@ -48,6 +48,20 @@ router.get('/year/:year?/status/:status?', async function (req, res, next) {
   }
 });
 
+/* GET events summary in current year */
+router.get('/summary', async function (req, res, next) {
+  try {
+    const summary = await eventServices.getSummaryEvents();
+    res.status(200).json({
+      summary: summary
+    })
+  } catch (error) {
+    res.status(500).json({
+      message: error.message
+    })
+  }
+})
+
 /* GET 10 newest event*/
 router.get('/newest', async function (req, res, next) {
   try {
