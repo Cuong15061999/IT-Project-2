@@ -75,13 +75,13 @@ class authServices {
         falculty: 'IT',
       })
       .save();
-
     }
 
       const accessTokenLife = process.env.ACCESS_TOKEN_LIFE;
       const accessTokenSecret = process.env.ACCESS_TOKEN_SECRET;
 
       const dataForAccessToken = {
+        user_id: user._id.toString(),
         email: user.email,
         picture: user.email,
         name: user.name,

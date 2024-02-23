@@ -6,7 +6,6 @@ import { useGoogleLogin } from '@react-oauth/google';
 import Cookies from 'js-cookie';
 import { useNavigate } from 'react-router-dom/dist';
 import axios from 'axios';
-// import { GoogleLogin } from '@react-oauth/google';
 
 
 
@@ -47,7 +46,7 @@ export const LoginForm = () => {
       const userInfo = await validateAccountGoogle(googleInfo);
       if (userInfo) {
         const expires_time = 7; //day
-        Cookies.set('userLogin', userInfo, { expires: expires_time });
+        Cookies.set('access_token', userInfo.access_token, { expires: expires_time });
       }
 
       navigate('/', { replace: true });
