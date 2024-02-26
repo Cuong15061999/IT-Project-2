@@ -1,12 +1,6 @@
 import { Box, Button, Grid, IconButton, Typography } from '@mui/material'
 import CloseIcon from "@mui/icons-material/Close"
 import TextField from '@mui/material/TextField';
-import InputLabel from '@mui/material/InputLabel';
-import FormControl from '@mui/material/FormControl';
-import OutlinedInput from '@mui/material/OutlinedInput';
-import InputAdornment from '@mui/material/InputAdornment';
-import Visibility from '@mui/icons-material/Visibility';
-import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import MenuItem from '@mui/material/MenuItem';
 import React, { useState } from 'react'
 import Swal from "sweetalert2";
@@ -14,20 +8,27 @@ import axios from 'axios';
 import { useAppStore } from '../../appStore';
 
 export default function AddUser({ closeEvent }) {
-  const [username, setUserName] = useState("");
-  const [password, setPassWord] = useState("");
+  const [name, setName] = useState("");
+  const [userClass, setUserClass] = useState("");
+  const [falculty, setFalcuty] = useState("");
   const [email, setEmail] = useState("");
   const [error, setError] = useState(false);
   const [helperText, setHelperText] = useState('');
   const [role, setRole] = useState("");
   const setRows = useAppStore((state) => state.setRows);
 
-  const handleUserNameChange = (event) => {
-    setUserName(event.target.value);
+  const handleNameChange = (event) => {
+    setName(event.target.value);
   };
-  const handlePasswordChange = (event) => {
-    setPassWord(event.target.value);
+
+  const handleFalcutyChange = (event) => {
+    setFalcuty(event.target.value);
   };
+
+  const handleUserClassChange = (event) => {
+    setUserClass(event.target.value);
+  };
+
   const handleEmailChange = (event) => {
     setEmail(event.target.value);
     setError(false);
@@ -49,9 +50,10 @@ export default function AddUser({ closeEvent }) {
 
   const createUser = async () => {
     try {
-      const response = await axios.post('http://localhost:3001/users',{
-        username: username,
-        password: password,
+      const response = await axios.post('http://localhost:3001/users', {
+        name: name,
+        class: userClass,
+        falculty: falculty,
         email: email,
         role: role
       })
@@ -73,9 +75,9 @@ export default function AddUser({ closeEvent }) {
       const filteredData = response.data.data.map((row) => ({
         id: row._id,
         email: row.email,
-        username: row.username,
-        password: row.password,
-        avatar: row.avatar,
+        name: row.name,
+        class: row.class,
+        falculty: row.falculty,
         role: row.role,
       }));
       setRows(filteredData || []);
@@ -99,13 +101,6 @@ export default function AddUser({ closeEvent }) {
     }
   ];
 
-  const [showPassword, setShowPassword] = useState(false);
-
-  const handleClickShowPassword = () => setShowPassword((show) => !show);
-
-  const handleMouseDownPassword = (event) => {
-    event.preventDefault();
-  };
   return (
     <>
       <Box sx={{ m: 2 }}></Box>
@@ -120,43 +115,36 @@ export default function AddUser({ closeEvent }) {
       <Grid container spacing={2}>
         <Grid item xs={12}>
           <TextField
-            onChange={handleUserNameChange}
-            value={username}
+            onChange={handleNameChange}
+            value={name}
             required
             id="outlined-required"
-            label="UserName"
+            label="Name"
             size='small'
             sx={{ minWidth: "100%" }}
           />
         </Grid>
         <Grid item xs={12}>
-          <FormControl
-            onChange={handlePasswordChange}
-            value={password}
+          <TextField
+            onChange={handleUserClassChange}
+            value={userClass}
             required
+            id="outlined-required"
+            label="Class"
             size='small'
-            sx={{ minWidth: '100%' }}
-            variant="outlined"
-          >
-            <InputLabel htmlFor="outlined-adornment-password">Password</InputLabel>
-            <OutlinedInput
-              id="outlined-adornment-password"
-              type={showPassword ? 'text' : 'password'}
-              endAdornment={
-                <InputAdornment position="end">
-                  <IconButton
-                    aria-label="toggle password visibility"
-                    onClick={handleClickShowPassword}
-                    onMouseDown={handleMouseDownPassword}
-                    edge="end"
-                  >
-                    {showPassword ? <VisibilityOff /> : <Visibility />}
-                  </IconButton>
-                </InputAdornment>
-              }
-              label="Password"
-            />
-          </FormControl>
+            sx={{ minWidth: "100%" }}
+          />
+        </Grid>
+        <Grid item xs={12}>
+          <TextField
+            onChange={handleFalcutyChange}
+            value={falculty}
+            required
+            id="outlined-required"
+            label="falcuty"
+            size='small'
+            sx={{ minWidth: "100%" }}
+          />
         </Grid>
         <Grid item xs={12}>
           <TextField

@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { useState, useEffect } from 'react';
+import { Box, Button, Grid, MenuItem, Typography } from '@mui/material'
 import Paper from '@mui/material/Paper';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -11,11 +12,8 @@ import TableRow from '@mui/material/TableRow';
 import Stack from "@mui/material/Stack";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
-import Box from "@mui/material/Box";
 import Autocomplete from "@mui/material/Autocomplete";
 import TextField from "@mui/material/TextField";
-import Typography from "@mui/material/Typography";
-import Button from "@mui/material/Button";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import Swal from "sweetalert2";
 import axios from 'axios';
@@ -53,22 +51,42 @@ export default function UserList() {
   const handleClose = () => setOpen(false);
   const handleEditClose = () => setEditOpen(false);
 
+
+  const [role, setRole] = useState("");
+  const handleRoleChange = (event) => {
+    setRole(event.target.value);
+  };
+  const roles = [
+    {
+      value: '',
+      label: 'All'
+    },
+    {
+      value: 'student',
+      label: 'Student'
+    },
+    {
+      value: 'teacher',
+      label: 'Teacher'
+    }
+  ];
+
   const getUsers = useCallback(async () => {
     try {
-      const response = await axios.get('http://localhost:3001/users');
+      const response = await axios.get(`http://localhost:3001/users/?role=${role}`);
       const filteredData = response.data.data.map((row) => ({
         id: row._id,
         email: row.email,
-        username: row.username,
-        password: row.password,
-        avatar: row.avatar,
+        name: row.name,
+        class: row.class,
+        falculty: row.falculty,
         role: row.role,
       }));
       setRows(filteredData || []);
     } catch (error) {
       console.error('Error fetching data:', error);
     }
-  }, [setRows]);
+  }, [setRows, role]);
 
   useEffect(() => {
     getUsers();
@@ -87,11 +105,12 @@ export default function UserList() {
     }
   }
 
-  const editUser = (id, username, password, email, role) => {
+  const editUser = (id, name, userClass, falculty, email, role) => {
     const data = {
       id: id,
-      username: username,
-      password: password,
+      name: name,
+      userClass: userClass,
+      falculty: falculty,
       email: email,
       role: role
     };
@@ -165,6 +184,23 @@ export default function UserList() {
             <TextField {...params} size="small" label="Search User Email" />
           )}
         />
+        <Grid item sx={{ width: 100 }}>
+          <TextField
+            onChange={handleRoleChange}
+            value={role}
+            select
+            id="outlined-required"
+            label="Role"
+            size='small'
+            sx={{ minWidth: "100%" }}
+          >
+            {roles.map((option) => (
+              <MenuItem key={option.value} value={option.value}>
+                {option.label}
+              </MenuItem>
+            ))}
+          </TextField>
+        </Grid>
         <Typography
           variant="h6"
           component="div"
@@ -179,14 +215,18 @@ export default function UserList() {
         <Table stickyHeader aria-label="sticky table">
           <TableHead>
             <TableRow>
-              <TableCell align="left" style={{ minWidth: "20%" }} >
-                Avatar
-              </TableCell>
+
               <TableCell align="left" style={{ minWidth: "20%" }} >
                 Email
               </TableCell>
               <TableCell align="left" style={{ minWidth: "20%" }} >
-                User Name
+                Class
+              </TableCell>
+              <TableCell align="left" style={{ minWidth: "20%" }} >
+                Falculty
+              </TableCell>
+              <TableCell align="left" style={{ minWidth: "20%" }} >
+                Name
               </TableCell>
               <TableCell align="left" style={{ minWidth: "20%" }} >
                 Role
@@ -203,13 +243,16 @@ export default function UserList() {
                 return (
                   <TableRow key={row.id} hover role="checkbox" tabIndex={-1}>
                     <TableCell align="left">
-                      {row.avatar}
-                    </TableCell>
-                    <TableCell align="left">
                       {row.email}
                     </TableCell>
                     <TableCell align="left">
-                      {row.username}
+                      {row.class}
+                    </TableCell>
+                    <TableCell align="left">
+                      {row.falculty}
+                    </TableCell>
+                    <TableCell align="left">
+                      {row.name}
                     </TableCell>
                     <TableCell align="left">
                       {row.role}
@@ -224,7 +267,7 @@ export default function UserList() {
                           }}
                           className="cursor-pointer"
                           onClick={() =>
-                            editUser(row.id, row.username, row.password, row.email, row.role)
+                            editUser(row.id, row.name, row.class, row.falculty, row.email, row.role)
                           }
                         />
                         <DeleteIcon
