@@ -4,7 +4,20 @@ var notificationModel = require('../model/notificationModel')
 class eventServices {
   //Get all events in DB
   async getEvents() {
-    return await eventModel.find();
+    return await eventModel
+    .find()
+    .populate({
+      path: 'host',
+      model: 'User'
+    })
+    .populate({
+      path: 'participatingTeachers',
+      model: 'User'
+    })
+    .populate({
+      path: 'participatingStudents',
+      model: 'User'
+    });
   }
 
   //Get all event in specific year
@@ -24,7 +37,20 @@ class eventServices {
       query.$and.push({ status: status });
     }
 
-    return await eventModel.find(query);
+    return await eventModel
+    .find(query)
+    .populate({
+      path: 'host',
+      model: 'User'
+    })
+    .populate({
+      path: 'participatingTeachers',
+      model: 'User'
+    })
+    .populate({
+      path: 'participatingStudents',
+      model: 'User'
+    });
   }
 
   //Get 10 newest events
@@ -32,7 +58,19 @@ class eventServices {
     return await eventModel
       .find({})
       .sort({ created: -1 }) // Sort in descending order based on the "created" field
-      .limit(10); // Limit the result to 10 events
+      .limit(10) // Limit the result to 10 events
+      .populate({
+        path: 'host',
+        model: 'User'
+      })
+      .populate({
+        path: 'participatingTeachers',
+        model: 'User'
+      })
+      .populate({
+        path: 'participatingStudents',
+        model: 'User'
+      });
   }
 
   //Get events summary in current year (total events, total finished events, total ongoing events, total unstarted events)
@@ -135,7 +173,20 @@ class eventServices {
 
   //Get specific event
   async getEvent(id) {
-    const event = await eventModel.findById(id);
+    const event = await eventModel
+    .findById(id)
+    .populate({
+      path: 'host',
+      model: 'User'
+    })
+    .populate({
+      path: 'participatingTeachers',
+      model: 'User'
+    })
+    .populate({
+      path: 'participatingStudents',
+      model: 'User'
+    });
     return event;
   }
 
