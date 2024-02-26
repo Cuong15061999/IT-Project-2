@@ -35,8 +35,8 @@ class eventServices {
       .limit(10); // Limit the result to 10 events
   }
 
-  //Get events summary (total events, total finished events, total ongoing events, total unstarted events)
-  async getSummaryEvents() {
+  //Get events summary in current year (total events, total finished events, total ongoing events, total unstarted events)
+  async getSummaryEventsInYear() {
     const year = new Date().getFullYear();
     // total events
     const totalEvents = await eventModel.find({
@@ -80,6 +80,58 @@ class eventServices {
     }
   }
 
+  //Get summary evetn in current month
+  async getSummaryEventsInMonth() {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = today.getMonth(); // 0-indexed month number
+  
+    // Start and end dates of the current month
+    const startDate = new Date(year, month, 1); // Start of the month
+    const endDate = new Date(year, month + 1, 0); // End of the month (day before next month)
+  
+    // Get total events for current month
+    const totalEvents = await eventModel.find({
+      created: {
+        $gte: startDate,
+        $lt: endDate,
+      },
+    });
+  
+    // Get finished events for current month
+    const totalFinishedEvents = await eventModel.find({
+      created: {
+        $gte: startDate,
+        $lt: endDate,
+      },
+      status: "finished",
+    });
+  
+    // Get ongoing events for current month
+    const totalOngoingEvents = await eventModel.find({
+      created: {
+        $gte: startDate,
+        $lt: endDate,
+      },
+      status: "ongoing",
+    });
+  
+    // Get undone events for current month
+    const totalUndoneEvents = await eventModel.find({
+      created: {
+        $gte: startDate,
+        $lt: endDate,
+      },
+      status: "undone",
+    });
+  
+    return {
+      totalEvents: totalEvents.length,
+      totalFinishedEvents: totalFinishedEvents.length,
+      totalOngoingEvents: totalOngoingEvents.length,
+      totalUndoneEvents: totalUndoneEvents.length,
+    };
+  }
 
   //Get specific event
   async getEvent(id) {
