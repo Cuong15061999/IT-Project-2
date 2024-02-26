@@ -25,7 +25,7 @@ export default function SummaryCard() {
 
   const getSummary = useCallback(async () => {
     try {
-      const response = await axios.get('http://localhost:3001/events/summary');
+      const response = await axios.get('http://localhost:3001/events/summary/year');
       const summaryData = {
         total: response.data.summary.totalEvents,
         finished: response.data.summary.totalFinishedEvents,
