@@ -77,8 +77,8 @@ export const LoginForm = () => {
             <a href="https://www.example.com">Forgot password?</a>
           </div>
 
-          <button type="submit">Login</button>
-          <div><p className='text'> Or Login Using</p></div>
+          {/* <button type="submit">Login</button>
+          <div><p className='text'> Or Login Using</p></div> */}
           <button type="submit" onClick={() => loginGoogle()} className='google-submit'> <FcGoogle className='gg-icon' />  Google</button>
         </form>
       </div>
