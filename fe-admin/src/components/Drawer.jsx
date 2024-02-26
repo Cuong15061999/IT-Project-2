@@ -18,6 +18,7 @@ import HomeIcon from '@mui/icons-material/Home';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import GroupIcon from '@mui/icons-material/Group';
 import CelebrationIcon from '@mui/icons-material/Celebration';
+import SwitchAccountIcon from '@mui/icons-material/SwitchAccount';
 import { useNavigate } from 'react-router-dom';
 
 const drawerWidth = 240;
@@ -77,6 +78,7 @@ export default function MiniDrawer() {
       case 'Dashboard': return <DashboardIcon></DashboardIcon>
       case 'Event': return <CelebrationIcon></CelebrationIcon>
       case 'User': return <GroupIcon></GroupIcon>
+      case 'Account': return <SwitchAccountIcon></SwitchAccountIcon>
       default : return <HomeIcon></HomeIcon>
 
     }
@@ -94,7 +96,7 @@ export default function MiniDrawer() {
         </DrawerHeader>
         <Divider />
         <List>
-          {['Home', 'Dashboard', 'Event', 'User'].map((text, index) => (
+          {['Home', 'Dashboard', 'Event', 'User', 'Account'].map((text, index) => (
             <ListItem key={text} disablePadding sx={{ display: 'block' }}
               onClick={() => { text === 'Home' ? navigate("/") : navigate("/" + text) }}>
               <ListItemButton

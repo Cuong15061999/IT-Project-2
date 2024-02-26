@@ -4,9 +4,9 @@ import { Home } from './pages/Home/Home';
 import { Event } from './pages/Event/Event'
 import { User } from './pages/User/User'
 import { Dashboard } from './pages/Dashboard/Dashboard';
-
 import { Routes, Route } from 'react-router-dom'
 import RequireAuth from './components/RequireAuth';
+import { Account } from './pages/Account/Account';
 
 function App() {
   return (
@@ -16,6 +16,7 @@ function App() {
         <Route path='/dashboard' element={<RequireAuth><Dashboard></Dashboard></RequireAuth>}></Route>
         <Route path='/event' element={<RequireAuth><Event></Event></RequireAuth>}></Route>
         <Route path='/user' element={<RequireAuth><User></User></RequireAuth>}></Route>
+        <Route path='/account' element={<RequireAuth><Account></Account></RequireAuth>}></Route>
         <Route path='/login' element={<RequireAuth><LoginForm></LoginForm></RequireAuth>}></Route>
       </Routes>
     </div>
