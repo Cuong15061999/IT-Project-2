@@ -6,6 +6,11 @@ class userServices {
     return await userModel.find();
   }
 
+  //Get user by roles
+  async getUsersByRole(role) {
+    return await userModel.find({role: role})
+  }
+
   //Get specific user
   async getUser(id) {
     const user = await userModel.findById(id);

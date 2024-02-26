@@ -5,11 +5,25 @@ var router = express.Router();
 /* GET All user. */
 router.get('/', async function (req, res, next) {
   try {
-    const users = await userServices.getUsers();
-    res.status(200).json({
-      data: users,
-      message: 'Get all user',
-    });
+    const role = req.query.role; // Access the "role" parameter from the query string
+
+    if (!role) { // No role specified, retrieve all users
+      const users = await userServices.getUsers();
+      res.status(200).json({
+        data: users,
+        message: 'Get all users',
+      });
+    } else if (role === "student" || role === "teacher") { 
+      const users = await userServices.getUsersByRole(role);
+      res.status(200).json({
+        data: users,
+        message: `Get ${role} users`,
+      });
+    } else { // Invalid role, send error response
+      res.status(400).json({
+        message: 'Invalid role provided',
+      });
+    }
   } catch (error) {
     res.status(500).json({
       message: error.message
