@@ -7,11 +7,11 @@ import SideNav from '../../components/Drawer'
 import NavBar from '../../components/NavBar'
 import Grid from '@mui/material/Grid';
 import Stack from '@mui/material/Stack';
-import { PieChart } from '@mui/x-charts/PieChart';
 import { DataGrid } from '@mui/x-data-grid';
 import Button from '@mui/material/Button';
 import InfoIcon from '@mui/icons-material/Info';
 import SummaryCard from './SummaryCard';
+import SummaryPieChart from './PieChart';
 
 const columns = [
   { field: 'name', headerName: 'Name', flex: 2 },
@@ -50,7 +50,8 @@ const rows = [
 ]
 
 export const Dashboard = () => {
-
+  const monthNumber = new Date().getMonth();
+  const month = new Date(2024, monthNumber, 1).toLocaleString('en-US', { month: 'long' });
   return (
     <>
       <NavBar></NavBar>
@@ -80,25 +81,10 @@ export const Dashboard = () => {
                 <Stack direction="row" width="100%" textAlign="center" spacing={2}>
                   <Box flexGrow={1}>
                     <Typography variant="h5" component="div" paddingTop={"10px"}>
-                      Events Activity Chart
+                      Events In {month}
                     </Typography>
                     <Box height={40}></Box>
-                    <PieChart
-                      series={[
-                        {
-                          data: [
-                            { id: 0, value: 20, label: 'Finished', color: 'rgba(9, 175, 232, 0.8)' },
-                            { id: 1, value: 50, label: 'Ongoing', color: 'rgba(41, 244, 153, 1)' },
-                            { id: 2, value: 30, label: 'Unstarted', color: 'rgba(255, 109, 136, 1)' },
-                          ],
-                          innerRadius: 20,
-                          highlightScope: { faded: 'global', highlighted: 'item' },
-                          faded: { innerRadius: 30, additionalRadius: -30, color: 'gray' },
-                        },
-                      ]}
-                      // width={400}
-                      height={220}
-                    />
+                    <SummaryPieChart></SummaryPieChart>
                   </Box>
                 </Stack>
               </Card>
