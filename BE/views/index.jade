@@ -1,5 +1,11 @@
-extends layout
-
-block content
-  h1= title
-  p Welcome to #{title}
+doctype html
+html(lang="en")
+  head
+    meta(charset="UTF-8")
+    meta(name="viewport", content="width=device-width, initial-scale=1.0")
+    title Upload Excel
+  body
+    h2 Upload Excel File
+    form(action="http://localhost:3001/upload", method="post", enctype="multipart/form-data")
+      input(type="file", name="excelFile")
+      input(type="submit", value="Upload")
