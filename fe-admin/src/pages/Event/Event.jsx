@@ -1,9 +1,9 @@
 import React from 'react'
 import "./Event.css"
 import Box from '@mui/material/Box';
-import { Typography } from '@mui/material';
 import SideNav from '../../components/Drawer'
 import NavBar from '../../components/NavBar'
+import EventList from './EventList';
 
 export const Event = () => {
   return (
@@ -13,10 +13,7 @@ export const Event = () => {
       <Box sx={{ display: 'flex' }}>
         <SideNav></SideNav>
         <Box component="main" sx={{ flexGrow: 1, p: 3, backgroundColor: "#ECEFF4", minHeight: "100vh" }}>
-          <h1>Event</h1>
-          <Typography paragraph>
-            CONTENT OF THE PAGE
-          </Typography>
+          <EventList></EventList>
         </Box>
       </Box>
     </>

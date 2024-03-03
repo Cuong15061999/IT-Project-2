@@ -1,6 +1,5 @@
-import { useCallback } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { PieChart } from '@mui/x-charts/PieChart';
-import { useState, useEffect } from 'react';
 import axios from 'axios';
 
 export default function SummaryPieChart() {
@@ -24,7 +23,7 @@ export default function SummaryPieChart() {
     } catch (error) {
       console.error('Error fetching data:', error);
     }
-  },[setChartSummary])
+  }, [setChartSummary])
 
   useEffect(() => {
     getSummary();
@@ -32,22 +31,28 @@ export default function SummaryPieChart() {
 
   return (
     <>
-      <PieChart
-        series={[
-          {
-            data: [
-              { id: 0, value: chartSummary.finished, label: 'Finished', color: 'rgba(9, 175, 232, 0.8)' },
-              { id: 1, value: chartSummary.ongoing, label: 'Ongoing', color: 'rgba(41, 244, 153, 1)' },
-              { id: 2, value: chartSummary.undone, label: 'Unstarted', color: 'rgba(255, 109, 136, 1)' },
-            ],
-            innerRadius: 20,
-            highlightScope: { faded: 'global', highlighted: 'item' },
-            faded: { innerRadius: 30, additionalRadius: -30, color: 'gray' },
-          },
-        ]}
-        // width={400}
-        height={220}
-      />
+      {
+        chartSummary.total > 0 ? (
+          <PieChart
+            series={[
+              {
+                data: [
+                  { id: '0', value: chartSummary.finished, label: 'Finished', color: 'rgba(9, 175, 232, 0.8)' },
+                  { id: '1', value: chartSummary.ongoing, label: 'Ongoing', color: 'rgba(41, 244, 153, 1)' },
+                  { id: '2', value: chartSummary.undone, label: 'Unstarted', color: 'rgba(255, 109, 136, 1)' },
+                ],
+                innerRadius: 20,
+                highlightScope: { faded: 'global', highlighted: 'item' },
+                faded: { innerRadius: 30, additionalRadius: -30, color: 'gray' },
+              },
+            ]}
+            // width={400}
+            height={220}
+          />
+        ) : (
+          <p>There are no new events in this month</p>
+        )
+      }
     </>
   )
 }

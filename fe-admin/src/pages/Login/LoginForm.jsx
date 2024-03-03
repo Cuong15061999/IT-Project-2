@@ -46,7 +46,7 @@ export const LoginForm = () => {
       const userInfo = await validateAccountGoogle(googleInfo);
       if (userInfo) {
         const expires_time = 7; //day
-        Cookies.set('access_token', userInfo.access_token, { expires: expires_time });
+        Cookies.set('access_token', userInfo.accessToken, { expires: expires_time });
       }
 
       navigate('/', { replace: true });

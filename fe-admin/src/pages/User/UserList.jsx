@@ -38,9 +38,11 @@ const style = {
 export default function UserList() {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
-  const [userData, setUserData] = useState({})
-  const setRows = useAppStore((state) => state.setRows)
-  const rows = useAppStore((state) => state.rows)
+
+  const [userData, setUserData] = useState({});
+
+  const setRows = useAppStore((state) => state.setRows);
+  const rows = useAppStore((state) => state.rows);
 
   const [open, setOpen] = useState(false);
   const [editopen, setEditOpen] = useState(false);
@@ -103,7 +105,7 @@ export default function UserList() {
       console.error('Error fetching data:', error);
       Swal.fire("Delete Error!", "There some error happen.", "warning");
     }
-  }
+  };
 
   const editUser = (id, name, userClass, falculty, email, role) => {
     const data = {
@@ -116,7 +118,7 @@ export default function UserList() {
     };
     setUserData(data);
     handleEditOpen();
-  }
+  };
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -126,6 +128,7 @@ export default function UserList() {
     setRowsPerPage(+event.target.value);
     setPage(0);
   };
+
   const deleteUser = (id) => {
     Swal.fire({
       title: "Are you sure?",
@@ -141,6 +144,7 @@ export default function UserList() {
       }
     });
   };
+
   const filterData = (v) => {
     if (v) {
       setRows([v]);

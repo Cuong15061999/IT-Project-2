@@ -6,6 +6,7 @@ class eventServices {
   async getEvents() {
     return await eventModel
     .find()
+    .sort({ created: -1 })
     .populate({
       path: 'host',
       model: 'User'
