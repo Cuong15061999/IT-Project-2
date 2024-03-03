@@ -1,5 +1,5 @@
-import React, { useCallback } from 'react'
-import { useState, useEffect } from 'react';
+import React, { useCallback, useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom';
 import { DataGrid } from '@mui/x-data-grid';
 import Button from '@mui/material/Button';
 import InfoIcon from '@mui/icons-material/Info';
@@ -7,34 +7,32 @@ import Card from '@mui/material/Card';
 import axios from 'axios';
 import moment from 'moment';
 
-const columns = [
-  { field: 'name', headerName: 'Name', flex: 2 },
-  { field: 'host', headerName: 'Host', flex: 2 },
-  { field: 'startDate', headerName: 'Start Date', flex: 1.5},
-  { field: 'endDate', headerName: 'End Date', flex: 1.5},
-  {
-    field: 'action',
-    headerName: 'Action',
-    sortable: false,
-    flex: 1,
-    renderCell: (params) => {
-      const handleClick = (e) => {
-        e.stopPropagation(); // Prevent row selection
-
-        const { id, name } = params.row; // Destructure needed data
-
-        // Custom message logic (optional)
-        const customMessage = `Row ID: ${id}\nName: ${name}`; // Example of customized message
-
-        // in this row will navigate to events info 
-        alert(customMessage); // Alert with more informative message
-      };
-      return <Button startIcon={<InfoIcon/>} onClick={handleClick}></Button>;
-    },
-  },
-];
-
 export default function TableNewestEvents() {
+  const navigate = useNavigate();
+
+  const columns = [
+    { field: 'name', headerName: 'Name', flex: 2 },
+    { field: 'host', headerName: 'Host', flex: 2 },
+    { field: 'startDate', headerName: 'Start Date', flex: 1.5},
+    { field: 'endDate', headerName: 'End Date', flex: 1.5},
+    {
+      field: 'action',
+      headerName: 'Action',
+      sortable: false,
+      flex: 1,
+      renderCell: (params) => {
+        const handleClick = (e) => {
+          e.stopPropagation(); // Prevent row selection
+  
+          const { id } = params.row; // Destructure needed data
+
+          navigate(`/event/${id}`);
+        };
+        return <Button startIcon={<InfoIcon/>} onClick={handleClick}></Button>;
+      },
+    },
+  ];
+
   const [rows, setRows] = useState([]);
   const getNewestEvents = useCallback(async () => {
     try {
