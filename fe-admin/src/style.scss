@@ -1,0 +1,31 @@
+@import 'react-big-calendar/lib/sass/styles';
+@import 'react-big-calendar/lib/addons/dragAndDrop/styles'; // if using DnD
+
+.task {
+  border: 1px solid lightslategray;
+  padding: 15px;
+  margin-bottom: 10px;
+
+  &-list {
+    display: flex;
+    width: 100%;
+    gap: 20px;
+  }
+
+  &s-going,
+  &s-done,
+  &s-todo {
+    border: 1px solid lightslategray;
+    padding: 15px;
+    width: 100%;
+  }
+}
+.rbc-calendar {
+  min-height: 600px; /* Hoặc chiều cao phù hợp với trang web của bạn */
+}
+
+.myCustomHeight {
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 4px;
+}
