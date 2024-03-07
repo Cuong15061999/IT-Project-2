@@ -16,7 +16,11 @@ export const Home = () => {
       const urlGetEvents = `http://localhost:3001/events`;
       const { data } = await axios.get(urlGetEvents);
       if (data.data) {
-        setListEvents(data.data);
+        setListEvents(data.data.map(item => ({
+          ...item,
+          startAt: new Date(item.startAt),
+          endAt: new Date(item.endAt),
+        })));
       }
     } catch (error) {
       console.log(error)
