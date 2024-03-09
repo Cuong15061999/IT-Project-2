@@ -31,15 +31,32 @@ export const Home = () => {
   }, []);
   const handleClick = async () => {
     try {
-      const urlDownload = `http://localhost:3001/download-file`;
-      const response = await axios.post(urlDownload, {
-        file_name: 'Book1-03-03-2024.xlsx'
-      })
-      console.log(response);
+      const filename = '05-03-2024_Book1.xlsx'; // Replace with user input or other means of obtaining the filename
+      const urlDownload = `http://localhost:3001/download-file?filename=${filename}`;
+  
+      const response = await axios.get(urlDownload, {
+        responseType: 'blob' // Set response type for binary data (file)
+      });
+  
+      if (response.status === 200) {
+        const blob = new Blob([response.data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', filename);
+        link.style.display = 'none'; // Hide the link (optional)
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      } else {
+        console.error('Error downloading file:', response.statusText);
+        // Handle download error (e.g., display error message to user)
+      }
     } catch (error) {
-      console.log(error)
+      console.error('Error downloading file:', error);
+      // Handle other errors (e.g., network issues)
     }
-  }
+  };
   return (
     <>
       <NavBar></NavBar>

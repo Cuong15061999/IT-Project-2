@@ -2,11 +2,13 @@ var mongoose = require('mongoose');var EventSchema = new mongoose.Schema({
   name: { type: String, required: true },
   host: { type: mongoose.Types.ObjectId, required: true, ref: 'User' }, // the one who create this event
   participatingTeachers: [{ type: mongoose.Types.ObjectId, default: [], ref: 'User' }], // list of teacher who join this event
-  participatingStudents: [{ type: mongoose.Types.ObjectId, default: [], ref: 'User' }], // list of student who join this event
+  participatingStudents: [{ type: [String] }], // list of student who join this event
+  listStudentRegistry:  { type: [String], required: false },
   linkEvents: [{ type: mongoose.Types.ObjectId, default: [], ref: 'Event' }], // sub events or sub job for this event
-  trainingPoints: { type: Number, required: true, default: 0 }, // diem ren luyen 
-  status: { type: String, required: true, default: 'undone' }, // undone, ongoing, finished
-
+  activitiesPoint: { type: Number, required: true, default: 0 },
+  status: { type: String, required: true, default: 'backlog' }, // backlog, ongoing, finished
+  registryList: { type: String, required: false },
+  participationList: { type: String, required: false },
   startAt: { type: Date, required: true, default: new Date().toJSON().slice(0, 10) },
   endAt: {
     type: Date, required: true, default: () => {
