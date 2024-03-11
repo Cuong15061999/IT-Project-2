@@ -1,7 +1,7 @@
 import React from 'react'
 import { useDrag } from 'react-dnd'
 
-export default function Dnd({ content, taskId, task }) {
+export default function Dnd({ content, taskId, task, onClick }) {
   const [ { isDragging }, drag ] = useDrag(() => ({
     type: 'task',
     item: task,
@@ -10,6 +10,6 @@ export default function Dnd({ content, taskId, task }) {
     }),
   }))
   return (
-    <div ref={drag} className='task' id={taskId}>{content}</div>
+    <div ref={drag} className='task' id={taskId} onClick={onClick}>{content}</div>
   )
 }

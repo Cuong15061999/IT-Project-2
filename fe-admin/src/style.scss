@@ -2,20 +2,22 @@
 @import 'react-big-calendar/lib/addons/dragAndDrop/styles'; // if using DnD
 
 .task {
-  border: 1px solid lightslategray;
+  border: 1px solid #ddd;
   padding: 15px;
   margin-bottom: 10px;
-
+  border-radius: 4px;
+  cursor: pointer;
+  
   &-list {
     display: flex;
     width: 100%;
     gap: 20px;
+    background-color: #fff;
   }
 
   &s-going,
   &s-done,
   &s-todo {
-    border: 1px solid lightslategray;
     padding: 15px;
     width: 100%;
   }
