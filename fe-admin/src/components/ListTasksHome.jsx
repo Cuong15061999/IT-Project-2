@@ -1,66 +1,55 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import Task from './Task'
 import { useDrop } from 'react-dnd';
-import axios from 'axios';
+import { useDispatch, useSelector } from 'react-redux';
+import { updateTask, openModalEditTask, closeModalEditTask } from '../store/myTasks';
+import moment from 'moment';
+
 export default function ListTasksHome({ data }) {
-  const [tasks, setTasks] = useState(data)
+  const tasks = useSelector((state) => state.my_tasks.tasks);
+  const dispatch = useDispatch();
 
   // drop instances
   const [{ isOver: isOverTaskGoing }, dropTaskGoing] = useDrop(() => ({
     accept: 'task',
-    drop: (item) => updateTask(item, 'ongoing'),
+    drop: (item) => handleUpdateTask(item, 'ongoing'),
     collect: (monitor) => ({
       isOver: !!monitor.isOver()
     })
   }));
   const [{ isOver: isOverTaskTodo }, dropTaskTodo] = useDrop(() => ({
     accept: 'task',
-    drop: (item) => updateTask(item, 'todo'),
+    drop: (item) => handleUpdateTask(item, 'todo'),
     collect: (monitor) => ({
       isOver: !!monitor.isOver()
     })
   }));
   const [{ isOver: isOverTaskDone }, dropTaskDone] = useDrop(() => ({
     accept: 'task',
-    drop: (item) => updateTask(item, 'finished'),
+    drop: (item) => handleUpdateTask(item, 'finished'),
     collect: (monitor) => ({
       isOver: !!monitor.isOver()
     })
   }));
 
-  const callAPIUpdateTask = async (task) => {
-    try {
-      const urlUpdateTask = `http://localhost:3001/events/${task._id}`;
-      const response = await axios.put(urlUpdateTask, task);
-      if (response) {
-        return true;
-      }
-      return false
-    } catch (error) {
-      console.log(error);
-      return false
-    }
-  }
-
   // handle drop functions
-  const updateTask = async (task, status = 'todo') => {
-    const callApiUpdate = await callAPIUpdateTask({
+  const handleUpdateTask = async (task, status = 'todo') => {
+    const newTask = {
       ...task,
       status
-    });
-    if (!callApiUpdate) {
-      return;
     }
-    setTasks((currentTasks) => {
-      const updatedTasks = [...currentTasks];
-      const findIndexTask = updatedTasks.findIndex(item => item._id === task._id);
-  
-      if (findIndexTask !== -1) {
-        updatedTasks[findIndexTask].status = status;
+    dispatch(updateTask(newTask));
+  }
+
+  const handleOpenEditModal = (task) => {
+    dispatch(openModalEditTask({
+      action: 'edit',
+      taskSelected: {
+        ...task,
+        startAt: task.startAt.toISOString(),
+        endAt: task.endAt.toISOString(),
       }
-  
-      return updatedTasks;
-    });
+    }));
   }
 
   return (
@@ -68,24 +57,35 @@ export default function ListTasksHome({ data }) {
       <div className='task-list'>
         <div className='tasks-todo' ref={dropTaskTodo}>
           <h3>Todo</h3>
-          {(tasks.filter(task => task.status?.toLowerCase() === 'todo')).map((task) => {
-            return <Task content={task.name} key={`task-todo-${task._id}`} taskId={task._id} task={task}></Task>
+          {(tasks.map(item => ({
+            ...item,
+            startAt: moment(item.startAt),
+            endAt: moment(item.endAt),
+          })).filter(task => task.status?.toLowerCase() === 'todo')).map((task) => {
+            return <Task onClick={() => handleOpenEditModal(task)} content={task.name} key={`task-todo-${task._id}`} taskId={task._id} task={task}></Task>
           })}
         </div>
         <div className='tasks-going' ref={dropTaskGoing}>
           <h3>Going</h3>
-          {(tasks.filter(task => task.status?.toLowerCase() === 'ongoing')).map((task) => {
-            return <Task content={task.name} key={`task-going-${task._id}`} taskId={task._id} task={task}></Task>
+          {(tasks.map(item => ({
+            ...item,
+            startAt: moment(item.startAt),
+            endAt: moment(item.endAt),
+          })).filter(task => task.status?.toLowerCase() === 'ongoing')).map((task) => {
+            return <Task onClick={() => handleOpenEditModal(task)} content={task.name} key={`task-going-${task._id}`} taskId={task._id} task={task}></Task>
           })}
         </div>
         <div className='tasks-going' ref={dropTaskDone}>
           <h3>Done</h3>
-          {(tasks.filter(task => task.status?.toLowerCase() === 'finished')).map((task) => {
-            return <Task content={task.name} key={`task-going-${task._id}`} taskId={task._id} task={task}></Task>
+          {(tasks.map(item => ({
+            ...item,
+            startAt: moment(item.startAt),
+            endAt: moment(item.endAt),
+          })).filter(task => task.status?.toLowerCase() === 'finished')).map((task) => {
+            return <Task onClick={() => handleOpenEditModal(task)} content={task.name} key={`task-going-${task._id}`} taskId={task._id} task={task}></Task>
           })}
         </div>
       </div>
     </>
-
   )
 }

@@ -1,26 +1,35 @@
 import React from 'react'
 import "./Home.css"
 import Box from '@mui/material/Box';
-import { Typography } from '@mui/material';
+import { Button, Stack, Typography } from '@mui/material';
 import SideNav from '../../components/Drawer'
 import NavBar from '../../components/NavBar'
 import TabsTasksView from './TabsTasksView';
-export const Home = () => {
+import { AddCircle } from '@mui/icons-material';
+import { useDispatch, useSelector } from 'react-redux';
+import { openModalEditTask } from '../../store/myTasks';
 
+export const Home = () => {
+  const dispatch = useDispatch();
   return (
     <>
       <NavBar></NavBar>
       <Box height={45}></Box>
-      <Box sx={{ display: 'flex' }}>
+    <Box sx={{ display: 'flex' }}>
         <SideNav></SideNav>
         <Box component="main" sx={{ flexGrow: 1, p: 3, backgroundColor: "#ECEFF4", minHeight: "100vh" }}>
           <h1>Home</h1>
-          <Typography paragraph>
-            CONTENT OF THE PAGE
-          </Typography>
+          <Stack spacing={{ xs: 1, sm: 2 }} direction="row" useFlexGap flexWrap="wrap" justifyContent='space-between'> 
+            <Typography paragraph>
+              CONTENT OF THE PAGE
+            </Typography>
+            <Button variant="contained" endIcon={<AddCircle />} align="justify" onClick={() => dispatch(openModalEditTask({ action: 'add' }))}>
+              Add
+            </Button>
+          </Stack>
           <TabsTasksView></TabsTasksView>
         </Box>
-      </Box>
+      </Box >
     </>
   )
 }

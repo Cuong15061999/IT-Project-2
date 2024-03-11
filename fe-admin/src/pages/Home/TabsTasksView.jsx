@@ -1,12 +1,15 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import { Tabs, Tab, Typography, Box } from '@mui/material';
+import { Tabs, Tab, Typography, Box, Backdrop, CircularProgress } from '@mui/material';
 import CustomCalendar from '../../components/CustomCalendar';
 import ListTasksHome from '../../components/ListTasksHome';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import axios from 'axios';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { setTasks } from '../../store/myTasks';
+import ModalEditTask from '../../components/ModalEditTask';
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -42,8 +45,10 @@ function a11yProps(index) {
 }
 
 export default function TabsTasksView() {
-  const [value, setValue] = React.useState(0);
-  const [listEvens, setListEvents] = useState([]);
+  const [value, setValue] = useState(0);
+  const isLoading = useSelector((state) => state.my_tasks.isLoading);
+
+  const dispatch = useDispatch();
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -54,11 +59,7 @@ export default function TabsTasksView() {
       const urlGetEvents = `http://localhost:3001/events`;
       const { data } = await axios.get(urlGetEvents);
       if (data.data) {
-        setListEvents(data.data.map(item => ({
-          ...item,
-          startAt: new Date(item.startAt),
-          endAt: new Date(item.endAt),
-        })));
+        dispatch(setTasks(data.data));
       }
     } catch (error) {
       console.log(error)
@@ -69,21 +70,30 @@ export default function TabsTasksView() {
   }, []);
 
   return (
-    <Box sx={{ width: '100%' }}>
-      <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-        <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
-          <Tab label="Calendar" {...a11yProps(0)} />
-          <Tab label="Board" {...a11yProps(1)} />
-        </Tabs>
+    <>
+      <Backdrop
+        sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        open={isLoading}
+      >
+        <CircularProgress color="inherit" />
+      </Backdrop>
+      <Box sx={{ width: '100%' }}>
+        <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+          <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
+            <Tab label="Calendar" {...a11yProps(0)} />
+            <Tab label="Board" {...a11yProps(1)} />
+          </Tabs>
+        </Box>
+        <TabPanel value={value} index={0}>
+          <CustomCalendar></CustomCalendar>
+        </TabPanel>
+        <TabPanel value={value} index={1}>
+          <DndProvider backend={HTML5Backend}>
+            <ListTasksHome></ListTasksHome>
+          </DndProvider>
+        </TabPanel>
       </Box>
-      <TabPanel value={value} index={0}>
-        <CustomCalendar data={listEvens}></CustomCalendar>
-      </TabPanel>
-      <TabPanel value={value} index={1}>
-        <DndProvider backend={HTML5Backend}>
-          <ListTasksHome data={listEvens}></ListTasksHome>
-        </DndProvider>
-      </TabPanel>
-    </Box>
+      <ModalEditTask></ModalEditTask>
+    </>
   );
 }
