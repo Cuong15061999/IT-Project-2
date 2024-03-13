@@ -13,10 +13,10 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import { MultiSelect } from "react-multi-select-component";
-import axios from 'axios';
-import dayjs from 'dayjs';
 import SideNav from '../../components/Drawer'
 import NavBar from '../../components/NavBar'
+import axios from 'axios';
+import dayjs from 'dayjs';
 import Swal from "sweetalert2";
 import Cookies from 'js-cookie';
 import { jwtDecode } from 'jwt-decode';
@@ -27,9 +27,6 @@ export const AddEvent = () => {
   const [teacherListOption, setTeacherListOption] = useState([]);
   const [teacherList, setTeacherList] = useState([]);
 
-  const [studentListOption, setStudentListOption] = useState([]);
-  const [studentList, setStudentrList] = useState([]);
-
   const [host, setHost] = useState({
     id: '',
     email: '',
@@ -37,8 +34,8 @@ export const AddEvent = () => {
 
   const statusList = [
     {
-      value: 'undone',
-      label: 'Undone'
+      value: 'todo',
+      label: 'Todo'
     },
     {
       value: 'ongoing',
@@ -51,9 +48,10 @@ export const AddEvent = () => {
   ];
 
   const [eventInfo, setEventInfo] = useState({
-    name: 'test',
-    trainingPoints: 0,
-    status: 'undone',
+    name: 'new event',
+    location: 'some event location',
+    activitiesPoint: 0,
+    status: 'todo',
     startAt: dayjs(),
     endAt: dayjs(),
   });
@@ -72,20 +70,6 @@ export const AddEvent = () => {
     }
   }, [setTeacherListOption]);
 
-  const getStudentListOption = useCallback(async () => {
-    try {
-      const response = await axios.get(`http://localhost:3001/users/?role=student`)
-      const filteredData = response.data.data.map((row) => ({
-        value: row._id,
-        label: row.email,
-      }));
-
-      setStudentListOption(filteredData || []);
-    } catch (error) {
-      console.error('Error fetching data:', error);
-    }
-  }, [setStudentListOption]);
-
   const getCurrentUserHost = useCallback(async () => {
     const access_token = jwtDecode(Cookies.get('access_token'));
     setHost({
@@ -98,13 +82,10 @@ export const AddEvent = () => {
     //Get all teacher in db
     getTeachersListOption();
 
-    //Get all student in db
-    getStudentListOption();
-
     //Set current user 
     getCurrentUserHost();
 
-  }, [getTeachersListOption, getStudentListOption, getCurrentUserHost])
+  }, [getTeachersListOption, getCurrentUserHost])
 
   const createEvent = async () => {
     try {
@@ -117,9 +98,9 @@ export const AddEvent = () => {
       const response = await axios.post('http://localhost:3001/events', {
         name: eventInfo.name,
         host: host.id,
+        location: eventInfo.location,
         participatingTeachers: teacherList.map((teacher) => teacher.value),
-        participatingStudents: studentList.map((student) => student.value),
-        trainingPoints: eventInfo.trainingPoints,
+        activitiesPoint: eventInfo.activitiesPoint,
         status: eventInfo.status,
         startAt: dateStartAtObject,
         endAt: dateEndAtObject,
@@ -127,6 +108,7 @@ export const AddEvent = () => {
       
       if (response.status === 200) {
         Swal.fire("Successful!", "Your event has been created.", "success");
+        navigate('/event')
       }
     } catch (error) {
       console.error('Error fetching data:', error);
@@ -166,9 +148,19 @@ export const AddEvent = () => {
               <Grid item xs={6}>
                 <h3>Host</h3>
                 <TextField
-                  // onChange={handleNameChange}
                   value={host.email}
                   disabled
+                  id="outlined-required"
+                  size='small'
+                  sx={{ minWidth: "100%" }}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <h3>Location</h3>
+                <TextField
+                  onChange={(e) => handleChangeEventInfo('location', e.target.value)}
+                  value={eventInfo.location}
+                  required
                   id="outlined-required"
                   size='small'
                   sx={{ minWidth: "100%" }}
@@ -183,20 +175,11 @@ export const AddEvent = () => {
                   labelledBy="Select"
                 />
               </Grid>
-              <Grid item xs={12}>
-                <h3>Participate Student</h3>
-                <MultiSelect
-                  options={studentListOption}
-                  value={studentList}
-                  onChange={setStudentrList}
-                  labelledBy="Select"
-                />
-              </Grid>
               <Grid item xs={6}>
-                <h3>Traning Point</h3>
+                <h3>Activities Point</h3>
                 <TextField
-                  onChange={(e) => handleChangeEventInfo('trainingPoints', e.target.value)}
-                  value={eventInfo.trainingPoints}
+                  onChange={(e) => handleChangeEventInfo('activitiesPoint', e.target.value)}
+                  value={eventInfo.activitiesPoint}
                   required
                   type='number'
                   inputProps={{ min: 0, max: 99 }}

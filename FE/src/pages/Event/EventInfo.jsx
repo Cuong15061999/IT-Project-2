@@ -13,11 +13,11 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import { MultiSelect } from "react-multi-select-component";
-import axios from 'axios';
-import dayjs from 'dayjs';
 import SideNav from '../../components/Drawer'
 import NavBar from '../../components/NavBar'
 import Swal from "sweetalert2";
+import axios from 'axios';
+import dayjs from 'dayjs';
 
 export const EventInfo = () => {
   const navigate = useNavigate();
@@ -25,18 +25,15 @@ export const EventInfo = () => {
   const [teacherListOption, setTeacherListOption] = useState([]);
   const [teacherList, setTeacherList] = useState([]);
 
-  const [studentListOption, setStudentListOption] = useState([]);
-  const [studentList, setStudentrList] = useState([]);
-
   const [host, setHost] = useState({
     id: '',
-    email:'',
+    email: '',
   });
 
   const statusList = [
     {
-      value: 'undone',
-      label: 'Undone'
+      value: 'todo',
+      label: 'Todo'
     },
     {
       value: 'ongoing',
@@ -51,7 +48,8 @@ export const EventInfo = () => {
   const { id } = useParams();
   const [eventInfo, setEventInfo] = useState({
     name: '',
-    trainingPoints: 0,
+    location: '',
+    activitiesPoint: 0,
     status: '',
     startAt: '',
     endAt: '',
@@ -63,7 +61,8 @@ export const EventInfo = () => {
       const event = response.data.data;
       setEventInfo({
         name: event.name,
-        trainingPoints: event.trainingPoints,
+        location: event.location,
+        activitiesPoint: event.activitiesPoint,
         status: event.status,
         startAt: event.startAt,
         endAt: event.endAt
@@ -80,11 +79,6 @@ export const EventInfo = () => {
       }));
       setTeacherList(filteredTeacherData || []);
 
-      const filteredStudentData = event.participatingStudents.map((student) => ({
-        value: student._id,
-        label: student.email,
-      }));
-      setStudentrList(filteredStudentData || []);
     } catch (error) {
       console.error('Error fetching data:', error);
     }
@@ -104,30 +98,13 @@ export const EventInfo = () => {
     }
   }, [setTeacherListOption]);
 
-  const getStudentListOption = useCallback(async () => {
-    try {
-      const response = await axios.get(`http://localhost:3001/users/?role=student`)
-      const filteredData = response.data.data.map((row) => ({
-        value: row._id,
-        label: row.email,
-      }));
-
-      setStudentListOption(filteredData || []);
-    } catch (error) {
-      console.error('Error fetching data:', error);
-    }
-  }, [setStudentListOption]);
-
   useEffect(() => {
     //Get all teacher in db
     getTeachersListOption();
 
-    //Get all student in db
-    getStudentListOption();
-
     //Get event info
     getEventInfo();
-  }, [getTeachersListOption, getStudentListOption, getEventInfo])
+  }, [getTeachersListOption, getEventInfo])
 
   const handleChangeEventInfo = (fieldName, newValue) => {
     setEventInfo({ ...eventInfo, [fieldName]: newValue });
@@ -144,9 +121,9 @@ export const EventInfo = () => {
       const response = await axios.put(`http://localhost:3001/events/${id}`, {
         name: eventInfo.name,
         host: host._id,
+        location: eventInfo.location,
         participatingTeachers: teacherList.map((teacher) => teacher.value),
-        participatingStudents: studentList.map((student) => student.value),
-        trainingPoints: eventInfo.trainingPoints,
+        activitiesPoint: eventInfo.activitiesPoint,
         status: eventInfo.status,
         startAt: dateStartAtObject,
         endAt: dateEndAtObject,
@@ -207,20 +184,11 @@ export const EventInfo = () => {
                   labelledBy="Select"
                 />
               </Grid>
-              <Grid item xs={12}>
-                <h3>Participate Student</h3>
-                <MultiSelect
-                  options={studentListOption}
-                  value={studentList}
-                  onChange={setStudentrList}
-                  labelledBy="Select"
-                />
-              </Grid>
               <Grid item xs={6}>
-                <h3>Traning Point</h3>
+                <h3>Activities Point</h3>
                 <TextField
-                  onChange={(e) => handleChangeEventInfo('trainingPoints', e.target.value)}
-                  value={eventInfo.trainingPoints}
+                  onChange={(e) => handleChangeEventInfo('activitiesPoint', e.target.value)}
+                  value={eventInfo.activitiesPoint}
                   required
                   type='number'
                   inputProps={{ min: 0, max: 99 }}

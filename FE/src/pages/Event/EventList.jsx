@@ -1,14 +1,8 @@
-import React, { useCallback } from 'react'
-import { useState, useEffect } from 'react';
+import React, { useCallback, useState, useEffect } from 'react';
+import { Edit, Delete, Info, AddCircle } from "@mui/icons-material";
 import {
-  Edit,
-  Delete,
-  Info,
-  AddCircle
-} from "@mui/icons-material"
-import { 
-  Box, 
-  Button, 
+  Box,
+  Button,
   Typography,
   Autocomplete,
   Paper,
@@ -21,7 +15,7 @@ import {
   TableCell,
   TableBody,
   TablePagination,
- } from '@mui/material';
+} from '@mui/material';
 import axios from 'axios';
 import moment from 'moment';
 import Swal from "sweetalert2";
@@ -29,6 +23,7 @@ import { useNavigate } from 'react-router-dom';
 
 export default function EventList() {
   const navigate = useNavigate();
+  const headerList = ["Name", "Host", "Location", "Status", "Activity Point", "Start Date", "End Date", "Action"];
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [rows, setRows] = useState([])
@@ -50,8 +45,9 @@ export default function EventList() {
         id: row._id,
         name: row.name,
         host: row.host.email,
+        location: row.location,
         status: row.status,
-        trainingPoints: row.trainingPoints,
+        activitiesPoint: row.activitiesPoint,
         startDate: moment(row.startAt).format('DD/MM/YYYY'),
         endDate: moment(row.endAt).format('DD/MM/YYYY'),
       }));
@@ -59,7 +55,7 @@ export default function EventList() {
     } catch (error) {
       console.error('Error fetching data:', error);
     }
-  },[setRows]);
+  }, [setRows]);
 
   const delEvents = async (id) => {
     try {
@@ -122,7 +118,7 @@ export default function EventList() {
           component="div"
           sx={{ flexGrow: 1 }}
         ></Typography>
-        <Button variant="contained" endIcon={<AddCircle />} onClick={() => {navigate(`/event/add`)}}>
+        <Button variant="contained" endIcon={<AddCircle />} onClick={() => { navigate(`/event/add`) }}>
           Add
         </Button>
       </Stack>
@@ -131,27 +127,11 @@ export default function EventList() {
         <Table stickyHeader aria-label="sticky table">
           <TableHead>
             <TableRow>
-              <TableCell align="left" style={{ minWidth: "12%" }} >
-                Name
-              </TableCell>
-              <TableCell align="left" style={{ minWidth: "12%" }} >
-                Host
-              </TableCell>
-              <TableCell align="left" style={{ minWidth: "12%" }} >
-                Status
-              </TableCell>
-              <TableCell align="left" style={{ minWidth: "12%" }} >
-                Training Point
-              </TableCell>
-              <TableCell align="left" style={{ minWidth: "12%" }} >
-                Start Date
-              </TableCell>
-              <TableCell align="left" style={{ minWidth: "12%" }} >
-                End Date
-              </TableCell>
-              <TableCell align="left" style={{ minWidth: "12%" }} >
-                Action
-              </TableCell>
+              {headerList.map((column, index) => (
+                <TableCell key={index} align="left" style={{ minWidth: "10%" }}>
+                  {column}
+                </TableCell>
+              ))}
             </TableRow>
           </TableHead>
           <TableBody>
@@ -167,10 +147,13 @@ export default function EventList() {
                       {row.host}
                     </TableCell>
                     <TableCell align="left">
+                      {row.location}
+                    </TableCell>
+                    <TableCell align="left">
                       {row.status}
                     </TableCell>
                     <TableCell align="left">
-                      {row.trainingPoints}
+                      {row.activitiesPoint}
                     </TableCell>
                     <TableCell align="left">
                       {row.startDate}
@@ -186,7 +169,7 @@ export default function EventList() {
                             color: "green",
                             cursor: "pointer",
                           }}
-                          onClick={() => {navigate(`/event/${row.id}`)}}
+                          onClick={() => { navigate(`/event/${row.id}`) }}
                         />
                         <Edit
                           style={{
@@ -194,7 +177,7 @@ export default function EventList() {
                             color: "blue",
                             cursor: "pointer",
                           }}
-                          onClick={() => {navigate(`/event/${row.id}`)}}
+                          onClick={() => { navigate(`/event/${row.id}`) }}
                         />
                         <Delete
                           style={{
