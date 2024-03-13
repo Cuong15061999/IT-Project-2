@@ -1,7 +1,6 @@
 import React from 'react'
 import './Dashboard.css'
-import { Typography, Box, Grid, Stack  } from '@mui/material';
-import Card from '@mui/material/Card';
+import { Typography, Box, Grid, Stack, Card } from '@mui/material';
 import SideNav from '../../components/Drawer'
 import NavBar from '../../components/NavBar'
 import SummaryCard from './SummaryCard';

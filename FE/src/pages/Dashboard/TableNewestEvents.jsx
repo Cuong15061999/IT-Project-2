@@ -1,9 +1,8 @@
 import React, { useCallback, useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom';
 import { DataGrid } from '@mui/x-data-grid';
-import Button from '@mui/material/Button';
+import { Button, Card } from '@mui/material'
 import InfoIcon from '@mui/icons-material/Info';
-import Card from '@mui/material/Card';
 import axios from 'axios';
 import moment from 'moment';
 
@@ -13,6 +12,7 @@ export default function TableNewestEvents() {
   const columns = [
     { field: 'name', headerName: 'Name', flex: 2 },
     { field: 'host', headerName: 'Host', flex: 2 },
+    { field: 'location', headerName: 'Location', flex: 2},
     { field: 'startDate', headerName: 'Start Date', flex: 1.5},
     { field: 'endDate', headerName: 'End Date', flex: 1.5},
     {
@@ -37,10 +37,12 @@ export default function TableNewestEvents() {
   const getNewestEvents = useCallback(async () => {
     try {
       const response = await axios.get(`http://localhost:3001/events/newest`);
+      console.table(response.data.data)
       const filterData = response.data.data.map((row) => ({
         id: row._id,
         host: row.host.email,
         name: row.name,
+        location: row.location,
         startDate: moment(row.startAt).format('DD/MM/YYYY'),
         endDate:  moment(row.endAt).format('DD/MM/YYYY'),
       }));

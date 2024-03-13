@@ -7,7 +7,7 @@ export default function SummaryPieChart() {
     total: 0,
     finished: 0,
     ongoing: 0,
-    undone: 0,
+    todo: 0,
   });
 
   const getSummary = useCallback(async () => {
@@ -17,7 +17,7 @@ export default function SummaryPieChart() {
         total: response.data.summary.totalEvents,
         finished: response.data.summary.totalFinishedEvents,
         ongoing: response.data.summary.totalOngoingEvents,
-        undone: response.data.summary.totalUndoneEvents,
+        todo: response.data.summary.totalTodoEvents,
       }
       setChartSummary(summaryData)
     } catch (error) {
@@ -39,14 +39,13 @@ export default function SummaryPieChart() {
                 data: [
                   { id: '0', value: chartSummary.finished, label: 'Finished', color: 'rgba(9, 175, 232, 0.8)' },
                   { id: '1', value: chartSummary.ongoing, label: 'Ongoing', color: 'rgba(41, 244, 153, 1)' },
-                  { id: '2', value: chartSummary.undone, label: 'Unstarted', color: 'rgba(255, 109, 136, 1)' },
+                  { id: '2', value: chartSummary.todo, label: 'Todo', color: 'rgba(255, 109, 136, 1)' },
                 ],
                 innerRadius: 20,
                 highlightScope: { faded: 'global', highlighted: 'item' },
                 faded: { innerRadius: 30, additionalRadius: -30, color: 'gray' },
               },
             ]}
-            // width={400}
             height={220}
           />
         ) : (

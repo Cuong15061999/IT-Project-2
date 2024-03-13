@@ -1,16 +1,7 @@
-import React from 'react'
-import { useState, useEffect } from 'react';
-import CardContent from '@mui/material/CardContent';
-import EventAvailableIcon from '@mui/icons-material/EventAvailable';
-import EventBusyIcon from '@mui/icons-material/EventBusy';
-import EventNoteIcon from '@mui/icons-material/EventNote';
-import EventRepeatIcon from '@mui/icons-material/EventRepeat';
+import React, { useState, useEffect, useCallback } from 'react';
+import { CardContent, Grid, Stack, Card, Typography } from '@mui/material';
+import { EventAvailable, EventBusy, EventNote, EventRepeat } from '@mui/icons-material';
 import CountUp from 'react-countup';
-import Grid from '@mui/material/Grid';
-import Stack from '@mui/material/Stack';
-import Card from '@mui/material/Card';
-import { Typography } from '@mui/material';
-import { useCallback } from 'react';
 import axios from 'axios';
 
 export default function SummaryCard() {
@@ -20,7 +11,7 @@ export default function SummaryCard() {
     total: 0,
     finished: 0,
     ongoing: 0,
-    undone: 0,
+    todo: 0,
   });
 
   const getSummary = useCallback(async () => {
@@ -30,7 +21,7 @@ export default function SummaryCard() {
         total: response.data.summary.totalEvents,
         finished: response.data.summary.totalFinishedEvents,
         ongoing: response.data.summary.totalOngoingEvents,
-        undone: response.data.summary.totalUndoneEvents,
+        todo: response.data.summary.totalTodoEvents,
       }
       setCardSummary(summaryData)
     } catch (error) {
@@ -53,7 +44,7 @@ export default function SummaryCard() {
                   Total Events
                 </Typography>
                 <div>
-                  <EventNoteIcon></EventNoteIcon>
+                  <EventNote></EventNote>
                   <span className='card-icon-num'><CountUp delay={0.3} end={cardSummary.total} duration={0.8} /></span>
                   <span className='card-icon-year'>/ year {currentYear}</span>
                 </div>
@@ -65,7 +56,7 @@ export default function SummaryCard() {
                   Finished Events
                 </Typography>
                 <div>
-                  <EventAvailableIcon></EventAvailableIcon>
+                  <EventAvailable></EventAvailable>
                   <span className='card-icon-num'><CountUp delay={0.3} end={cardSummary.finished} duration={0.8} /></span>
                   <span className='card-icon-year'>/ year {currentYear}</span>
                 </div>
@@ -77,7 +68,7 @@ export default function SummaryCard() {
                   Ongoing Events
                 </Typography>
                 <div>
-                  <EventRepeatIcon></EventRepeatIcon>
+                  <EventRepeat></EventRepeat>
                   <span className='card-icon-num'><CountUp delay={0.3} end={cardSummary.ongoing} duration={0.8} /></span>
                   <span className='card-icon-year'>/ year {currentYear}</span>
                 </div>
@@ -86,11 +77,11 @@ export default function SummaryCard() {
             <Card sx={{ minWidth: 24 + "%" }} className='card-unstarted'>
               <CardContent >
                 <Typography gutterBottom variant="h5" component="div" margin={0}>
-                  Unstarted Events
+                  Todo Events
                 </Typography>
                 <div>
-                  <EventBusyIcon></EventBusyIcon>
-                  <span className='card-icon-num'><CountUp delay={0.3} end={cardSummary.undone} duration={0.8} /></span>
+                  <EventBusy></EventBusy>
+                  <span className='card-icon-num'><CountUp delay={0.3} end={cardSummary.todo} duration={0.8} /></span>
                   <span className='card-icon-year'>/ year {currentYear}</span>
                 </div>
               </CardContent>
