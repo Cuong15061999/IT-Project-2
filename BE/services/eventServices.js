@@ -14,10 +14,6 @@ class eventServices {
     .populate({
       path: 'participatingTeachers',
       model: 'User'
-    })
-    .populate({
-      path: 'participatingStudents',
-      model: 'User'
     });
   }
 
@@ -47,10 +43,6 @@ class eventServices {
     .populate({
       path: 'participatingTeachers',
       model: 'User'
-    })
-    .populate({
-      path: 'participatingStudents',
-      model: 'User'
     });
   }
 
@@ -66,10 +58,6 @@ class eventServices {
       })
       .populate({
         path: 'participatingTeachers',
-        model: 'User'
-      })
-      .populate({
-        path: 'participatingStudents',
         model: 'User'
       });
   }
@@ -103,19 +91,19 @@ class eventServices {
     });
 
     // total undone events
-    const totalUndoneEvents = await eventModel.find({
+    const totalTodoEvents = await eventModel.find({
       created: {
         $gte: new Date(year, 0, 1), // Start of the year
         $lt: new Date(year + 1, 0, 1), // Start of the next year
       },
-      status: "undone"
+      status: "todo"
     });
 
     return {
       totalEvents: totalEvents.length,
       totalFinishedEvents: totalFinishedEvents.length,
       totalOngoingEvents: totalOngoingEvents.length,
-      totalUndoneEvents: totalUndoneEvents.length,
+      totalTodoEvents: totalTodoEvents.length,
     }
   }
 
@@ -155,20 +143,20 @@ class eventServices {
       status: "ongoing",
     });
   
-    // Get undone events for current month
-    const totalUndoneEvents = await eventModel.find({
+    // Get todo events for current month
+    const totalTodoEvents = await eventModel.find({
       created: {
         $gte: startDate,
         $lt: endDate,
       },
-      status: "undone",
+      status: "todo",
     });
   
     return {
       totalEvents: totalEvents.length,
       totalFinishedEvents: totalFinishedEvents.length,
       totalOngoingEvents: totalOngoingEvents.length,
-      totalUndoneEvents: totalUndoneEvents.length,
+      totalTodoEvents: totalTodoEvents.length,
     };
   }
 
@@ -183,10 +171,6 @@ class eventServices {
     .populate({
       path: 'participatingTeachers',
       model: 'User'
-    })
-    .populate({
-      path: 'participatingStudents',
-      model: 'User'
     });
     return event;
   }
@@ -196,20 +180,7 @@ class eventServices {
   async addEvent(req) {
     const event = await eventModel.findOne({ name: req.body.name });
     if (!event) {
-      // create default 2 notification 1 at begin of event one in deadline of event
       const newEvent = await new eventModel(req.body).save();
-      await new notificationModel({
-        name: newEvent.name + '_Begin Event',
-        eventId: newEvent._id,
-        content: "This is notification for event",
-        notificationTime: newEvent.startAt,
-      }).save();
-      await new notificationModel({
-        name: newEvent.name + '_Deadline Event',
-        eventId: newEvent._id,
-        content: "This is notification deadline for event",
-        notificationTime: newEvent.endAt,
-      }).save();
       return newEvent
     }
   }

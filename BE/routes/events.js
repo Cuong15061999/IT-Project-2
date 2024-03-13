@@ -1,6 +1,7 @@
 var express = require('express');
 const eventServices = require('../services/eventServices')
-const sendEmailService = require('../services/emailServices')
+const sendEmailService = require('../services/emailServices');
+const emailServices = require('../services/emailServices');
 var router = express.Router();
 
 /* GET All event. */
@@ -18,15 +19,24 @@ router.get('/', async function (req, res, next) {
   }
 });
 
-/* GET All event. */
-router.post('/sendEmail', async function (req, res, next) {
+/* Send email when some change happen in the Event */
+router.post('/sendEmail/:id', async function (req, res, next) {
   try {
-    const response = await sendEmailService.setEmail(req.body.listemails, req.body.content, req.body.subject);
-    return res.status(200).json(response);
+    const Event = await eventServices.getEvent(req.params.id);
+    if (Event) {
+      await sendEmailService.sendEditEventEmail(Event);
+      return res.status(200).json({
+        message: 'Send email successfully',
+      });
+    } else {
+      return res.status(404).json({
+        message: 'Can not find event with id ' + req.params.id,
+      });
+    }
   } catch (error) {
-    res.status(500).json({
+    return res.status(500).json({
       message: error.message
-    })
+    });
   }
 });
 
@@ -117,6 +127,10 @@ router.post('/', async function (req, res, next) {
   try {
     const addEvent = await eventServices.addEvent(req);
     if (addEvent) {
+      //Send email to teacher who invited to new Event
+      const newEvent = await eventServices.getEvent(addEvent._id);
+      await emailServices.sendNewEventEmail(newEvent);
+
       res.status(200).json({
         data: addEvent,
         message: 'Add event successfully',
