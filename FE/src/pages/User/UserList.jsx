@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import {
   Box,
-  Button,
   Grid,
   MenuItem,
   Typography,
@@ -17,11 +16,10 @@ import {
   Autocomplete,
   TextField,
 } from '@mui/material';
-import { Edit, Delete, AddCircle } from "@mui/icons-material";
+import { Edit, Delete } from "@mui/icons-material";
 import Swal from "sweetalert2";
 import axios from 'axios';
 import Modal from '@mui/material/Modal';
-import AddUser from './AddUser';
 import EditUser from './EditUser';
 import { useAppStore } from '../../appStore';
 import { useCallback } from 'react';
@@ -49,13 +47,10 @@ export default function UserList() {
   const setRows = useAppStore((state) => state.setRows);
   const rows = useAppStore((state) => state.rows);
 
-  const [open, setOpen] = useState(false);
   const [editopen, setEditOpen] = useState(false);
 
-  const handleOpen = () => setOpen(true);
   const handleEditOpen = () => setEditOpen(true);
 
-  const handleClose = () => setOpen(false);
   const handleEditClose = () => setEditOpen(false);
 
 
@@ -163,15 +158,6 @@ export default function UserList() {
       <h1>User List</h1>
       <div>
         <Modal
-          open={open}
-          aria-labelledby="modal-modal-title"
-          aria-describedby="modal-modal-description"
-        >
-          <Box sx={style}>
-            <AddUser closeEvent={handleClose}></AddUser>
-          </Box>
-        </Modal>
-        <Modal
           open={editopen}
           aria-labelledby="modal-modal-title"
           aria-describedby="modal-modal-description"
@@ -215,9 +201,6 @@ export default function UserList() {
           component="div"
           sx={{ flexGrow: 1 }}
         ></Typography>
-        <Button variant="contained" endIcon={<AddCircle />} onClick={handleOpen}>
-          Add
-        </Button>
       </Stack>
       <Box height={10} />
       <TableContainer sx={{ minHeight: 60 + 'vh', maxHeight: 80 + 'vh' }}>
