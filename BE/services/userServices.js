@@ -17,14 +17,6 @@ class userServices {
     return user;
   }
 
-  //Add new user
-  async addUser(req) {
-    const user = await userModel.findOne({ email: req.body.email });
-    if (!user) {
-      return await new userModel(req.body).save();
-    }
-  }
-
   //Edit User
   async editUser(req) {
     const finduser = await userModel.findOne({ _id: req.params.id })
@@ -44,6 +36,19 @@ class userServices {
     }
     return
   }
+
+  async delUser(id) {
+    const user = await userModel.findOne({ _id: id });
+    if (user) {
+      await userModel.deleteOne({ _id: id })
+      return user
+    }
+    return
+  }
+  appendSuffixToEmails(strings) {
+    const suffix = "@student.tdtu.edu.vn";
+    return strings.map(str => str + suffix);
+}
 }
 
 module.exports = new userServices();

@@ -100,13 +100,6 @@ class authServices {
           .send('Tạo access token không thành công, vui lòng thử lại.');
       }
 
-      // let refreshToken = randToken.generate(process.env.REFRESH_TOKEN_SIZE);
-      // if (!userCheck.refreshToken) {
-      //   // Nếu user này chưa có refresh token thì lưu refresh token đó vào database
-      //   await userModel.updateOne({ username: username }, { refreshToken: refreshToken });
-      // } else {
-      //   refreshToken = userCheck.refreshToken;
-      // }
 
       return res.json({
         msg: 'Đăng nhập thành công.',
@@ -115,71 +108,6 @@ class authServices {
       });
 
 
-    // async refreshToken(req, res) {
-
-    //   const accessTokenFromHeader = req.headers.x_authorization;
-    //   if (!accessTokenFromHeader) {
-    //     return res.status(400).send('Không tìm thấy access token.');
-    //   }
-    //   // Lấy refresh token từ body
-    //   const refreshTokenFromBody = req.body.refreshToken;
-    //   if (!refreshTokenFromBody) {
-    //     return res.status(400).send('Không tìm thấy refresh token.');
-    //   }
-    //   const accessTokenSecret =
-    //     process.env.ACCESS_TOKEN_SECRET;
-    //   const accessTokenLife =
-    //     process.env.ACCESS_TOKEN_LIFE;
-
-    //   // Decode access token đó
-    //   const decoded = await decodeToken(
-    //     accessTokenFromHeader,
-    //     accessTokenSecret,
-    //   );
-    //   if (!decoded) {
-    //     return res.status(400).send('Access token không hợp lệ.');
-    //   }
-    //   // Lấy username từ payload
-    //   const username = decoded.payload.username;
-    //   const isAdmin = decoded.payload.isAdmin;
-    //   const userCheck = await userModel.findOne({ username: username });
-    //   if (!userCheck) {
-    //     return res.status(401).send('User không tồn tại.');
-    //   }
-
-    //   if (refreshTokenFromBody !== userCheck.refreshToken) {
-    //     return res.status(400).send('Refresh token không hợp lệ.');
-    //   }
-
-    //   const dataForAccessToken = {
-    //     username,
-    //     isAdmin
-    //   };
-
-    //   const accessToken = await generateToken(
-    //     dataForAccessToken,
-    //     accessTokenSecret,
-    //     accessTokenLife,
-    //   );
-
-    //   if (!accessToken) {
-    //     return res
-    //       .status(400)
-    //       .send('Tạo access token không thành công, vui lòng thử lại.');
-    //   }
-    //   return res.status(200).json({
-    //     accessToken,
-    //   });
-    // }
-
-    // async verifyToken (token, secretKey) {
-    //   try {
-    //     return await verify(token, secretKey);
-    //   } catch (error) {
-    //     console.log(`Error in verify access token:  + ${error}`);
-    //     return null;
-    //   }
-    // }
   }
 }
 
