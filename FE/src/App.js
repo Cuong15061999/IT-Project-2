@@ -14,6 +14,7 @@ import { Snackbar } from '@mui/material';
 import { hideNotify } from './store/myTasks';
 import { useEffect } from 'react';
 import { setUserLogin } from './store/userLogin';
+import CheckRole from './components/CheckRole';
 
 function App() {
   const openToastMessage = useSelector((state) => state.my_tasks.isShowToastMessage);
@@ -35,13 +36,13 @@ function App() {
   return (
     <div className='AppMain'>
       <Routes>
-        <Route path='/' element={<RequireAuth><Home></Home></RequireAuth>}></Route>
-        <Route path='/dashboard' element={<RequireAuth><Dashboard></Dashboard></RequireAuth>}></Route>
-        <Route path='/event' element={<RequireAuth><Event></Event></RequireAuth>}></Route>
-        <Route path='/event/add' element={<RequireAuth><AddEvent></AddEvent></RequireAuth>}></Route>
-        <Route path='/event/:id' element={<RequireAuth><EventInfo></EventInfo></RequireAuth>}></Route>
-        <Route path='/user' element={<RequireAuth><User></User></RequireAuth>}></Route>
-        <Route path='/account' element={<RequireAuth><Account></Account></RequireAuth>}></Route>
+        <Route path='/' element={<RequireAuth><CheckRole><Home></Home></CheckRole></RequireAuth>}></Route>
+        <Route path='/dashboard' element={<RequireAuth><CheckRole><Dashboard></Dashboard></CheckRole></RequireAuth>}></Route>
+        <Route path='/event' element={<RequireAuth><CheckRole><Event></Event></CheckRole></RequireAuth>}></Route>
+        <Route path='/event/add' element={<RequireAuth><CheckRole><AddEvent></AddEvent></CheckRole></RequireAuth>}></Route>
+        <Route path='/event/:id' element={<RequireAuth><CheckRole><EventInfo></EventInfo></CheckRole></RequireAuth>}></Route>
+        <Route path='/user' element={<RequireAuth><CheckRole><User></User></CheckRole></RequireAuth>}></Route>
+        <Route path='/account' element={<RequireAuth><CheckRole><Account></Account></CheckRole></RequireAuth>}></Route>
         <Route path='/login' element={<RequireAuth><LoginForm></LoginForm></RequireAuth>}></Route>
       </Routes>
       <Snackbar
