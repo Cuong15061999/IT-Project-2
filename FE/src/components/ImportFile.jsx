@@ -11,7 +11,6 @@ export default function UploadButtons({ id, fileUploaded }) {
     return (
         <>
             <input
-                accept="image/*"
                 style={{ display: 'none' }}
                 id={id}
                 multiple
