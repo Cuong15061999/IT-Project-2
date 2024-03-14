@@ -2,7 +2,6 @@ import React, { useCallback, useState, useEffect } from 'react'
 import "./Account.css"
 import {
   Box,
-  Button,
   Typography,
   Paper,
   TextField,
@@ -11,7 +10,6 @@ import {
 } from '@mui/material';
 import SideNav from '../../components/Drawer'
 import NavBar from '../../components/NavBar'
-import Swal from "sweetalert2";
 import Cookies from 'js-cookie';
 import { jwtDecode } from 'jwt-decode';
 import axios from 'axios';
@@ -48,31 +46,7 @@ export const Account = () => {
     //Get user personal info
     getPresonalInfo();
 
-  }, [getPresonalInfo])
-
-  const handleChangePersonalInfo = (fieldName, newValue) => {
-    setPersonalInfo({ ...personalInfo, [fieldName]: newValue });
-  };
-
-  const updatePersonalProfile = async () => {
-    try {
-      const response = await axios.put(`http://localhost:3001/users/${user_id}`, {
-        name: personalInfo.name,
-        email: personalInfo.email,
-        class: personalInfo.class,
-        falculty: personalInfo.faculty,
-        role: personalInfo.role
-      });
-
-      if (response.status === 200) {
-        Swal.fire("Successful!", "Your user has been updated.", "success");
-        getPresonalInfo();
-      }
-    } catch (error) {
-      console.error('Error fetching data:', error);
-      Swal.fire("Error!", `Some error happen: ${error.response.data.message}`, "error");
-    }
-  }
+  }, [getPresonalInfo]);
 
   return (
     <>
@@ -94,60 +68,58 @@ export const Account = () => {
               <Grid item xs={12} md={8}>
                 <Typography variant="h4" gutterBottom>Name</Typography>
                 <TextField
-                  required
-                  onChange={(e) => handleChangePersonalInfo('name', e.target.value)}
                   value={personalInfo.name}
-                  id="outlined-required"
+                  id="outlined-read-only-input"
                   size='small'
                   sx={{ width: '100%' }}
                   placeholder="Enter your name"
+                  InputProps={{
+                    readOnly: true,
+                  }}
                 />
                 <Typography variant="h4" gutterBottom>Email</Typography>
                 <TextField
-                  required
-                  disabled
-                  onChange={(e) => handleChangePersonalInfo('email', e.target.value)}
                   value={personalInfo.email}
-                  id="outlined-required"
+                  id="outlined-read-only-input"
                   size='small'
                   sx={{ width: '100%' }}
                   placeholder="Enter your email"
+                  InputProps={{
+                    readOnly: true,
+                  }}
                 />
                 <Typography variant="h4" gutterBottom>Class</Typography>
                 <TextField
-                  required
-                  onChange={(e) => handleChangePersonalInfo('class', e.target.value)}
                   value={personalInfo.class}
-                  id="outlined-required"
+                  id="outlined-read-only-input"
                   size='small'
                   sx={{ width: '100%' }}
                   placeholder="Enter your class"
+                  InputProps={{
+                    readOnly: true,
+                  }}
                 />
                 <Typography variant="h4" gutterBottom>Faculty</Typography>
                 <TextField
-                  required
-                  onChange={(e) => handleChangePersonalInfo('faculty', e.target.value)}
                   value={personalInfo.faculty}
-                  id="outlined-required"
+                  id="outlined-read-only-input"
                   size='small'
                   sx={{ width: '100%' }}
                   placeholder="Enter your faculty"
+                  InputProps={{
+                    readOnly: true,
+                  }}
                 />
                 <Typography variant="h4" gutterBottom>Role</Typography>
                 <TextField
-                  required
-                  disabled
                   value={personalInfo.role}
-                  onChange={(e) => handleChangePersonalInfo('role', e.target.value)}
-                  id="outlined-required"
+                  id="outlined-read-only-input"
                   size='small'
                   sx={{ width: '100%' }}
+                  InputProps={{
+                    readOnly: true,
+                  }}
                 />
-                <Typography variant='h5' align='right'>
-                  <Button variant='contained' sx={{ m: 1 }} onClick={updatePersonalProfile}>
-                    Update
-                  </Button>
-                </Typography>
               </Grid>
             </Grid>
           </Paper>
