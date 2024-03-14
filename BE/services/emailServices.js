@@ -77,11 +77,12 @@ const editEventContent = (eventName, host, location, startTime, endTime) => {
     `
 }
 
-const finishedEventContent = (eventName) => {
+const finishedEventContent = (eventName, activitiesPoint) => {
     return `
     <div style="font-family: Arial, sans-serif; max-width: 600px">
         <h2 style="color: #333;">Dear Host & Teachers</h2>
         <p>Your Event: ${eventName} which you have been participate in have finished Successfully!!!</p>
+        <p>Activities Point for this Event is: <strong> ${activitiesPoint} </strong></p>
         <p>We are delighted with your apperance in the Event.</p>
         <p>Sincerely Best Regards.</p>
         <p><strong>Faculty IT.</strong></p>
@@ -140,7 +141,7 @@ class sendEmailService {
             to: listEmail, // list of receivers
             subject: subject ? subject : 'Event notification email', // Subject line
             text: "Event notification email when event finished", // plain text body
-            html: finishedEventContent(Event.name),
+            html: finishedEventContent(Event.name, Event.activitiesPoint),
             attachments: [
                 {
                     filename: 'report.xlsx', // Set your desired filename
