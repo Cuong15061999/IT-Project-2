@@ -236,6 +236,7 @@ export const EventInfo = () => {
         } else {
           setRegisterStudentsFile(null);
         }
+        getEventInfo();
       } else {
         dispatch(showNotify({
           show: true,
