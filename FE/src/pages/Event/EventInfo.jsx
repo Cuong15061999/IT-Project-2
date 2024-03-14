@@ -35,8 +35,8 @@ import { showNotify } from '../../store/myTasks';
 export const EventInfo = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const [registerStudentsFile, setRegisterStudentsFile] = useState({});
-  const [participateStudentsFile, setParticipateStudentsFile] = useState({});
+  const [registerStudentsFile, setRegisterStudentsFile] = useState(null);
+  const [participateStudentsFile, setParticipateStudentsFile] = useState(null);
   // data table student register
   const headerList = ["STT", "Email", "Student ID"];
   const [page, setPage] = useState(0);
@@ -214,13 +214,12 @@ export const EventInfo = () => {
       console.error('Error fetching data:', error);
     }
   }
-  const handleUploadFile = async (file) => {
+  const handleUploadFile = async (typeFile) => {
+    const file = typeFile === 'participateStudentsFile' ? participateStudentsFile : registerStudentsFile;
     try {
       const urlUploadFile = `http://localhost:3001/upload/${id}`;
       const formData = new FormData();
       formData.append('file', file);
-      const testfile = formData.get('file');
-      console.log('File:', testfile);
       const response = await axios.post(urlUploadFile, formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
@@ -229,29 +228,32 @@ export const EventInfo = () => {
       if (response) {
         dispatch(showNotify({
           show: true,
-          message: `Upload ${file} is successfully`
+          message: `Upload ${file.name} is successfully`
         }))
+        if (typeFile === 'participateStudentsFile') {
+          setParticipateStudentsFile(null);
+        } else {
+          setRegisterStudentsFile(null);
+        }
       } else {
         dispatch(showNotify({
           show: true,
-          message: `Upload ${file} is failed`
+          message: `Upload ${file.name} is failed`
         }))
       }
     } catch (error) {
       console.log(error)
       dispatch(showNotify({
         show: true,
-        message: `Upload ${file} is failed`
+        message: `Upload ${file.name} is failed`
       }))
     }
   }
   const handleImportRegisterStudentsFile = (file) => {
     setRegisterStudentsFile(file);
-    handleUploadFile(file)
   }
   const handleImportPaticipateStudentsFile = (file) => {
     setParticipateStudentsFile(file);
-    handleUploadFile(file)
   }
 
   const sendNotificationEmail = async (id) => {
@@ -320,10 +322,13 @@ export const EventInfo = () => {
                     component="div"
                     sx={{ flexGrow: 1 }}
                   ></Typography>
-                  {registerStudentsFile?.name}
                   <ImportFile id="import-register-students" fileUploaded={handleImportRegisterStudentsFile}></ImportFile>
                   <FileDownload sx={{ cursor: "pointer" }} onClick={() => { navigate(`/event`) }} />
                 </Stack>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '10px' }}>
+                  {registerStudentsFile?.name}
+                  {registerStudentsFile ? <Button variant="contained" color="primary" onClick={() => handleUploadFile('registerStudentsFile')}>Upload</Button> : ''}
+                </Box>
                 <TableContainer sx={{ height: 45 + "vh", border: "2px solid gray", borderRadius: "10px" }}>
                   <Table stickyHeader aria-label="sticky table">
                     <TableHead>
@@ -375,10 +380,13 @@ export const EventInfo = () => {
                     component="div"
                     sx={{ flexGrow: 1 }}
                   ></Typography>
-                  {participateStudentsFile?.name}
                   <ImportFile id="import-participate-students" fileUploaded={handleImportPaticipateStudentsFile}></ImportFile>
                   <FileDownload sx={{ cursor: "pointer" }} onClick={() => { navigate(`/event`) }} />
                 </Stack>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '10px' }}>
+                  {participateStudentsFile?.name}
+                  {participateStudentsFile ? <Button variant="contained" color="primary" onClick={() => handleUploadFile('participateStudentsFile')}>Upload</Button> : ''}
+                </Box>
                 <TableContainer sx={{ height: 45 + "vh", border: "2px solid gray", borderRadius: "10px" }}>
                   <Table stickyHeader aria-label="sticky table">
                     <TableHead>
