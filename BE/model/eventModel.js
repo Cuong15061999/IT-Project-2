@@ -3,8 +3,8 @@ var mongoose = require('mongoose');var EventSchema = new mongoose.Schema({
   host: { type: mongoose.Types.ObjectId, required: true, ref: 'User' }, // the one who create this event
   
   participatingTeachers: [{ type: mongoose.Types.ObjectId, default: [], ref: 'User' }], // list of teacher who join this event
-  participatingStudents: [{ type: [String], default: [], required: false }], // list of student who join this event
-  listStudentRegistry:  [{ type: [String], default: [], required: false }], // list of student who register this event
+  participatingStudents: [{ type: String, default: [], required: false }], // list of student who join this event
+  listStudentRegistry:  [{ type: String, default: [], required: false }], // list of student who register this event
 
   linkEvents: [{ type: mongoose.Types.ObjectId, default: [], ref: 'Event' }], //chưa đụng tới
   

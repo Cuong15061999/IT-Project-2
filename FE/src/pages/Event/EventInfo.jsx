@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom';
+import { FileDownload, FileUpload } from "@mui/icons-material";
 import {
   Box,
   Button,
@@ -8,6 +9,15 @@ import {
   Paper,
   TextField,
   MenuItem,
+  TableContainer,
+  TableHead,
+  Table,
+  TableRow,
+  TableCell,
+  TableBody,
+  TablePagination,
+  Stack,
+
 } from '@mui/material'
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
@@ -21,6 +31,34 @@ import dayjs from 'dayjs';
 
 export const EventInfo = () => {
   const navigate = useNavigate();
+
+  // data table student register
+  const headerList = ["STT", "Email", "Student ID"];
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [rows, setRows] = useState([]);
+
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(+event.target.value);
+    setPage(0);
+  };
+  // data table student participate
+  const [page2, setPage2] = useState(0);
+  const [rowsPerPage2, setRowsPerPage2] = useState(5);
+  const [rows2, setRows2] = useState([]);
+
+  const handleChangePage2 = (event, newPage) => {
+    setPage2(newPage);
+  };
+
+  const handleChangeRowsPerPage2 = (event) => {
+    setRowsPerPage2(+event.target.value);
+    setPage2(0);
+  };
 
   const [teacherListOption, setTeacherListOption] = useState([]);
   const [teacherList, setTeacherList] = useState([]);
@@ -79,6 +117,26 @@ export const EventInfo = () => {
       }));
       setTeacherList(filteredTeacherData || []);
 
+      const filteredRegisterStudentData = event.listStudentRegistry.reduce((list, student, index) => {
+        list.push({
+          id: index + 1,
+          email: student,
+          student_id: student.split("@")[0],
+        });
+        return list;
+      }, []);
+      setRows(filteredRegisterStudentData || []);
+
+      const filteredParticipateStudentData = event.participatingStudents.reduce((list, student, index) => {
+        list.push({
+          id: index + 1,
+          email: student,
+          student_id: student.split("@")[0],
+        });
+        return list;
+      }, []);
+      setRows2(filteredParticipateStudentData || [])
+
     } catch (error) {
       console.error('Error fetching data:', error);
     }
@@ -129,13 +187,38 @@ export const EventInfo = () => {
         endAt: dateEndAtObject,
       })
       if (response.status === 200) {
-        Swal.fire("Successful!", "Your event has been udated.", "success");
+        Swal.fire({
+          title: "Do you want to send notification email?",
+          text: "Your Event have been updated successfully. Do you want to send email for notification?",
+          icon: "success",
+          showCancelButton: true,
+          confirmButtonColor: "#3085d6",
+          cancelButtonColor: "#d33",
+          confirmButtonText: "Yes, send it!",
+        }).then((result) => {
+          if (result.value) {
+            sendNotificationEmail(id);
+          }
+        });
+
         setTimeout(() => {
           navigate('/event'); // Navigate to home screen after 3 seconds
         }, 1500);
       }
     } catch (error) {
       console.error('Error fetching data:', error);
+    }
+  }
+
+  const sendNotificationEmail = async (id) => {
+    try {
+      const response = await axios.post(`http://localhost:3001/events/sendEmail/${id}`);
+      if (response.status === 200) {
+        Swal.fire("Send Notification Email!", "You have been sent notification email sucessfully", "success");
+      }
+    } catch (error) {
+      console.error('Error fetching data:', error);
+      Swal.fire("Delete Error!", "There some error happen.", "warning");
     }
   }
 
@@ -184,6 +267,116 @@ export const EventInfo = () => {
                   labelledBy="Select"
                 />
               </Grid>
+              {/* 2 table register student and participate student */}
+              <Grid item xs={6}>
+                <Stack direction="row" spacing={2} className="my-2 mb-2">
+                  <h3>Register Students</h3>
+                  <Typography
+                    variant="h6"
+                    component="div"
+                    sx={{ flexGrow: 1 }}
+                  ></Typography>
+                  <FileUpload sx={{ cursor: "pointer" }} onClick={() => { navigate(`/event`) }} />
+                  <FileDownload sx={{ cursor: "pointer" }} onClick={() => { navigate(`/event`) }} />
+                </Stack>
+                <TableContainer sx={{ height: 45 + "vh", border: "2px solid gray", borderRadius: "10px" }}>
+                  <Table stickyHeader aria-label="sticky table">
+                    <TableHead>
+                      <TableRow>
+                        {headerList.map((column, index) => (
+                          <TableCell key={index} align="left" style={{ minWidth: "10%" }}>
+                            {column}
+                          </TableCell>
+                        ))}
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {rows.length > 0 ? (
+                        rows
+                          .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                          .map((row) => (
+                            <TableRow key={row.id} hover role="checkbox" tabIndex={-1}>
+                              <TableCell align="left">{row.id}</TableCell>
+                              <TableCell align="left">{row.email}</TableCell>
+                              <TableCell align="left">{row.student_id}</TableCell>
+                            </TableRow>
+                          ))
+                      ) : (
+                        <TableRow>
+                          <TableCell colSpan={3} align="center">
+                            {/* Customize this message as needed */}
+                            There is no data to display.
+                          </TableCell>
+                        </TableRow>
+                      )}
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+                <TablePagination
+                  rowsPerPageOptions={[5, 10]}
+                  component="div"
+                  count={rows.length}
+                  rowsPerPage={rowsPerPage}
+                  page={page}
+                  onPageChange={handleChangePage}
+                  onRowsPerPageChange={handleChangeRowsPerPage}
+                />
+              </Grid>
+              <Grid item xs={6}>
+                <Stack direction="row" spacing={2} className="my-2 mb-2">
+                  <h3>Participate Students</h3>
+                  <Typography
+                    variant="h6"
+                    component="div"
+                    sx={{ flexGrow: 1 }}
+                  ></Typography>
+                  <FileUpload sx={{ cursor: "pointer" }} onClick={() => { navigate(`/event`) }} />
+                  <FileDownload sx={{ cursor: "pointer" }} onClick={() => { navigate(`/event`) }} />
+                </Stack>
+                <TableContainer sx={{ height: 45 + "vh", border: "2px solid gray", borderRadius: "10px" }}>
+                  <Table stickyHeader aria-label="sticky table">
+                    <TableHead>
+                      <TableRow>
+                        {headerList.map((column, index) => (
+                          <TableCell key={index} align="left" style={{ minWidth: "10%" }}>
+                            {column}
+                          </TableCell>
+                        ))}
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {rows2.length > 0 ? (
+                        rows2
+                          .slice(page2 * rowsPerPage2, page2 * rowsPerPage2 + rowsPerPage2)
+                          .map((row) => (
+                            <TableRow key={row.id} hover role="checkbox" tabIndex={-1}>
+                              <TableCell align="left">{row.id}</TableCell>
+                              <TableCell align="left">{row.email}</TableCell>
+                              <TableCell align="left">{row.student_id}</TableCell>
+                            </TableRow>
+                          ))
+                      ) : (
+                        <TableRow>
+                          <TableCell colSpan={3} align="center">
+                            {/* Customize this message as needed */}
+                            There is no data to display.
+                          </TableCell>
+                        </TableRow>
+                      )}
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+                <TablePagination
+                  rowsPerPageOptions={[5, 10]}
+                  component="div"
+                  count={rows2.length}
+                  rowsPerPage={rowsPerPage2}
+                  page={page2}
+                  onPageChange={handleChangePage2}
+                  onRowsPerPageChange={handleChangeRowsPerPage2}
+                />
+              </Grid>
+              {/* ----- */}
               <Grid item xs={6}>
                 <h3>Activities Point</h3>
                 <TextField
