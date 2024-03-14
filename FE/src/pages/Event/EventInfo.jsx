@@ -37,6 +37,8 @@ export const EventInfo = () => {
   const navigate = useNavigate();
   const [registerStudentsFile, setRegisterStudentsFile] = useState(null);
   const [participateStudentsFile, setParticipateStudentsFile] = useState(null);
+  const [registryListFile, setRegistryListFile] = useState(null);
+  // const [participateStudents, setRegistryListFile] = useState(null);
   // data table student register
   const headerList = ["STT", "Email", "Student ID"];
   const [page, setPage] = useState(0);
@@ -112,8 +114,8 @@ export const EventInfo = () => {
       });
 
       setHost({
-        id: event.host._id,
-        email: event.host.email,
+        id: event.host?._id || '',
+        email: event.host?.email || '',
       })
 
       const filteredTeacherData = event.participatingTeachers.map((teacher) => ({
@@ -122,15 +124,14 @@ export const EventInfo = () => {
       }));
       setTeacherList(filteredTeacherData || []);
 
-      const filteredRegisterStudentData = event.listStudentRegistry.reduce((list, student, index) => {
-        list.push({
-          id: index + 1,
-          email: student,
-          student_id: student.split("@")[0],
-        });
-        return list;
-      }, []);
+      const filteredRegisterStudentData = event.listStudentRegistry.map((student, index) => ({
+        id: index + 1,
+        email: student,
+        student_id: student.split("@")[0],
+      }))
       setRows(filteredRegisterStudentData || []);
+
+      setRegistryListFile(event.registryList);
 
       const filteredParticipateStudentData = event.participatingStudents.reduce((list, student, index) => {
         list.push({
@@ -256,6 +257,38 @@ export const EventInfo = () => {
     setParticipateStudentsFile(file);
   }
 
+  const handleDownloadFile = async (filename) => {
+    try {
+      const urlDownload = `http://localhost:3001/download-file?filename=${filename}`;
+      const response = await axios.get(urlDownload, {
+        responseType: 'blob' 
+      });
+
+      if (response.status === 200) {
+        const blob = new Blob([response.data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', filename);
+        link.style.display = 'none'; // Hide the link (optional)
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      } else {
+        dispatch(showNotify({
+          show: true,
+          message: `Error downloading file: ${response.statusText}`
+        }))
+      }
+    } catch (error) {
+      console.log(error);
+      dispatch(showNotify({
+        show: true,
+        message: `Error downloading file`
+      }))
+    }
+  }
+
   const sendNotificationEmail = async (id) => {
     try {
       const response = await axios.post(`http://localhost:3001/events/sendEmail/${id}`);
@@ -323,7 +356,7 @@ export const EventInfo = () => {
                     sx={{ flexGrow: 1 }}
                   ></Typography>
                   <ImportFile id="import-register-students" fileUploaded={handleImportRegisterStudentsFile}></ImportFile>
-                  <FileDownload sx={{ cursor: "pointer" }} onClick={() => { navigate(`/event`) }} />
+                  <FileDownload sx={{ cursor: "pointer" }} onClick={() => handleDownloadFile(registryListFile)} />
                 </Stack>
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '10px' }}>
                   {registerStudentsFile?.name}

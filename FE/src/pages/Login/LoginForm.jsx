@@ -6,11 +6,13 @@ import { useGoogleLogin } from '@react-oauth/google';
 import Cookies from 'js-cookie';
 import { useNavigate } from 'react-router-dom/dist';
 import axios from 'axios';
-
+import { useDispatch } from 'react-redux';
+import { setUserLogin } from '../../store/userLogin';
 
 
 export const LoginForm = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const getInfoGoogle = async (token) => {
     try {
       const urlGetInfoGoogle = 'https://www.googleapis.com/oauth2/v3/userinfo';
@@ -47,6 +49,8 @@ export const LoginForm = () => {
       if (userInfo) {
         const expires_time = 7; //day
         Cookies.set('access_token', userInfo.accessToken, { expires: expires_time });
+        dispatch(setUserLogin({...userInfo.user, name: googleInfo.name}));
+        localStorage.setItem('userInfo', JSON.stringify({...userInfo.user, name: googleInfo.name}));
       }
 
       navigate('/', { replace: true });

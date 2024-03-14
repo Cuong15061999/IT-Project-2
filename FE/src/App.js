@@ -12,6 +12,8 @@ import { Account } from './pages/Account/Account';
 import { useDispatch, useSelector } from 'react-redux';
 import { Snackbar } from '@mui/material';
 import { hideNotify } from './store/myTasks';
+import { useEffect } from 'react';
+import { setUserLogin } from './store/userLogin';
 
 function App() {
   const openToastMessage = useSelector((state) => state.my_tasks.isShowToastMessage);
@@ -24,6 +26,12 @@ function App() {
 
     dispatch(hideNotify());
   }
+  useEffect(() => {
+    const userInfo = localStorage.getItem('userInfo');
+    if (userInfo) {
+      dispatch(setUserLogin(JSON.parse(userInfo) || {}))
+    }
+  }, [])
   return (
     <div className='AppMain'>
       <Routes>
