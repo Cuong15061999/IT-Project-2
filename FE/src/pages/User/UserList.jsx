@@ -1,20 +1,23 @@
-import * as React from 'react';
-import { useState, useEffect } from 'react';
-import { Box, Button, Grid, MenuItem, Typography } from '@mui/material'
-import Paper from '@mui/material/Paper';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TablePagination from '@mui/material/TablePagination';
-import TableRow from '@mui/material/TableRow';
-import Stack from "@mui/material/Stack";
-import EditIcon from "@mui/icons-material/Edit";
-import DeleteIcon from "@mui/icons-material/Delete";
-import Autocomplete from "@mui/material/Autocomplete";
-import TextField from "@mui/material/TextField";
-import AddCircleIcon from "@mui/icons-material/AddCircle";
+import React, { useState, useEffect } from 'react';
+import {
+  Box,
+  Button,
+  Grid,
+  MenuItem,
+  Typography,
+  Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TablePagination,
+  TableRow,
+  Stack,
+  Autocomplete,
+  TextField,
+} from '@mui/material';
+import { Edit, Delete, AddCircle } from "@mui/icons-material";
 import Swal from "sweetalert2";
 import axios from 'axios';
 import Modal from '@mui/material/Modal';
@@ -36,6 +39,8 @@ const style = {
 };
 
 export default function UserList() {
+  const headerCells = ["Email", "Class", "Falculty", "Name", "Role", "Action"];
+
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
 
@@ -210,7 +215,7 @@ export default function UserList() {
           component="div"
           sx={{ flexGrow: 1 }}
         ></Typography>
-        <Button variant="contained" endIcon={<AddCircleIcon />} onClick={handleOpen}>
+        <Button variant="contained" endIcon={<AddCircle />} onClick={handleOpen}>
           Add
         </Button>
       </Stack>
@@ -219,25 +224,11 @@ export default function UserList() {
         <Table stickyHeader aria-label="sticky table">
           <TableHead>
             <TableRow>
-
-              <TableCell align="left" style={{ minWidth: "20%" }} >
-                Email
-              </TableCell>
-              <TableCell align="left" style={{ minWidth: "20%" }} >
-                Class
-              </TableCell>
-              <TableCell align="left" style={{ minWidth: "20%" }} >
-                Falculty
-              </TableCell>
-              <TableCell align="left" style={{ minWidth: "20%" }} >
-                Name
-              </TableCell>
-              <TableCell align="left" style={{ minWidth: "20%" }} >
-                Role
-              </TableCell>
-              <TableCell align="left" style={{ minWidth: "20%" }} >
-                Action
-              </TableCell>
+              {headerCells.map((cell) => (
+                <TableCell key={cell} align="left" style={{ minWidth: "20%" }}>
+                  {cell}
+                </TableCell>
+              ))}
             </TableRow>
           </TableHead>
           <TableBody>
@@ -263,7 +254,7 @@ export default function UserList() {
                     </TableCell>
                     <TableCell align="left">
                       <Stack spacing={2} direction="row">
-                        <EditIcon
+                        <Edit
                           style={{
                             fontSize: "20px",
                             color: "blue",
@@ -274,7 +265,7 @@ export default function UserList() {
                             editUser(row.id, row.name, row.class, row.falculty, row.email, row.role)
                           }
                         />
-                        <DeleteIcon
+                        <Delete
                           style={{
                             fontSize: "20px",
                             color: "darkred",

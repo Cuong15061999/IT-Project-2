@@ -64,7 +64,7 @@ class sendEmailService {
         const teacherEmailList = Event.participatingTeachers.map(teacher => teacher.email);
         const listEmail = [hostEmail, ...teacherEmailList, ...Event.listStudentRegistry].join(', ');
 
-        const subject = `Event: ${Event.name} invited mail`;
+        const subject = `Event: ${Event.name} CHANGED notification!!!`;
 
         const info = await transporter.sendMail({
             from: 'phamvqcuong99@gmail.com', // sender address

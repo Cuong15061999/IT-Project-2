@@ -1,7 +1,5 @@
-import { Box, Button, Grid, IconButton, Typography } from '@mui/material'
+import { Box, Button, Grid, IconButton, Typography, TextField, MenuItem } from '@mui/material'
 import CloseIcon from "@mui/icons-material/Close"
-import TextField from '@mui/material/TextField';
-import MenuItem from '@mui/material/MenuItem';
 import React, { useEffect, useState } from 'react'
 import Swal from "sweetalert2";
 import axios from 'axios';
