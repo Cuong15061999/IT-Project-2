@@ -1,5 +1,8 @@
 const nodemailer = require("nodemailer");
 const moment = require('moment');
+const fs = require('fs');
+const path = require('path');
+const exceljs = require('exceljs');
 
 const transporter = nodemailer.createTransport({
     host: "smtp.gmail.com",
@@ -10,6 +13,39 @@ const transporter = nodemailer.createTransport({
         pass: "isgjfkrctmzhpiss",
     },
 });
+
+const createXLSXFile = async (participateStudent) => {
+    try {
+        //create workSheet
+        const workbook = new exceljs.Workbook();
+        const worksheet = workbook.addWorksheet('Emails');
+        //create header and row
+        const headerRow = ['Stt', 'Email', 'MSSV'];
+        worksheet.addRow(headerRow);
+
+        participateStudent.forEach((student, index) => {
+            const rowData = [index + 1, student, student.split('@')[0]]
+            worksheet.addRow(rowData, index + 2);
+        });
+
+        // Define path to uploads folder (adjust as needed)
+        const uploadsFolder = path.join(__dirname, '../uploads')
+
+        // Create uploads folder if it doesn't exist (optional)
+        const fs = require('fs');
+        if (!fs.existsSync(uploadsFolder)) {
+            fs.mkdirSync(uploadsFolder);
+        }
+
+        const filePath = path.join(uploadsFolder, 'Participate_Student.xlsx');
+        await workbook.xlsx.writeFile(filePath);
+        console.log('XLSX file created successfully:', filePath);
+        return filePath
+
+    } catch (error) {
+        console.error('Error creating XLSX file:', error);
+    }
+}
 
 const newEventContent = (eventName, host, location, startTime, endTime) => {
     return `
@@ -41,9 +77,22 @@ const editEventContent = (eventName, host, location, startTime, endTime) => {
     `
 }
 
+const finishedEventContent = (eventName) => {
+    return `
+    <div style="font-family: Arial, sans-serif; max-width: 600px">
+        <h2 style="color: #333;">Dear Host & Teachers</h2>
+        <p>Your Event: ${eventName} which you have been participate in have finished Successfully!!!</p>
+        <p>We are delighted with your apperance in the Event.</p>
+        <p>Sincerely Best Regards.</p>
+        <p><strong>Faculty IT.</strong></p>
+    </div>
+    `
+}
+
+
 class sendEmailService {
 
-    async sendNewEventEmail (Event) {
+    async sendNewEventEmail(Event) {
         const hostEmail = Event.host.email;
         const teacherEmailList = Event.participatingTeachers.map(teacher => teacher.email);
         const listEmail = [hostEmail, ...teacherEmailList].join(', ');
@@ -53,13 +102,13 @@ class sendEmailService {
         const info = await transporter.sendMail({
             from: 'phamvqcuong99@gmail.com', // sender address
             to: listEmail, // list of receivers
-            subject: subject? subject : 'Event notification email', // Subject line
+            subject: subject ? subject : 'Event notification email', // Subject line
             text: "Event invited email", // plain text body
             html: newEventContent(Event.name, Event.host.name, Event.location, Event.startAt, Event.endAt),
         })
     }
 
-    async sendEditEventEmail (Event) {
+    async sendEditEventEmail(Event) {
         const hostEmail = Event.host.email;
         const teacherEmailList = Event.participatingTeachers.map(teacher => teacher.email);
         const listEmail = [hostEmail, ...teacherEmailList, ...Event.listStudentRegistry].join(', ');
@@ -69,10 +118,46 @@ class sendEmailService {
         const info = await transporter.sendMail({
             from: 'phamvqcuong99@gmail.com', // sender address
             to: listEmail, // list of receivers
-            subject: subject? subject : 'Event notification email', // Subject line
+            subject: subject ? subject : 'Event notification email', // Subject line
             text: "Event notification email when changes", // plain text body
             html: editEventContent(Event.name, Event.host.name, Event.location, Event.startAt, Event.endAt),
         })
-    } 
+    }
+
+    async sendFinishedEventEmail(Event) {
+        const hostEmail = Event.host.email;
+        const teacherEmailList = Event.participatingTeachers.map(teacher => teacher.email);
+        const listEmail = [hostEmail, ...teacherEmailList].join(', ');
+
+        const subject = `Congratulation Event: ${Event.name} finished SUCCESSFULLY`;
+
+
+        const filePath = await createXLSXFile(Event.participatingStudents);
+        const fileContent = fs.readFileSync(filePath);
+
+        const info = await transporter.sendMail({
+            from: 'phamvqcuong99@gmail.com', // sender address
+            to: listEmail, // list of receivers
+            subject: subject ? subject : 'Event notification email', // Subject line
+            text: "Event notification email when event finished", // plain text body
+            html: finishedEventContent(Event.name),
+            attachments: [
+                {
+                    filename: 'report.xlsx', // Set your desired filename
+                    content: fileContent,
+                    contentType: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+                }
+            ]
+        })
+            .then(
+                fs.unlink(filePath, (err) => {
+                    if (err) {
+                        console.error('Error deleting file:', err);
+                    } else {
+                        console.log('File deleted successfully');
+                    }
+                })
+            );
+    }
 }
 module.exports = new sendEmailService();

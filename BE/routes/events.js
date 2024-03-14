@@ -1,7 +1,6 @@
 var express = require('express');
 const eventServices = require('../services/eventServices')
 const sendEmailService = require('../services/emailServices');
-const emailServices = require('../services/emailServices');
 var router = express.Router();
 
 /* GET All event. */
@@ -129,7 +128,7 @@ router.post('/', async function (req, res, next) {
     if (addEvent) {
       //Send email to teacher who invited to new Event
       const newEvent = await eventServices.getEvent(addEvent._id);
-      await emailServices.sendNewEventEmail(newEvent);
+      await sendEmailService.sendNewEventEmail(newEvent);
 
       res.status(200).json({
         data: addEvent,
