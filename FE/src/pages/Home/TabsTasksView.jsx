@@ -72,7 +72,8 @@ export default function TabsTasksView() {
   return (
     <>
       <Backdrop
-        sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        style={{ zIndex: 1500 }}
+        sx={{ color: '#fff'}}
         open={isLoading}
       >
         <CircularProgress color="inherit" />

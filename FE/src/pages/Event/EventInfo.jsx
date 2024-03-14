@@ -28,10 +28,15 @@ import NavBar from '../../components/NavBar'
 import Swal from "sweetalert2";
 import axios from 'axios';
 import dayjs from 'dayjs';
+import ImportFile from '../../components/ImportFile';
+import { useDispatch } from 'react-redux';
+import { showNotify } from '../../store/myTasks';
 
 export const EventInfo = () => {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
-
+  const [registerStudentsFile, setRegisterStudentsFile] = useState({});
+  const [participateStudentsFile, setParticipateStudentsFile] = useState({});
   // data table student register
   const headerList = ["STT", "Email", "Student ID"];
   const [page, setPage] = useState(0);
@@ -209,6 +214,45 @@ export const EventInfo = () => {
       console.error('Error fetching data:', error);
     }
   }
+  const handleUploadFile = async (file) => {
+    try {
+      const urlUploadFile = `http://localhost:3001/upload/${id}`;
+      const formData = new FormData();
+      formData.append('file', file);
+      const testfile = formData.get('file');
+      console.log('File:', testfile);
+      const response = await axios.post(urlUploadFile, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      })
+      if (response) {
+        dispatch(showNotify({
+          show: true,
+          message: `Upload ${file} is successfully`
+        }))
+      } else {
+        dispatch(showNotify({
+          show: true,
+          message: `Upload ${file} is failed`
+        }))
+      }
+    } catch (error) {
+      console.log(error)
+      dispatch(showNotify({
+        show: true,
+        message: `Upload ${file} is failed`
+      }))
+    }
+  }
+  const handleImportRegisterStudentsFile = (file) => {
+    setRegisterStudentsFile(file);
+    handleUploadFile(file)
+  }
+  const handleImportPaticipateStudentsFile = (file) => {
+    setParticipateStudentsFile(file);
+    handleUploadFile(file)
+  }
 
   const sendNotificationEmail = async (id) => {
     try {
@@ -276,7 +320,8 @@ export const EventInfo = () => {
                     component="div"
                     sx={{ flexGrow: 1 }}
                   ></Typography>
-                  <FileUpload sx={{ cursor: "pointer" }} onClick={() => { navigate(`/event`) }} />
+                  {registerStudentsFile?.name}
+                  <ImportFile id="import-register-students" fileUploaded={handleImportRegisterStudentsFile}></ImportFile>
                   <FileDownload sx={{ cursor: "pointer" }} onClick={() => { navigate(`/event`) }} />
                 </Stack>
                 <TableContainer sx={{ height: 45 + "vh", border: "2px solid gray", borderRadius: "10px" }}>
@@ -330,7 +375,8 @@ export const EventInfo = () => {
                     component="div"
                     sx={{ flexGrow: 1 }}
                   ></Typography>
-                  <FileUpload sx={{ cursor: "pointer" }} onClick={() => { navigate(`/event`) }} />
+                  {participateStudentsFile?.name}
+                  <ImportFile id="import-participate-students" fileUploaded={handleImportPaticipateStudentsFile}></ImportFile>
                   <FileDownload sx={{ cursor: "pointer" }} onClick={() => { navigate(`/event`) }} />
                 </Stack>
                 <TableContainer sx={{ height: 45 + "vh", border: "2px solid gray", borderRadius: "10px" }}>

@@ -10,6 +10,8 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import { useDispatch, useSelector } from 'react-redux';
 import { closeModalEditTask, editTask, updateTask, addTask } from '../store/myTasks';
+import { useEffect, useState } from 'react';
+import axios from 'axios';
 
 const style = {
   position: 'absolute',
@@ -34,8 +36,8 @@ export default function ModalEditTask() {
   // get data task was selected
   const taskSelected = useSelector((state) => state.my_tasks.taskSelected);
 
-  const [teacherListOption, setTeacherListOption] = React.useState([]);
-  const [studentListOption, setStudentListOption] = React.useState([]);
+  const [teacherListOption, setTeacherListOption] = useState([]);
+  const [studentListOption, setStudentListOption] = useState([]);
   const statusList = [
     {
       value: 'undone',
@@ -62,6 +64,31 @@ export default function ModalEditTask() {
   const handleChangeTaskInfo = (fieldName, newValue) => {
     dispatch(editTask({ fieldName, newValue }));
   };
+
+  const getUser = async (role = 'student') => {
+    try {
+      const urlGetUser = `http://localhost:3001/users/?role=${role}`;
+      const response = await axios.get(urlGetUser);
+      if (role === 'student') {
+        setStudentListOption(response.data.data.map(({ name, _id }) => ({ label: name, value: _id })));
+        console.log(response.data.data.map(({ name, _id }) => ({ label: name, value: _id })))
+      } else {
+        setTeacherListOption(response.data.data.map(({ name, _id }) => ({ label: name, value: _id })));
+      }
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  const getTeacherAndStudent = async () => {
+    const promises = [getUser('student'), getUser('teacher')];
+    await Promise.all(promises);
+  }
+
+  useEffect(() => {
+    getTeacherAndStudent();
+  }, [isOpenModalEdit])
+
 
   return (
     <div>
@@ -102,8 +129,9 @@ export default function ModalEditTask() {
                 <MultiSelect
                   options={teacherListOption}
                   value={taskSelected.participatingTeachers}
-                  onChange={(e) => handleChangeTaskInfo('participatingTeachers', e.target.value)}
+                  onChange={(valueSelected) => handleChangeTaskInfo('participatingTeachers', valueSelected)}
                   labelledBy="Select"
+                  label="name"
                 />
               </Grid>
               <Grid item xs={12}>
@@ -111,7 +139,7 @@ export default function ModalEditTask() {
                 <MultiSelect
                   options={studentListOption}
                   value={taskSelected.participatingStudents}
-                  onChange={(e) => handleChangeTaskInfo('participatingStudents', e.target.value)}
+                  onChange={(valueSelected) => handleChangeTaskInfo('participatingStudents', valueSelected)}
                   labelledBy="Select"
                 />
               </Grid>

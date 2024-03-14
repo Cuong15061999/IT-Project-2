@@ -44,7 +44,7 @@ export default function EventList() {
       const filterData = response.data.data.map((row) => ({
         id: row._id,
         name: row.name,
-        host: row.host.email,
+        host: row.host?.email || '',
         location: row.location,
         status: row.status,
         activitiesPoint: row.activitiesPoint,

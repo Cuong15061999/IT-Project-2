@@ -39,7 +39,9 @@ export const myTasks = createSlice({
             name: ''
         },
         isLoading: false,
-        action: 'add'
+        action: 'add',
+        isShowToastMessage: false,
+        contentToastMessage: ''
     },
     reducers: {
         setTasks: (state, action) => {
@@ -71,6 +73,14 @@ export const myTasks = createSlice({
         },
         toggleScreenLoading: (state) => {
             state.isLoading = !state.isLoading;
+        },
+        showNotify: (state, action) => {
+            state.isShowToastMessage = action.payload.show || false;
+            state.contentToastMessage = action.payload.message || '';
+        },
+        hideNotify: (state, action) => {
+            state.isShowToastMessage = false;
+            state.contentToastMessage = '';
         }
     },
     extraReducers: (builder) => {
@@ -96,6 +106,6 @@ export const myTasks = createSlice({
     },
 });
 
-export const { setTasks, openModalEditTask, closeModalEditTask, editTask, toggleScreenLoading } = myTasks.actions;
+export const { setTasks, openModalEditTask, closeModalEditTask, editTask, toggleScreenLoading, showNotify, hideNotify } = myTasks.actions;
 
 export default myTasks.reducer;

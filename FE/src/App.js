@@ -9,8 +9,21 @@ import { Dashboard } from './pages/Dashboard/Dashboard';
 import { Routes, Route } from 'react-router-dom'
 import RequireAuth from './components/RequireAuth';
 import { Account } from './pages/Account/Account';
+import { useDispatch, useSelector } from 'react-redux';
+import { Snackbar } from '@mui/material';
+import { hideNotify } from './store/myTasks';
 
 function App() {
+  const openToastMessage = useSelector((state) => state.my_tasks.isShowToastMessage);
+  const messageToast = useSelector((state) => state.my_tasks.contentToastMessage);
+  const dispatch = useDispatch();
+  const handleClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+
+    dispatch(hideNotify());
+  }
   return (
     <div className='AppMain'>
       <Routes>
@@ -23,6 +36,12 @@ function App() {
         <Route path='/account' element={<RequireAuth><Account></Account></RequireAuth>}></Route>
         <Route path='/login' element={<RequireAuth><LoginForm></LoginForm></RequireAuth>}></Route>
       </Routes>
+      <Snackbar
+        open={openToastMessage}
+        autoHideDuration={6000}
+        onClose={handleClose}
+        message={messageToast}
+      />
     </div>
   );
 }

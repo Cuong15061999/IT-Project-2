@@ -37,10 +37,9 @@ export default function TableNewestEvents() {
   const getNewestEvents = useCallback(async () => {
     try {
       const response = await axios.get(`http://localhost:3001/events/newest`);
-      console.table(response.data.data)
       const filterData = response.data.data.map((row) => ({
         id: row._id,
-        host: row.host.email,
+        host: row.host?.email || '',
         name: row.name,
         location: row.location,
         startDate: moment(row.startAt).format('DD/MM/YYYY'),

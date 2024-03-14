@@ -4,11 +4,14 @@ import { useMemo } from "react";
 import PropTypes from 'prop-types'
 import { useSelector, useDispatch } from 'react-redux';
 import { openModalEditTask } from '../store/myTasks';
+import { useEffect } from "react";
+import { useState } from "react";
 
 const localizer = momentLocalizer(moment) // or globalizeLocalizer
 
 export default function CustomCalendar({ mainView = 'month' }) {
     const listEvens = useSelector((state) => state.my_tasks.tasks);
+    const [listEventsMoment, setListEventsMoment] = useState([])
     const dispatch = useDispatch();
 
     const defaultDate = useMemo(() => new Date(), [])
@@ -22,16 +25,22 @@ export default function CustomCalendar({ mainView = 'month' }) {
             }
         }));
     }
+    useEffect(() => {
+        setListEventsMoment(listEvens.map(item => ({
+            ...item,
+            startAt: new Date(moment(item.startAt).toDate()),
+            endAt: new Date(moment(item.endAt).toDate())
+        })))
+    }, [listEvens]);
+    useEffect(() => {
+        console.log(listEventsMoment)
+    }, [listEventsMoment]);
     return (
         <div className="myCustomHeight">
             <Calendar
                 defaultView={mainView}
                 defaultDate={defaultDate}
-                events={listEvens.map(item => ({
-                    ...item,
-                    startAt: moment(item.startAt),
-                    endAt: moment(item.endAt),
-                }))}
+                events={listEventsMoment}
                 localizer={localizer}
                 popup
                 startAccessor="startAt"
