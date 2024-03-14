@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom';
-import { FileDownload, FileUpload } from "@mui/icons-material";
+import { FileDownload } from "@mui/icons-material";
 import {
   Box,
   Button,

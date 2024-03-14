@@ -1,20 +1,21 @@
 var eventModel = require('../model/eventModel');
 var notificationModel = require('../model/notificationModel')
+const sendEmailService = require('../services/emailServices');
 
 class eventServices {
   //Get all events in DB
   async getEvents() {
     return await eventModel
-    .find()
-    .sort({ created: -1 })
-    .populate({
-      path: 'host',
-      model: 'User'
-    })
-    .populate({
-      path: 'participatingTeachers',
-      model: 'User'
-    });
+      .find()
+      .sort({ created: -1 })
+      .populate({
+        path: 'host',
+        model: 'User'
+      })
+      .populate({
+        path: 'participatingTeachers',
+        model: 'User'
+      });
   }
 
   //Get all event in specific year
@@ -35,15 +36,15 @@ class eventServices {
     }
 
     return await eventModel
-    .find(query)
-    .populate({
-      path: 'host',
-      model: 'User'
-    })
-    .populate({
-      path: 'participatingTeachers',
-      model: 'User'
-    });
+      .find(query)
+      .populate({
+        path: 'host',
+        model: 'User'
+      })
+      .populate({
+        path: 'participatingTeachers',
+        model: 'User'
+      });
   }
 
   //Get 10 newest events
@@ -112,11 +113,11 @@ class eventServices {
     const today = new Date();
     const year = today.getFullYear();
     const month = today.getMonth(); // 0-indexed month number
-  
+
     // Start and end dates of the current month
     const startDate = new Date(year, month, 1); // Start of the month
     const endDate = new Date(year, month + 1, 0); // End of the month (day before next month)
-  
+
     // Get total events for current month
     const totalEvents = await eventModel.find({
       created: {
@@ -124,7 +125,7 @@ class eventServices {
         $lt: endDate,
       },
     });
-  
+
     // Get finished events for current month
     const totalFinishedEvents = await eventModel.find({
       created: {
@@ -133,7 +134,7 @@ class eventServices {
       },
       status: "finished",
     });
-  
+
     // Get ongoing events for current month
     const totalOngoingEvents = await eventModel.find({
       created: {
@@ -142,7 +143,7 @@ class eventServices {
       },
       status: "ongoing",
     });
-  
+
     // Get todo events for current month
     const totalTodoEvents = await eventModel.find({
       created: {
@@ -151,7 +152,7 @@ class eventServices {
       },
       status: "todo",
     });
-  
+
     return {
       totalEvents: totalEvents.length,
       totalFinishedEvents: totalFinishedEvents.length,
@@ -163,15 +164,15 @@ class eventServices {
   //Get specific event
   async getEvent(id) {
     const event = await eventModel
-    .findById(id)
-    .populate({
-      path: 'host',
-      model: 'User'
-    })
-    .populate({
-      path: 'participatingTeachers',
-      model: 'User'
-    });
+      .findById(id)
+      .populate({
+        path: 'host',
+        model: 'User'
+      })
+      .populate({
+        path: 'participatingTeachers',
+        model: 'User'
+      });
     return event;
   }
 
@@ -187,9 +188,27 @@ class eventServices {
 
   //Edit event
   async editEvent(req) {
-    const findEvent = await eventModel.findOne({ _id: req.params.id })
+    const findEvent = await eventModel.findOne({ _id: req.params.id });
     if (findEvent) {
+      //update event
       await eventModel.updateOne({ _id: req.params.id }, { $set: req.body });
+
+      //if event status set to finished then send finised mail
+      if (findEvent.status !== 'finished' && req.body.status === 'finished') {
+        //Send email when event done
+        const updatedEvent = await eventModel
+          .findOne({ _id: req.params.id })
+          .populate({
+            path: 'host',
+            model: 'User'
+          })
+          .populate({
+            path: 'participatingTeachers',
+            model: 'User'
+          });;
+        await sendEmailService.sendFinishedEventEmail(updatedEvent);
+      }
+
       return req.body
     }
     return
@@ -206,7 +225,7 @@ class eventServices {
   }
 
   async uploadExcelEvent(req, mssvList) {
-    const id= '65a125b88fc18cc0c34a6c89'
+    const id = '65a125b88fc18cc0c34a6c89'
     const findEvent = await eventModel.findOne({ _id: id })
     if (findEvent) {
       await eventModel.updateOne({ _id: id }, { registryList: req.file.filename, listStudentRegistry: mssvList });
