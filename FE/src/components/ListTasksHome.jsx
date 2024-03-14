@@ -2,7 +2,7 @@ import React from 'react'
 import Task from './Task'
 import { useDrop } from 'react-dnd';
 import { useDispatch, useSelector } from 'react-redux';
-import { updateTask, openModalEditTask, closeModalEditTask } from '../store/myTasks';
+import { updateTask, openModalEditTask } from '../store/myTasks';
 import moment from 'moment';
 
 export default function ListTasksHome({ data }) {

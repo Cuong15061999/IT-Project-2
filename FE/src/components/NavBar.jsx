@@ -6,6 +6,7 @@ import { styled } from '@mui/material/styles';
 import { useAppStore } from '../appStore';
 import { useNavigate } from 'react-router-dom/dist';
 import Cookies from 'js-cookie';
+import { useSelector } from 'react-redux';
 
 const AppBar = styled(MuiAppBar, {
   shouldForwardProp: (prop) => prop !== 'open',
@@ -15,6 +16,7 @@ const AppBar = styled(MuiAppBar, {
 
 export default function MenuAppBar() {
   const navigate = useNavigate();
+  const userLogin = useSelector((state) => state.user_login.userLogin);
 
   const [anchorEl, setAnchorEl] = React.useState(null);
   const updateOpen = useAppStore((state) => state.updateOpen);
@@ -30,6 +32,7 @@ export default function MenuAppBar() {
 
   const handleLogout = () => {
     Cookies.remove('access_token');
+    localStorage.removeItem('userInfo');
     navigate('/login', { replace: true });
   }
 
@@ -77,6 +80,12 @@ export default function MenuAppBar() {
               open={Boolean(anchorEl)}
               onClose={handleClose}
             >
+              <MenuItem>
+                <Typography textAlign="center"><b>{userLogin.name}</b></Typography>
+              </MenuItem>
+              <MenuItem>
+                <Typography textAlign="center">Email: {userLogin.email}</Typography>
+              </MenuItem>
               <MenuItem onClick={handleLogout}>
                 <Typography textAlign="center">Logout</Typography>
               </MenuItem>

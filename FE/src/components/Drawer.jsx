@@ -20,6 +20,9 @@ import GroupIcon from '@mui/icons-material/Group';
 import CelebrationIcon from '@mui/icons-material/Celebration';
 import SwitchAccountIcon from '@mui/icons-material/SwitchAccount';
 import { useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import { useState } from 'react';
+import { useEffect } from 'react';
 
 const drawerWidth = 240;
 
@@ -71,6 +74,8 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 );
 
 export default function MiniDrawer() {
+  const userLogin = useSelector((state) => state.user_login.userLogin);
+  const [listMenuItem, setListMenuItem] = useState([]);
   const open = useAppStore((state) => state.dopen);
   const navigate = useNavigate();
   const iconNav = (text) => {
@@ -80,10 +85,18 @@ export default function MiniDrawer() {
       case 'User': return <GroupIcon></GroupIcon>
       case 'Account': return <SwitchAccountIcon></SwitchAccountIcon>
       default : return <HomeIcon></HomeIcon>
-
     }
   }
-
+  useEffect(() => {
+    const { role } = userLogin;
+    if (role === 'student') {
+      setListMenuItem(['Home', 'Account'])
+    } else if (role === 'teacher') {
+      setListMenuItem(['Home', 'Dashboard', 'Event', 'Account'])
+    } else if (role === 'admin') {
+      setListMenuItem(['Home', 'Dashboard', 'Event', 'User', 'Account'])
+    }
+  }, [userLogin])
   return (
     <Box sx={{ display: 'flex' }}>
       <CssBaseline />
@@ -96,7 +109,7 @@ export default function MiniDrawer() {
         </DrawerHeader>
         <Divider />
         <List>
-          {['Home', 'Dashboard', 'Event', 'User', 'Account'].map((text, index) => (
+          {listMenuItem.map((text, index) => (
             <ListItem key={text} disablePadding sx={{ display: 'block' }}
               onClick={() => { text === 'Home' ? navigate("/") : navigate("/" + text) }}>
               <ListItemButton
