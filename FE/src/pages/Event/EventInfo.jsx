@@ -219,7 +219,7 @@ export const EventInfo = () => {
     try {
       const urlUploadFile = `http://localhost:3001/upload/${id}`;
       const formData = new FormData();
-      formData.append('file', file);
+      formData.append('excelFile', file);
       const response = await axios.post(urlUploadFile, formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
