@@ -20,9 +20,6 @@ export const Home = () => {
         <Box component="main" sx={{ flexGrow: 1, p: 3, backgroundColor: "#ECEFF4", minHeight: "100vh" }}>
           <h1>Home</h1>
           <Stack spacing={{ xs: 1, sm: 2 }} direction="row" useFlexGap flexWrap="wrap" justifyContent='space-between'>
-            <Typography paragraph>
-              CONTENT OF THE PAGE
-            </Typography>
             <Button variant="contained" endIcon={<AddCircle />} align="justify" onClick={() => dispatch(openModalEditTask({ action: 'add' }))}>
               Add
             </Button>
