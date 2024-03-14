@@ -1,17 +1,11 @@
 import * as React from 'react';
+import { Box, Toolbar, Typography, IconButton, Menu, MenuItem, Avatar } from '@mui/material'
+import MenuIcon from '@mui/icons-material/Menu';
 import MuiAppBar from '@mui/material/AppBar';
 import { styled } from '@mui/material/styles';
-import Box from '@mui/material/Box';
-import Toolbar from '@mui/material/Toolbar';
-import Typography from '@mui/material/Typography';
-import IconButton from '@mui/material/IconButton';
-import MenuIcon from '@mui/icons-material/Menu';
-import MenuItem from '@mui/material/MenuItem';
-import Menu from '@mui/material/Menu';
-import Avatar from '@mui/material/Avatar';
 import { useAppStore } from '../appStore';
-import Cookies from 'js-cookie';
 import { useNavigate } from 'react-router-dom/dist';
+import Cookies from 'js-cookie';
 
 const AppBar = styled(MuiAppBar, {
   shouldForwardProp: (prop) => prop !== 'open',
@@ -21,7 +15,6 @@ const AppBar = styled(MuiAppBar, {
 
 export default function MenuAppBar() {
   const navigate = useNavigate();
-  const settings = ['Profile', 'Account', 'Dashboard'];
 
   const [anchorEl, setAnchorEl] = React.useState(null);
   const updateOpen = useAppStore((state) => state.updateOpen);
@@ -84,11 +77,6 @@ export default function MenuAppBar() {
               open={Boolean(anchorEl)}
               onClose={handleClose}
             >
-              {settings.map((setting) => (
-                <MenuItem key={setting} onClick={handleClose}>
-                  <Typography textAlign="center">{setting}</Typography>
-                </MenuItem>
-              ))}
               <MenuItem onClick={handleLogout}>
                 <Typography textAlign="center">Logout</Typography>
               </MenuItem>

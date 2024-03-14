@@ -46,7 +46,7 @@ export default function SummaryPieChart() {
                 faded: { innerRadius: 30, additionalRadius: -30, color: 'gray' },
               },
             ]}
-            height={220}
+            height={210}
           />
         ) : (
           <p>There are no new events in this month</p>
