@@ -1,16 +1,16 @@
 var mongoose = require('mongoose');var EventSchema = new mongoose.Schema({
   name: { type: String, required: true },
-  host: { type: mongoose.Types.ObjectId, required: true, ref: 'User' }, // the one who create this event
-  
-  participatingTeachers: [{ type: mongoose.Types.ObjectId, default: [], ref: 'User' }], // list of teacher who join this event
-  participatingStudents: [{ type: String, default: [], required: false }], // list of student who join this event
-  listStudentRegistry:  [{ type: String, default: [], required: false }], // list of student who register this event
+  host: { type: mongoose.Types.ObjectId, required: true, ref: 'User' },
 
-  linkEvents: [{ type: mongoose.Types.ObjectId, default: [], ref: 'Event' }], //chưa đụng tới
+  participatingTeachers: [{ type: mongoose.Types.ObjectId, default: [], ref: 'User' }],
+  participatingStudents: [{ type: String, default: [], required: false }],
+  listStudentRegistry:  [{ type: String, default: [], required: false }],
+
+  linkEvents: [{ type: mongoose.Types.ObjectId, default: [], ref: 'Event' }],
   
-  location: {type : String, required: true, default: ''}, // location where hold this events
+  location: {type : String, required: true, default: ''},
   activitiesPoint: { type: Number, required: true, default: 0 },
-  status: { type: String, required: true, default: 'todo' }, // todo, ongoing, finished
+  status: { type: String, required: true, default: 'todo' },
 
   registryList: { type: String, required: false },
   participationList: { type: String, required: false },

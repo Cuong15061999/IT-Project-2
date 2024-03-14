@@ -2,7 +2,6 @@ var express = require('express');
 const userServices = require('../services/userServices')
 var router = express.Router();
 
-/* GET All user. */
 router.get('/', async function (req, res, next) {
   try {
     const role = req.query.role; // Access the "role" parameter from the query string
@@ -52,47 +51,6 @@ router.get('/:id', async function (req, res, next) {
   }
 });
 
-/* ADD user. */
-router.post('/', async function (req, res, next) {
-  try {
-    const addUser = await userServices.addUser(req);
-    if (addUser) {
-      res.status(200).json({
-        data: addUser,
-        message: 'Add user successfully',
-      });
-    } else {
-      res.status(404).json({
-        message: 'User already exist',
-      });
-    }
-  } catch (error) {
-    res.status(500).json({
-      message: error.message
-    })
-  }
-});
-
-/* Edit user. */
-router.put('/:id', async function (req, res, next) {
-  try {
-    const updateUser = await userServices.editUser(req);
-    if (updateUser) {
-      res.status(200).json({
-        data: updateUser,
-        message: 'Edit user with id:' + req.params.id,
-      });
-    } else {
-      res.status(404).json({
-        message: 'Can not find user with id:' + req.params.id,
-      })
-    }
-  } catch (error) {
-    res.status(500).json({
-      message: error.message
-    });
-  }
-});
 
 /* Delete user. */
 router.delete('/:id', async function (req, res, next) {
