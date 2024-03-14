@@ -1,24 +1,21 @@
 // route middleware để kiểm tra một user đã đăng nhập hay chưa?
-const bcrypt = require('bcrypt');
-const saltRounds = 10;
 const jwt = require('jsonwebtoken');
 const promisify = require('util').promisify;
-const sign = promisify(jwt.sign).bind(jwt);
 const verify = promisify(jwt.verify).bind(jwt);
-const randToken = require('rand-token');
+var secret = require('../secret.js')
 const User = require('./../model/userModel')
 
 require('dotenv').config();
 
 const generateToken = async (payload, secretSignature, tokenLife) => {
   try {
-    return await sign({
+    return jwt.sign({
       payload,
     },
       secretSignature,
       {
         algorithm: 'HS256',
-        expiresIn: tokenLife
+        expiresIn: tokenLife || '1h'
       });
   } catch (error) {
     console.log(`Error in generate access token:  + ${error}`);
@@ -65,7 +62,6 @@ class authServices {
   async login(req, res) {
     const email = req.body.email;
     var user = await User.findOne({ email: email });
-    // TODO : Giả dụ gửi vào đều là đúng 
     if (!user) {
       user = new User({
         email: req.body.email,
@@ -78,7 +74,7 @@ class authServices {
     }
 
       const accessTokenLife = process.env.ACCESS_TOKEN_LIFE;
-      const accessTokenSecret = process.env.ACCESS_TOKEN_SECRET;
+      const accessTokenSecret = secret.cookieSecret;
 
       const dataForAccessToken = {
         user_id: user._id.toString(),
@@ -106,7 +102,6 @@ class authServices {
         accessToken,
         user
       });
-
 
   }
 }

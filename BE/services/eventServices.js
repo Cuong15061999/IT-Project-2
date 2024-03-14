@@ -206,7 +206,7 @@ class eventServices {
   }
 
   async uploadExcelEvent(req, mssvList) {
-    const id= '65a125b88fc18cc0c34a6c89'
+    const id= req.params.eventId
     const findEvent = await eventModel.findOne({ _id: id })
     if (findEvent) {
       await eventModel.updateOne({ _id: id }, { registryList: req.file.filename, listStudentRegistry: mssvList });

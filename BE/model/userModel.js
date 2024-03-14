@@ -7,8 +7,8 @@ var UserSchema = new mongoose.Schema({
   image: { type: String, default: '' },
   refreshToken: { type: String, default: '' },
   role: { type: String, default: 'student' }, // student, teacher, admin
-  class: String,
-  falculty: String,
+  class: { type: String, default: '170502' },
+  falculty: { type: String, default: 'IT' },
   created: { type: Date, required: true, default: new Date().toJSON().slice(0, 10) },
 });
 
