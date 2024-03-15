@@ -237,11 +237,9 @@ class eventServices {
   
       if (req.file) {
         if (isCheckingFile) {
-          const filename = 'CheckIn-' + req.file.filename;
-          await eventModel.updateOne({ _id: eventId }, { participationList: filename, participatingStudents: mssvList });
+          await eventModel.updateOne({ _id: eventId }, { participationList: req.file.filename, participatingStudents: mssvList });
         } else if (!isCheckingFile) {
-          const filename = 'Registry-' + req.file.filename;
-          await eventModel.updateOne({ _id: eventId }, { registryList: filename, listStudentRegistry: mssvList });
+          await eventModel.updateOne({ _id: eventId }, { registryList: req.file.filename, listStudentRegistry: mssvList });
         } else {
           throw new Error('Invalid request: Specify either "registryList" in request params.');
         }

@@ -37,7 +37,13 @@ router.get('/', function (req, res, next) {
 const storage = multer.diskStorage({
   destination: './uploads',
   filename: (req, file, cb) => {
-    cb(null, `${req.params.eventId}_${file.originalname}`);
+    const isCheckingFileString = req.query.isCheckingFile
+    const isCheckingFile = isCheckingFileString === "true";
+    var filename = `Registry-${req.params.eventId}_${file.originalname}`
+    if (isCheckingFile) {
+      filename = `CheckIn-${req.params.eventId}_${file.originalname}`
+    }
+    cb(null, `${filename}`);
   },
 });
 
