@@ -12,7 +12,7 @@ router.get('/', async function (req, res, next) {
         data: users,
         message: 'Get all users',
       });
-    } else if (role === "student" || role === "teacher") { 
+    } else if (role === "student" || role === "teacher") {
       const users = await userServices.getUsersByRole(role);
       res.status(200).json({
         data: users,
@@ -27,6 +27,27 @@ router.get('/', async function (req, res, next) {
     res.status(500).json({
       message: error.message
     })
+  }
+});
+
+/* Edit user. */
+router.put('/:id', async function (req, res, next) {
+  try {
+    const updateUser = await userServices.editUser(req);
+    if (updateUser) {
+      res.status(200).json({
+        data: updateUser,
+        message: 'Edit user with id:' + req.params.id,
+      });
+    } else {
+      res.status(404).json({
+        message: 'Can not find user with id:' + req.params.id,
+      })
+    }
+  } catch (error) {
+    res.status(500).json({
+      message: error.message
+    });
   }
 });
 
