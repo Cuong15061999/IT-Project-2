@@ -226,7 +226,9 @@ class eventServices {
 
   async uploadExcelEvent(req, mssvList) {
     const eventId = req.params.eventId
-    const isCheckingFile = req.query.isCheckingFile
+    const isCheckingFileString = req.query.isCheckingFile
+    const isCheckingFile = isCheckingFileString === "true";
+
     try {
       const findEvent = await eventModel.findOne({ _id: eventId });
       if (!findEvent) {

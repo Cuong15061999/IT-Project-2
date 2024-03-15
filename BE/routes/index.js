@@ -68,7 +68,7 @@ router.get('/download-file/:filename', streamToBuffer, async (req, res) => {
 
     // Set response headers
     res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-    res.setHeader('Content-Disposition', `attachment; filename="${downloadFile}"`); // Use original filename
+    res.setHeader('Content-Disposition', `attachment; filename="${downloadFile}"`);
 
     // Send the buffer as the response
     res.send(req.excelBuffer);
