@@ -28,6 +28,7 @@ const style = {
 export default function ModalEditTask() {
   const dispatch = useDispatch();
   const action = useSelector((state) => state.my_tasks.action);
+  const userLogin = useSelector((state) => state.user_login.userLogin);
 
   // hanle open/close modal
   const isOpenModalEdit = useSelector((state) => state.my_tasks.isOpenModalEditTask);
@@ -55,7 +56,7 @@ export default function ModalEditTask() {
 
   const handleSave = () => {
     if (action === 'add') {
-      dispatch(addTask(taskSelected));
+      dispatch(addTask({ task: taskSelected, host: userLogin._id }));
     } else {
       dispatch(updateTask(taskSelected));
     }
@@ -116,9 +117,19 @@ export default function ModalEditTask() {
               <Grid item xs={6}>
                 <h3>Host</h3>
                 <TextField
-                  onChange={(e) => handleChangeTaskInfo('host', { ...taskSelected.host, email: e.target.value })}
-                  value={taskSelected.host?.email}
+                  value={userLogin.email}
                   disabled
+                  id="outlined-required"
+                  size='small'
+                  sx={{ minWidth: "100%" }}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <h3>Location</h3>
+                <TextField
+                  onChange={(e) => handleChangeTaskInfo('location', e.target.value)}
+                  value={taskSelected.location}
+                  required
                   id="outlined-required"
                   size='small'
                   sx={{ minWidth: "100%" }}
