@@ -26,7 +26,7 @@ const createXLSXFile = async (participateStudent) => {
             worksheet.addRow(rowData, index + 2);
         });
 
-        const uploadsFolder = path.join(__dirname, '../uploads')
+        const uploadsFolder = path.join(__dirname, '../uploads');
 
         const fs = require('fs');
         if (!fs.existsSync(uploadsFolder)) {

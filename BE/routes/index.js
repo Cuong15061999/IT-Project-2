@@ -3,15 +3,13 @@ var router = express.Router();
 const multer = require('multer');
 const xlsx = require('xlsx');
 const fs = require('fs');
-const moment = require('moment');
 const eventServices = require('../services/eventServices')
-// const upload = multer({ dest: 'uploads/' });
+const path = require('path');
+
 function streamToBuffer(req, res, next) {
-  //    const filename = req.query.filename;
 
   var downloadFile = req.params.filename;
-  const filePath = 'D:\\GitHub\\IT-Project-2\\BE\\uploads\\' + downloadFile;
-
+  const filePath = path.join(__dirname, '../uploads/' + downloadFile);
   const stream = fs.createReadStream(filePath);
   const chunks = [];
 
