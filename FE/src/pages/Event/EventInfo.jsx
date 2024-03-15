@@ -260,7 +260,7 @@ export const EventInfo = () => {
 
   const handleDownloadFile = async (filename) => {
     try {
-      const urlDownload = `http://localhost:3001/download-file?filename=${filename}`;
+      const urlDownload = `http://localhost:3001/download-file/${id}?filename=${filename}`;
       const response = await axios.get(urlDownload, {
         responseType: 'blob' 
       });

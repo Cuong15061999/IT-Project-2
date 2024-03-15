@@ -11,10 +11,15 @@ const localizer = momentLocalizer(moment) // or globalizeLocalizer
 
 export default function CustomCalendar({ mainView = 'month' }) {
     const listEvens = useSelector((state) => state.my_tasks.tasks);
+    const userLogin = useSelector((state) => state.user_login.userLogin);
+
     const [listEventsMoment, setListEventsMoment] = useState([])
     const dispatch = useDispatch();
     const defaultDate = useMemo(() => new Date(), [])
     const handleSelectedEvent = (event) => {
+        if (userLogin.role === 'student') {
+            return;
+        }
         dispatch(openModalEditTask({
             action: 'edit',
             taskSelected: {

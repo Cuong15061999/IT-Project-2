@@ -11,6 +11,16 @@ import { openModalEditTask } from '../../store/myTasks';
 
 export const Home = () => {
   const dispatch = useDispatch();
+  const userLogin = useSelector((state) => state.user_login.userLogin);
+
+  const handleOpenModalAddTask = () => {
+    if (userLogin.role === 'student') {
+      return;
+    }
+
+    dispatch(openModalEditTask({ action: 'add' }))
+  }
+
   return (
     <>
       <NavBar></NavBar>
@@ -20,9 +30,10 @@ export const Home = () => {
         <Box component="main" sx={{ flexGrow: 1, p: 3, backgroundColor: "#ECEFF4", minHeight: "100vh" }}>
           <h1>Home</h1>
           <Stack spacing={{ xs: 1, sm: 2 }} direction="row" useFlexGap flexWrap="wrap" justifyContent='flex-end'>
-            <Button variant="contained" endIcon={<AddCircle />} align="justify" onClick={() => dispatch(openModalEditTask({ action: 'add' }))}>
-              Add
-            </Button>
+            {userLogin.role !== 'student' &&
+              <Button style={{ marginBottom: '15px' }} variant="contained" endIcon={<AddCircle />} align="justify" onClick={handleOpenModalAddTask}>
+                Add
+              </Button>}
           </Stack>
           <TabsTasksView></TabsTasksView>
         </Box>
