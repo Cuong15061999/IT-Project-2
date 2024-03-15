@@ -45,7 +45,8 @@ export const myTasks = createSlice({
         isLoading: false,
         action: 'add',
         isShowToastMessage: false,
-        contentToastMessage: ''
+        contentToastMessage: '',
+        tabHomeSelected: 0
     },
     reducers: {
         setTasks: (state, action) => {
@@ -85,6 +86,9 @@ export const myTasks = createSlice({
         hideNotify: (state, action) => {
             state.isShowToastMessage = false;
             state.contentToastMessage = '';
+        },
+        setTabHomeSelected: (state, action) => {
+            state.tabHomeSelected = action.payload
         }
     },
     extraReducers: (builder) => {
@@ -110,6 +114,6 @@ export const myTasks = createSlice({
     },
 });
 
-export const { setTasks, openModalEditTask, closeModalEditTask, editTask, toggleScreenLoading, showNotify, hideNotify } = myTasks.actions;
+export const { setTasks, openModalEditTask, closeModalEditTask, editTask, toggleScreenLoading, showNotify, hideNotify, setTabHomeSelected } = myTasks.actions;
 
 export default myTasks.reducer;

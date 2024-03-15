@@ -2,14 +2,16 @@ import React from 'react'
 import Task from './Task'
 import { useDrop } from 'react-dnd';
 import { useDispatch, useSelector } from 'react-redux';
-import { updateTask, openModalEditTask } from '../store/myTasks';
+import { updateTask } from '../store/myTasks';
 import moment from 'moment';
+import { useNavigate } from 'react-router-dom';
+import { setTabHomeSelected } from '../store/myTasks';
 
 export default function ListTasksHome({ data }) {
   const tasks = useSelector((state) => state.my_tasks.tasks);
   const userLogin = useSelector((state) => state.user_login.userLogin);
   const dispatch = useDispatch();
-
+  const navigate = useNavigate();
   // drop instances
   const [{ isOver: isOverTaskGoing }, dropTaskGoing] = useDrop(() => ({
     accept: 'task',
@@ -46,15 +48,8 @@ export default function ListTasksHome({ data }) {
     if (userLogin.role === 'student') {
       return;
     }
-
-    dispatch(openModalEditTask({
-      action: 'edit',
-      taskSelected: {
-        ...task,
-        startAt: task.startAt.toISOString(),
-        endAt: task.endAt.toISOString(),
-      }
-    }));
+    dispatch(setTabHomeSelected(1));
+    navigate(`/event/${task._id}`)
   }
 
   return (

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import "./Home.css"
 import Box from '@mui/material/Box';
 import { Button, Stack, Typography } from '@mui/material';
@@ -7,20 +7,24 @@ import NavBar from '../../components/NavBar'
 import TabsTasksView from './TabsTasksView';
 import { AddCircle } from '@mui/icons-material';
 import { useDispatch, useSelector } from 'react-redux';
-import { openModalEditTask } from '../../store/myTasks';
+import { useNavigate } from 'react-router-dom';
+import { setTabHomeSelected } from '../../store/myTasks';
 
 export const Home = () => {
-  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const userLogin = useSelector((state) => state.user_login.userLogin);
-
-  const handleOpenModalAddTask = () => {
+  const dispatch = useDispatch()
+  const handleAddTask = () => {
     if (userLogin.role === 'student') {
       return;
     }
 
-    dispatch(openModalEditTask({ action: 'add' }))
+    navigate("/event/add");
   }
+  useEffect(() => {
 
+    dispatch(setTabHomeSelected(0));
+  }, [])
   return (
     <>
       <NavBar></NavBar>
@@ -31,7 +35,7 @@ export const Home = () => {
           <h1>Home</h1>
           <Stack spacing={{ xs: 1, sm: 2 }} direction="row" useFlexGap flexWrap="wrap" justifyContent='flex-end'>
             {userLogin.role !== 'student' &&
-              <Button style={{ marginBottom: '15px' }} variant="contained" endIcon={<AddCircle />} align="justify" onClick={handleOpenModalAddTask}>
+              <Button style={{ marginBottom: '15px' }} variant="contained" endIcon={<AddCircle />} align="justify" onClick={handleAddTask}>
                 Add
               </Button>}
           </Stack>

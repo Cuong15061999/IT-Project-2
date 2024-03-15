@@ -8,8 +8,9 @@ import { HTML5Backend } from 'react-dnd-html5-backend';
 import axios from 'axios';
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { setTasks } from '../../store/myTasks';
+import { setTabHomeSelected, setTasks } from '../../store/myTasks';
 import ModalEditTask from '../../components/ModalEditTask';
+import { useLocation } from 'react-router-dom';
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -45,7 +46,8 @@ function a11yProps(index) {
 }
 
 export default function TabsTasksView() {
-  const [value, setValue] = useState(0);
+  const tabHomeSelected = useSelector((state) => state.my_tasks.tabHomeSelected);
+  const [value, setValue] = useState(tabHomeSelected);
   const isLoading = useSelector((state) => state.my_tasks.isLoading);
 
   const dispatch = useDispatch();
@@ -68,6 +70,10 @@ export default function TabsTasksView() {
   useEffect(() => {
     getEvents();
   }, []);
+
+  useEffect(() => {
+    dispatch(setTabHomeSelected(value));
+  }, [value])
 
   return (
     <>

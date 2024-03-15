@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import {
   Box,
   Button,
@@ -20,13 +20,14 @@ import dayjs from 'dayjs';
 import Swal from "sweetalert2";
 import Cookies from 'js-cookie';
 import { jwtDecode } from 'jwt-decode';
+import { useDispatch } from 'react-redux';
 
 export const AddEvent = () => {
   const navigate = useNavigate();
-
+  const location = useLocation();
   const [teacherListOption, setTeacherListOption] = useState([]);
   const [teacherList, setTeacherList] = useState([]);
-
+  const dispatch = useDispatch();
   const [host, setHost] = useState({
     id: '',
     email: '',
@@ -86,6 +87,14 @@ export const AddEvent = () => {
     getCurrentUserHost();
 
   }, [getTeachersListOption, getCurrentUserHost])
+  const goBack = () => {
+    let previousPath = location.state?.from?.pathname;
+    if (!previousPath) {
+      navigate(-1);
+    } else {
+      console.log(previousPath);
+    }
+  }
 
   const createEvent = async () => {
     try {
@@ -94,7 +103,7 @@ export const AddEvent = () => {
 
       const dayjsEndAtObject = dayjs(eventInfo.endAt);
       const dateEndAtObject = dayjsEndAtObject.toDate();
-      
+
       const response = await axios.post('http://localhost:3001/events', {
         name: eventInfo.name,
         host: host.id,
@@ -105,10 +114,10 @@ export const AddEvent = () => {
         startAt: dateStartAtObject,
         endAt: dateEndAtObject,
       });
-      
+
       if (response.status === 200) {
         Swal.fire("Successful!", "Your event has been created.", "success");
-        navigate('/event')
+        goBack();
       }
     } catch (error) {
       console.error('Error fetching data:', error);
@@ -121,7 +130,7 @@ export const AddEvent = () => {
   };
 
   const cancelEvent = async () => {
-    navigate('/event');
+    goBack();
   }
 
   return (

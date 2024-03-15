@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react'
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { FileDownload } from "@mui/icons-material";
 import {
   Box,
@@ -35,10 +35,11 @@ import { showNotify } from '../../store/myTasks';
 export const EventInfo = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
   const [registerStudentsFile, setRegisterStudentsFile] = useState(null);
   const [participateStudentsFile, setParticipateStudentsFile] = useState(null);
   const [registryListFile, setRegistryListFile] = useState(null);
-  // const [participateStudents, setRegistryListFile] = useState(null);
+  const [participateStudents, setParticipateStudents] = useState(null);
   // data table student register
   const headerList = ["STT", "Email", "Student ID"];
   const [page, setPage] = useState(0);
@@ -143,6 +144,8 @@ export const EventInfo = () => {
       }, []);
       setRows2(filteredParticipateStudentData || [])
 
+      setParticipateStudents(event.participationList);
+
     } catch (error) {
       console.error('Error fetching data:', error);
     }
@@ -173,6 +176,15 @@ export const EventInfo = () => {
   const handleChangeEventInfo = (fieldName, newValue) => {
     setEventInfo({ ...eventInfo, [fieldName]: newValue });
   };
+
+  const goBack = () => {
+    let previousPath = location.state?.from?.pathname;
+    if (!previousPath) {
+      navigate(-1);
+    } else {
+      console.log(previousPath);
+    }
+  }
 
   const updateEvent = async () => {
     try {
@@ -208,7 +220,7 @@ export const EventInfo = () => {
         });
 
         setTimeout(() => {
-          navigate('/event'); // Navigate to home screen after 3 seconds
+          goBack();
         }, 1500);
       }
     } catch (error) {
@@ -258,8 +270,15 @@ export const EventInfo = () => {
     setParticipateStudentsFile(file);
   }
 
-  const handleDownloadFile = async (filename) => {
+  const handleDownloadFile = async (filename, fileType) => {
     try {
+      if (!filename) {
+        dispatch(showNotify({
+          show: true,
+          message: `No ${fileType} file`
+        }))
+        return;
+      }
       const urlDownload = `http://localhost:3001/download-file/${id}?filename=${filename}`;
       const response = await axios.get(urlDownload, {
         responseType: 'blob' 
@@ -303,7 +322,7 @@ export const EventInfo = () => {
   }
 
   const cancelEvent = async () => {
-    navigate('/event');
+    goBack();
   }
 
   return (
@@ -357,7 +376,7 @@ export const EventInfo = () => {
                     sx={{ flexGrow: 1 }}
                   ></Typography>
                   <ImportFile id="import-register-students" fileUploaded={handleImportRegisterStudentsFile}></ImportFile>
-                  <FileDownload sx={{ cursor: "pointer" }} onClick={() => handleDownloadFile(registryListFile)} />
+                  <FileDownload sx={{ cursor: "pointer" }} onClick={() => handleDownloadFile(registryListFile, 'register student')} />
                 </Stack>
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '10px' }}>
                   {registerStudentsFile?.name}
@@ -415,7 +434,7 @@ export const EventInfo = () => {
                     sx={{ flexGrow: 1 }}
                   ></Typography>
                   <ImportFile id="import-participate-students" fileUploaded={handleImportPaticipateStudentsFile}></ImportFile>
-                  <FileDownload sx={{ cursor: "pointer" }} onClick={() => { navigate(`/event`) }} />
+                  <FileDownload sx={{ cursor: "pointer" }} onClick={() => handleDownloadFile(participateStudents, 'participate students')} />
                 </Stack>
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '10px' }}>
                   {participateStudentsFile?.name}
