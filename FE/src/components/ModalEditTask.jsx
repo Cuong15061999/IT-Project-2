@@ -41,8 +41,8 @@ export default function ModalEditTask() {
   const [studentListOption, setStudentListOption] = useState([]);
   const statusList = [
     {
-      value: 'undone',
-      label: 'Undone'
+      value: 'todo',
+      label: 'Todo'
     },
     {
       value: 'ongoing',
@@ -155,10 +155,10 @@ export default function ModalEditTask() {
                 />
               </Grid>
               <Grid item xs={6}>
-                <h3>Traning Point</h3>
+                <h3>Activities Point</h3>
                 <TextField
-                  onChange={(e) => handleChangeTaskInfo('trainingPoints', e.target.value)}
-                  value={taskSelected.trainingPoints}
+                  onChange={(e) => handleChangeTaskInfo('activitiesPoint', e.target.value)}
+                  value={taskSelected.activitiesPoint}
                   required
                   type='number'
                   inputProps={{ min: 0, max: 99 }}
