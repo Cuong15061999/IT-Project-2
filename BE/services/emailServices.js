@@ -101,10 +101,10 @@ class sendEmailService {
         const subject = `Event: ${Event.name} invited mail`;
 
         const info = await transporter.sendMail({
-            from: 'phamvqcuong99@gmail.com', // sender address
-            to: listEmail, // list of receivers
-            subject: subject ? subject : 'Event notification email', // Subject line
-            text: "Event invited email", // plain text body
+            from: 'no-reply@yourdomain.com',
+            to: listEmail,
+            subject: subject ? subject : 'Event notification email',
+            text: "Event invited email",
             html: newEventContent(Event.name, Event.host.name, Event.location, Event.startAt, Event.endAt),
         })
     }

@@ -3,13 +3,9 @@ var router = express.Router();
 const multer = require('multer');
 const xlsx = require('xlsx');
 const fs = require('fs');
-const path = require('path');
 const moment = require('moment');
-const csvStringify = require('csv-stringify');
 const eventServices = require('../services/eventServices')
-const exceljs = require('exceljs');
 // const upload = multer({ dest: 'uploads/' });
-const currentDate = moment().format('DD-MM-YYYY');
 function streamToBuffer(req, res, next) {
   //    const filename = req.query.filename;
 
@@ -47,7 +43,6 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage });
 
-// Upload route
 router.post('/upload/:eventId', upload.single('excelFile'), async function (req, res, next) {
   if (req.file) {
     try {
@@ -67,9 +62,9 @@ router.post('/upload/:eventId', upload.single('excelFile'), async function (req,
   }
 });
 
-router.get('/download-file', streamToBuffer, (req, res) => {
+router.get('/download-file/:filename', streamToBuffer, async (req, res) => {
   try {
-    const downloadFile = "05-03-2024_Book1.xlsx";
+    var downloadFile = req.query.filename;
 
     // Set response headers
     res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
