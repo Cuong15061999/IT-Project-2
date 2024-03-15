@@ -36,15 +36,7 @@ class userServices {
     }
     return
   }
-
-  async delUser(id) {
-    const user = await userModel.findOne({ _id: id });
-    if (user) {
-      await userModel.deleteOne({ _id: id })
-      return user
-    }
-    return
-  }
+  
   appendSuffixToEmails(strings) {
     const suffix = "@student.tdtu.edu.vn";
     return strings.map(str => str + suffix);
