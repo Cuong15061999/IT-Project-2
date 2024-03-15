@@ -1,7 +1,7 @@
 import React from 'react'
 import "./Home.css"
 import Box from '@mui/material/Box';
-import { Button, Stack, Typography } from '@mui/material';
+import { Button, Stack } from '@mui/material';
 import SideNav from '../../components/Drawer'
 import NavBar from '../../components/NavBar'
 import TabsTasksView from './TabsTasksView';

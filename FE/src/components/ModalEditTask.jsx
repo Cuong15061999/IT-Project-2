@@ -157,7 +157,7 @@ export default function ModalEditTask() {
               <Grid item xs={6}>
                 <h3>Activities Point</h3>
                 <TextField
-                  onChange={(e) => handleChangeTaskInfo('activitiesPoint', e.target.value)}
+                  onChange={(e) => handleChangeTaskInfo('trainingPoints', e.target.value)}
                   value={taskSelected.activitiesPoint}
                   required
                   type='number'

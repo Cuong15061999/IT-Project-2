@@ -32,7 +32,7 @@ function App() {
     if (userInfo) {
       dispatch(setUserLogin(JSON.parse(userInfo) || {}))
     }
-  }, [])
+  }, [dispatch])
   return (
     <div className='AppMain'>
       <Routes>
