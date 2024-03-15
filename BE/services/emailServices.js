@@ -16,10 +16,8 @@ const transporter = nodemailer.createTransport({
 
 const createXLSXFile = async (participateStudent) => {
     try {
-        //create workSheet
         const workbook = new exceljs.Workbook();
         const worksheet = workbook.addWorksheet('Emails');
-        //create header and row
         const headerRow = ['Stt', 'Email', 'MSSV'];
         worksheet.addRow(headerRow);
 
@@ -28,10 +26,8 @@ const createXLSXFile = async (participateStudent) => {
             worksheet.addRow(rowData, index + 2);
         });
 
-        // Define path to uploads folder (adjust as needed)
         const uploadsFolder = path.join(__dirname, '../uploads')
 
-        // Create uploads folder if it doesn't exist (optional)
         const fs = require('fs');
         if (!fs.existsSync(uploadsFolder)) {
             fs.mkdirSync(uploadsFolder);
@@ -42,6 +38,38 @@ const createXLSXFile = async (participateStudent) => {
         console.log('XLSX file created successfully:', filePath);
         return filePath
 
+    } catch (error) {
+        console.error('Error creating XLSX file:', error);
+    }
+}
+
+const createNotAttendFile = async (participatingStudents, listStudentRegistry) => {
+    try {
+        const workbook = new exceljs.Workbook();
+        const worksheet = workbook.addWorksheet('Not Attend');
+        const headerRow = ['Stt', 'Email', 'MSSV'];
+        worksheet.addRow(headerRow);
+        const participatingStudentsSet = new Set(participatingStudents);
+
+        const studentsNotParticipating = listStudentRegistry.filter(student => !participatingStudentsSet.has(student));
+
+        studentsNotParticipating.forEach((student, index) => {
+            const rowData = [index + 1, student, student.split('@')[0]]
+            worksheet.addRow(rowData, index + 2);
+        });
+
+        const uploadsFolder = path.join(__dirname, '../uploads')
+
+        const fs = require('fs');
+
+        if (!fs.existsSync(uploadsFolder)) {
+            fs.mkdirSync(uploadsFolder);
+        }
+
+        const filePath = path.join(uploadsFolder, 'Not_Attend_Student.xlsx');
+        await workbook.xlsx.writeFile(filePath);
+        console.log('XLSX Attend file created successfully:', filePath);
+        return filePath
     } catch (error) {
         console.error('Error creating XLSX file:', error);
     }
@@ -101,10 +129,10 @@ class sendEmailService {
         const subject = `Event: ${Event.name} invited mail`;
 
         const info = await transporter.sendMail({
-            from: 'phamvqcuong99@gmail.com', // sender address
-            to: listEmail, // list of receivers
-            subject: subject ? subject : 'Event notification email', // Subject line
-            text: "Event invited email", // plain text body
+            from: 'no-reply@yourdomain.com',
+            to: listEmail,
+            subject: subject ? subject : 'Event notification email',
+            text: "Event invited email",
             html: newEventContent(Event.name, Event.host.name, Event.location, Event.startAt, Event.endAt),
         })
     }
@@ -134,9 +162,11 @@ class sendEmailService {
 
 
         const filePath = await createXLSXFile(Event.participatingStudents);
+        const fileAttendPath = await createNotAttendFile(Event.participatingStudents, Event.listStudentRegistry);
         const fileContent = fs.readFileSync(filePath);
+        const fileContentAttend = fs.readFileSync(fileAttendPath);
 
-        const info = await transporter.sendMail({
+        await transporter.sendMail({
             from: 'phamvqcuong99@gmail.com', // sender address
             to: listEmail, // list of receivers
             subject: subject ? subject : 'Event notification email', // Subject line
@@ -144,14 +174,26 @@ class sendEmailService {
             html: finishedEventContent(Event.name, Event.activitiesPoint),
             attachments: [
                 {
-                    filename: 'report.xlsx', // Set your desired filename
+                    filename: 'report.xlsx',
                     content: fileContent,
+                    contentType: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+                },
+                {
+                    filename: 'Not_Attend_Report.xlsx',
+                    content: fileContentAttend,
                     contentType: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
                 }
             ]
         })
             .then(
                 fs.unlink(filePath, (err) => {
+                    if (err) {
+                        console.error('Error deleting file:', err);
+                    } else {
+                        console.log('File deleted successfully');
+                    }
+                }),
+                fs.unlink(fileAttendPath, (err) => {
                     if (err) {
                         console.error('Error deleting file:', err);
                     } else {

@@ -225,12 +225,34 @@ class eventServices {
   }
 
   async uploadExcelEvent(req, mssvList) {
-    const id= req.params.eventId
-    const findEvent = await eventModel.findOne({ _id: id })
-    if (findEvent) {
-      await eventModel.updateOne({ _id: id }, { registryList: req.file.filename, listStudentRegistry: mssvList });
+    const eventId = req.params.eventId
+    const isCheckingFileString = req.query.isCheckingFile
+    const isCheckingFile = isCheckingFileString === "true";
+
+    try {
+      const findEvent = await eventModel.findOne({ _id: eventId });
+      if (!findEvent) {
+        throw new Error(`Event not found: Event with ID ${eventId} does not exist.`);
+      }
+  
+      if (req.file) {
+        if (isCheckingFile) {
+          const filename = 'CheckIn-' + req.file.filename;
+          await eventModel.updateOne({ _id: eventId }, { participationList: filename, participatingStudents: mssvList });
+        } else if (!isCheckingFile) {
+          const filename = 'Registry-' + req.file.filename;
+          await eventModel.updateOne({ _id: eventId }, { registryList: filename, listStudentRegistry: mssvList });
+        } else {
+          throw new Error('Invalid request: Specify either "registryList" in request params.');
+        }
+      } else {
+        throw new Error('No file uploaded!');
+      }
+  
+      return eventId;
+    } catch (error) {
+      console.error(error.message);
     }
-    return id
   }
 }
 

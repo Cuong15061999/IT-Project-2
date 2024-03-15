@@ -26,16 +26,24 @@ export default function CustomCalendar({ mainView = 'month' }) {
         navigate(`/event/${event._id}`);
         dispatch(setTabHomeSelected(0));
     }
-    const randomColor = () => {
-        const color = ['#90caf9', '#ef9a9a', '#80cbc4', '#81d4fa', '#ffcc80'];
-        return color[Math.floor(Math.random() * color.length)];
-    }
+    function getColorBasedOnStatus(status) {
+        switch (status) {
+          case 'todo':
+            return 'rgba(41, 244, 153, 1)';
+          case 'ongoing':
+            return 'rgb(178, 231, 19)';
+          case 'finished':
+            return 'rgba(255, 109, 136, 1)';
+          default:
+            return 'black'; // Or any default color
+        }
+      }
     useEffect(() => {
         setListEventsMoment(listEvens.map(item => ({
             ...item,
             startAt: new Date(moment(item.startAt).toDate()),
             endAt: new Date(moment(item.endAt).toDate()),
-            color: randomColor()
+            color: getColorBasedOnStatus(item.status)
         })))
     }, [listEvens]);
     useEffect(() => {
