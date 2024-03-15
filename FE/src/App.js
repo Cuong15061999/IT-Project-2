@@ -47,7 +47,7 @@ function App() {
       </Routes>
       <Snackbar
         open={openToastMessage}
-        autoHideDuration={6000}
+        autoHideDuration={4000}
         onClose={handleClose}
         message={messageToast}
       />

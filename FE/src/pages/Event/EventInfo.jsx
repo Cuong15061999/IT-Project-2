@@ -215,10 +215,10 @@ export const EventInfo = () => {
       console.error('Error fetching data:', error);
     }
   }
-  const handleUploadFile = async (typeFile) => {
+  const handleUploadFile = async (typeFile, isCheckingFile = false) => {
     const file = typeFile === 'participateStudentsFile' ? participateStudentsFile : registerStudentsFile;
     try {
-      const urlUploadFile = `http://localhost:3001/upload/${id}`;
+      const urlUploadFile = `http://localhost:3001/upload/${id}?isCheckingFile=${isCheckingFile}`;
       const formData = new FormData();
       formData.append('excelFile', file);
       const response = await axios.post(urlUploadFile, formData, {
@@ -419,7 +419,7 @@ export const EventInfo = () => {
                 </Stack>
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '10px' }}>
                   {participateStudentsFile?.name}
-                  {participateStudentsFile ? <Button variant="contained" color="primary" onClick={() => handleUploadFile('participateStudentsFile')}>Upload</Button> : ''}
+                  {participateStudentsFile ? <Button variant="contained" color="primary" onClick={() => handleUploadFile('participateStudentsFile', true)}>Upload</Button> : ''}
                 </Box>
                 <TableContainer sx={{ height: 45 + "vh", border: "2px solid gray", borderRadius: "10px" }}>
                   <Table stickyHeader aria-label="sticky table">
