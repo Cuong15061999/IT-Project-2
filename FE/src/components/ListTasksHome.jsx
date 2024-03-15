@@ -66,7 +66,7 @@ export default function ListTasksHome({ data }) {
             ...item,
             startAt: moment(item.startAt),
             endAt: moment(item.endAt),
-          })).filter(task => task.status?.toLowerCase() === 'todo')).map((task) => {
+          })).filter(task => task.status?.toLowerCase() === 'undone')).map((task) => {
             return <Task notDrag={userLogin.role === 'student'} className="task-todo" onClick={() => handleOpenEditModal(task)} content={task.name} key={`task-todo-${task._id}`} taskId={task._id} task={task}></Task>
           })}
         </div>

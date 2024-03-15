@@ -15,17 +15,21 @@ export const updateTask = createAsyncThunk(
 
 export const addTask = createAsyncThunk(
     'my_tasks/addTask',
-    async (task, thunkAPI) => {
-        thunkAPI.dispatch(toggleScreenLoading());
-
-        const { data } = await axios.post('http://localhost:3001/events', {
-            ...task,
-            participatingTeachers: task.participatingTeachers.map(({ value }) => value),
-            participatingStudents: task.participatingStudents.map(({ value }) => value),
-            startAt: dayjs(task.startAt).toDate(),
-            endAt: dayjs(task.endAt).toDate(),
-        });
-        return data.data;
+    async ({ task, host }, thunkAPI) => {
+        try {
+            thunkAPI.dispatch(toggleScreenLoading());
+            const { data } = await axios.post('http://localhost:3001/events', {
+                ...task,
+                participatingTeachers: task.participatingTeachers.map(({ value }) => value),
+                participatingStudents: task.participatingStudents.map(({ value }) => value),
+                startAt: dayjs(task.startAt).toDate(),
+                endAt: dayjs(task.endAt).toDate(),
+                host
+            });
+            return data.data;
+        } catch (error) {
+            console.log("🚀 ~ error:", error)
+        }
     }
 );
 
