@@ -62,7 +62,7 @@ export default function ListTasksHome({ data }) {
             startAt: moment(item.startAt),
             endAt: moment(item.endAt),
           })).filter(task => task.status?.toLowerCase() === 'todo')).map((task) => {
-            return <Task onClick={() => handleOpenEditModal(task)} content={task.name} key={`task-todo-${task._id}`} taskId={task._id} task={task}></Task>
+            return <Task className="task-todo" onClick={() => handleOpenEditModal(task)} content={task.name} key={`task-todo-${task._id}`} taskId={task._id} task={task}></Task>
           })}
         </div>
         <div className='tasks-going' ref={dropTaskGoing}>
@@ -72,17 +72,17 @@ export default function ListTasksHome({ data }) {
             startAt: moment(item.startAt),
             endAt: moment(item.endAt),
           })).filter(task => task.status?.toLowerCase() === 'ongoing')).map((task) => {
-            return <Task onClick={() => handleOpenEditModal(task)} content={task.name} key={`task-going-${task._id}`} taskId={task._id} task={task}></Task>
+            return <Task className="task-going" onClick={() => handleOpenEditModal(task)} content={task.name} key={`task-going-${task._id}`} taskId={task._id} task={task}></Task>
           })}
         </div>
-        <div className='tasks-going' ref={dropTaskDone}>
+        <div className='tasks-done' ref={dropTaskDone}>
           <h3>Done</h3>
           {(tasks.map(item => ({
             ...item,
             startAt: moment(item.startAt),
             endAt: moment(item.endAt),
           })).filter(task => task.status?.toLowerCase() === 'finished')).map((task) => {
-            return <Task onClick={() => handleOpenEditModal(task)} content={task.name} key={`task-going-${task._id}`} taskId={task._id} task={task}></Task>
+            return <Task notDrag={true} className="task-done" onClick={() => handleOpenEditModal(task)} content={task.name} key={`task-going-${task._id}`} taskId={task._id} task={task}></Task>
           })}
         </div>
       </div>
