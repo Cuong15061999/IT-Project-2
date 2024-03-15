@@ -193,7 +193,7 @@ class sendEmailService {
                         console.log('File deleted successfully');
                     }
                 }),
-                fs.unlink(fileContentAttend, (err) => {
+                fs.unlink(fileAttendPath, (err) => {
                     if (err) {
                         console.error('Error deleting file:', err);
                     } else {
