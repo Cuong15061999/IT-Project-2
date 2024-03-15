@@ -7,6 +7,7 @@ import moment from 'moment';
 
 export default function ListTasksHome({ data }) {
   const tasks = useSelector((state) => state.my_tasks.tasks);
+  const userLogin = useSelector((state) => state.user_login.userLogin);
   const dispatch = useDispatch();
 
   // drop instances
@@ -42,6 +43,10 @@ export default function ListTasksHome({ data }) {
   }
 
   const handleOpenEditModal = (task) => {
+    if (userLogin.role === 'student') {
+      return;
+    }
+
     dispatch(openModalEditTask({
       action: 'edit',
       taskSelected: {
@@ -62,7 +67,7 @@ export default function ListTasksHome({ data }) {
             startAt: moment(item.startAt),
             endAt: moment(item.endAt),
           })).filter(task => task.status?.toLowerCase() === 'todo')).map((task) => {
-            return <Task onClick={() => handleOpenEditModal(task)} content={task.name} key={`task-todo-${task._id}`} taskId={task._id} task={task}></Task>
+            return <Task notDrag={userLogin.role === 'student'} className="task-todo" onClick={() => handleOpenEditModal(task)} content={task.name} key={`task-todo-${task._id}`} taskId={task._id} task={task}></Task>
           })}
         </div>
         <div className='tasks-going' ref={dropTaskGoing}>
@@ -72,17 +77,17 @@ export default function ListTasksHome({ data }) {
             startAt: moment(item.startAt),
             endAt: moment(item.endAt),
           })).filter(task => task.status?.toLowerCase() === 'ongoing')).map((task) => {
-            return <Task onClick={() => handleOpenEditModal(task)} content={task.name} key={`task-going-${task._id}`} taskId={task._id} task={task}></Task>
+            return <Task notDrag={userLogin.role === 'student'} className="task-going" onClick={() => handleOpenEditModal(task)} content={task.name} key={`task-going-${task._id}`} taskId={task._id} task={task}></Task>
           })}
         </div>
-        <div className='tasks-going' ref={dropTaskDone}>
+        <div className='tasks-done' ref={dropTaskDone}>
           <h3>Done</h3>
           {(tasks.map(item => ({
             ...item,
             startAt: moment(item.startAt),
             endAt: moment(item.endAt),
           })).filter(task => task.status?.toLowerCase() === 'finished')).map((task) => {
-            return <Task onClick={() => handleOpenEditModal(task)} content={task.name} key={`task-going-${task._id}`} taskId={task._id} task={task}></Task>
+            return <Task notDrag={true} className="task-done" onClick={() => handleOpenEditModal(task)} content={task.name} key={`task-going-${task._id}`} taskId={task._id} task={task}></Task>
           })}
         </div>
       </div>

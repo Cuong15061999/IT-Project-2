@@ -11,11 +11,15 @@ const localizer = momentLocalizer(moment) // or globalizeLocalizer
 
 export default function CustomCalendar({ mainView = 'month' }) {
     const listEvens = useSelector((state) => state.my_tasks.tasks);
+    const userLogin = useSelector((state) => state.user_login.userLogin);
+
     const [listEventsMoment, setListEventsMoment] = useState([])
     const dispatch = useDispatch();
-
     const defaultDate = useMemo(() => new Date(), [])
     const handleSelectedEvent = (event) => {
+        if (userLogin.role === 'student') {
+            return;
+        }
         dispatch(openModalEditTask({
             action: 'edit',
             taskSelected: {
@@ -25,11 +29,16 @@ export default function CustomCalendar({ mainView = 'month' }) {
             }
         }));
     }
+    const randomColor = () => {
+        const color = ['#90caf9', '#ef9a9a', '#80cbc4', '#81d4fa', '#ffcc80'];
+        return color[Math.floor(Math.random() * color.length)];
+    }
     useEffect(() => {
         setListEventsMoment(listEvens.map(item => ({
             ...item,
             startAt: new Date(moment(item.startAt).toDate()),
-            endAt: new Date(moment(item.endAt).toDate())
+            endAt: new Date(moment(item.endAt).toDate()),
+            color: randomColor()
         })))
     }, [listEvens]);
     useEffect(() => {
@@ -47,6 +56,14 @@ export default function CustomCalendar({ mainView = 'month' }) {
                 endAccessor="endAt"
                 titleAccessor="name"
                 onSelectEvent={handleSelectedEvent}
+                eventPropGetter={(event) => {
+                    return {
+                        style: {
+                            backgroundColor: event.color,
+                            color: '#000'
+                        }
+                    }
+                }}
             />
         </div>
     )

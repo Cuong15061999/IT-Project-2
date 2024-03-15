@@ -2,7 +2,6 @@
 @import 'react-big-calendar/lib/addons/dragAndDrop/styles'; // if using DnD
 
 .task {
-  border: 1px solid #ddd;
   padding: 15px;
   margin-bottom: 10px;
   border-radius: 4px;
@@ -20,6 +19,19 @@
   &s-todo {
     padding: 15px;
     width: 100%;
+  }
+
+  &-going {
+    background-color: #81d4fa;
+    color: #000;
+  }
+  &-done {
+    background-color: #80cbc4;
+    color: #000;
+  }
+  &-todo {
+    background-color: #ef9a9a;
+    color: #000;
   }
 }
 .rbc-calendar {
