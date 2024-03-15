@@ -9,7 +9,7 @@ const eventServices = require('../services/eventServices')
 function streamToBuffer(req, res, next) {
   //    const filename = req.query.filename;
 
-  const downloadFile = "05-03-2024_Book1.xlsx";
+  var downloadFile = req.params.filename;
   const filePath = 'D:\\GitHub\\IT-Project-2\\BE\\uploads\\' + downloadFile;
 
   const stream = fs.createReadStream(filePath);
