@@ -100,6 +100,7 @@ export const EventInfo = () => {
     status: '',
     startAt: '',
     endAt: '',
+    linkFormRegistry: ''
   });
 
   const getEventInfo = useCallback(async () => {
@@ -112,7 +113,8 @@ export const EventInfo = () => {
         activitiesPoint: event.activitiesPoint,
         status: event.status,
         startAt: event.startAt,
-        endAt: event.endAt
+        endAt: event.endAt,
+        linkFormRegistry: event.linkFormRegistry
       });
 
       setHost({
@@ -207,6 +209,7 @@ export const EventInfo = () => {
         status: eventInfo.status,
         startAt: dateStartAtObject,
         endAt: dateEndAtObject,
+        linkFormRegistry: eventInfo.linkFormRegistry
       })
       if (response.status === 200) {
         Swal.fire({
@@ -371,7 +374,7 @@ export const EventInfo = () => {
                   sx={{ minWidth: "100%" }}
                 />
               </Grid>
-              <Grid item xs={12}>
+              <Grid item xs={6}>
                 <h3>Participate Teachers</h3>
                 <MultiSelect
                   options={teacherListOption}
@@ -379,6 +382,18 @@ export const EventInfo = () => {
                   onChange={setTeacherList}
                   disabled={userLogin.role === 'student'}
                   labelledBy="Select"
+                />
+              </Grid>
+              <Grid item xs={6}>
+                <h3>Link Form Registry</h3>
+                <TextField
+                  onChange={(e) => handleChangeEventInfo('linkFormRegistry', e.target.value)}
+                  value={eventInfo.linkFormRegistry}
+                  required
+                  type='text'
+                  id="outlined-required"
+                  size='small'
+                  sx={{ minWidth: "100%" }}
                 />
               </Grid>
               <Grid item xs={6}>
@@ -434,7 +449,7 @@ export const EventInfo = () => {
               </Grid>
               {/* 2 table register student and participate student */}
               <Grid item xs={6}>
-                <Stack direction="row" spacing={2} className="my-2 mb-2">
+                <Stack direction="row" spacing={2} className="my-2 mb-3">
                   <h3>Register Students</h3>
                   <Typography
                     variant="h6"
@@ -444,10 +459,11 @@ export const EventInfo = () => {
                   {userLogin.role !== 'student' && <><ImportFile id="import-register-students" fileUploaded={handleImportRegisterStudentsFile}></ImportFile>
                     <FileDownload sx={{ cursor: "pointer" }} onClick={() => handleDownloadFile(registryListFile, 'register student')} /></>}
                 </Stack>
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '10px' }}>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '5px' }}>
                   {registerStudentsFile?.name}
                   {registerStudentsFile ? <Button variant="contained" color="primary" onClick={() => handleUploadFile('registerStudentsFile')}>Upload</Button> : ''}
                 </Box>
+
                 <TableContainer sx={{ height: 45 + "vh", border: "2px solid gray", borderRadius: "10px" }}>
                   <Table stickyHeader aria-label="sticky table">
                     <TableHead>
@@ -552,11 +568,11 @@ export const EventInfo = () => {
               {/* ----- */}
               <Grid item xs={12}>
                 <Typography variant='h5' align='right'>
-                  {userLogin.role !== 'student' && <Button style={{backgroundColor: 'rgb(0, 35, 102)'}} variant='contained' sx={{ m: 1 }} onClick={updateEvent}>
+                  {userLogin.role !== 'student' && <Button style={{ backgroundColor: 'rgb(0, 35, 102)' }} variant='contained' sx={{ m: 1 }} onClick={updateEvent}>
                     Save
                   </Button>
                   }
-                  <Button style={{backgroundColor: 'rgb(0, 35, 102)'}} variant='contained' sx={{ m: 1 }} onClick={cancelEvent}>
+                  <Button style={{ backgroundColor: 'rgb(0, 35, 102)' }} variant='contained' sx={{ m: 1 }} onClick={cancelEvent}>
                     Cancel
                   </Button>
                 </Typography>
