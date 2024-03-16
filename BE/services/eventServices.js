@@ -1,5 +1,7 @@
 var eventModel = require('../model/eventModel');
+var userModel = require('../model/userModel');
 const sendEmailService = require('../services/emailServices');
+const moment = require('moment');
 
 class eventServices {
   async getEvents() {
@@ -250,35 +252,42 @@ class eventServices {
   }
 
   async checkEventDaily() {
-    const today = moment().format('DD'); // Get today's day as DD format
+    const startOfToday = moment().startOf('day');
+    const endOfToday = moment().endOf('day');
+
     const events = await eventModel.aggregate([
       {
         $match: {
-          $or: [
-            {
-              // Condition 1: todo status for startAt day before today
-              $and: [
-                { startAt: { $gte: moment().subtract(1, 'days').toDate() } }, // Start date is today or after
-                { $expr: { $eq: [{ $dayOfMonth: '$startAt' }, today] } }, // Day of startAt matches today
-                { status: { $ne: 'todo' } }, // Exclude existing 'todo' events
-              ],
-            },
-            {
-              // Condition 2: ongoing status for endAt day before today
-              $and: [
-                { endAt: { $gte: moment().subtract(1, 'days').toDate() } }, // End date is today or after
-                { $expr: { $eq: [{ $dayOfMonth: '$endAt' }, today] } }, // Day of endAt matches today
-                { status: { $ne: 'ongoing' } }, // Exclude existing 'ongoing' events
-              ],
-            },
-          ],
-        },
+          startAt: {
+            $gte: startOfToday.toDate(), // Start date is today or after start of today
+            $lt: endOfToday.toDate() // Start date is before the end of today
+          },
+          status: 'todo' // Include only events with status 'todo'
+        }
       },
-    ]).populate({ path: 'host', model: 'User' })
-    .populate({ path: 'participatingTeachers', model: 'User' });
+      {
+        $lookup: {
+          from: 'users', // Assuming 'User' is the collection name for the User model
+          localField: 'host',
+          foreignField: '_id',
+          as: 'host'
+        }
+      },
+      {
+        $unwind: "$host" // unwind host array
+      },
+    ]);
 
-    events.forEach(event => {
-      sendEmailService.sendEditEventEmail(event);
+    events.forEach(async event => {
+      const participatingTeachersInfo = [];
+      
+      await Promise.all(event.participatingTeachers.map(async teacherId => {
+        const teacherInfo = await userModel.findOne({ _id: teacherId });
+        participatingTeachersInfo.push(teacherInfo);
+      }));
+    
+      event.participatingTeachers = participatingTeachersInfo;
+      sendEmailService.sendNotificationBeginEventEmail(event);
     });
 
     return 'Success';

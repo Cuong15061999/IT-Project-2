@@ -7,12 +7,14 @@ var logger = require('morgan');
 var cron = require('node-cron');
 var connect = require('./config/mongoConnect');
 var secret = require('./secret.js')
+const moment = require('moment');
 
 var authRouter = require('./routes/authRoutes')
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var eventsRouter = require('./routes/events');
 const session = require('express-session');
+const eventServices = require('../BE/services/eventServices.js')
 
 
 var app = express();
@@ -38,12 +40,22 @@ app.use(session({
 connect.connectDB();
 
 //daily crawling news will run on 00:00 every day
-cron.schedule('0 0 * * *', () => {
+cron.schedule('0 0 * * *', async () => {
   console.log('Daily send email for event ; ' + moment().format('MMMM Do YYYY, h:mm:ss a'));
+  await eventServices.checkEventDaily();
 }, {
   scheduled: true,
   timezone: "Asia/Ho_Chi_Minh"
 });
+
+// Schedule cron job to run every 1 minutes
+// cron.schedule('* * * * *', async () => {
+//   console.log('This cron job runs every 1 minutes: ' + moment().format('MMMM Do YYYY, h:mm:ss a'));
+//   await eventServices.checkEventDaily();
+// }, {
+//   scheduled: true,
+//   timezone: "Asia/Ho_Chi_Minh"
+// });
 
 app.use('/', indexRouter);
 // app.use('/auth', authRouter);

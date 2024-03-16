@@ -90,6 +90,21 @@ const newEventContent = (eventName, host, location, startTime, endTime) => {
     `
 }
 
+const startNotiEventContent = (eventName, host, location, startTime, endTime) => {
+    return `
+    <div style="font-family: Arial, sans-serif; max-width: 600px">
+        <h2 style="color: #333;">Dear Teachers and Students.</h2>
+        <p>Your Event: ${eventName} which you have been invited Will be start soon in today please take time to join with us</p>
+        <p><strong>Hosted by:</strong> ${host}.</p>
+        <p><strong>Location:</strong> ${location}.</p>
+        <p><strong>Time:</strong> ${moment(startTime).format('DD-MM-YYYY h:mm a')} to ${moment(endTime).format('DD-MM-YYYY h:mm a')}.</p>
+        <p>We are delighted with your apperance in the Event.</p>
+        <p>Sincerely Best Regards.</p>
+        <p><strong>Faculty IT.</strong></p>
+    </div>
+    `
+}
+
 const editEventContent = (eventName, host, location, startTime, endTime) => {
     return `
     <div style="font-family: Arial, sans-serif; max-width: 600px">
@@ -134,6 +149,22 @@ class sendEmailService {
             subject: subject ? subject : 'Event notification email',
             text: "Event invited email",
             html: newEventContent(Event.name, Event.host.name, Event.location, Event.startAt, Event.endAt),
+        })
+    }
+
+    async sendNotificationBeginEventEmail(Event) {
+        const hostEmail = Event.host.email;
+        const teacherEmailList = Event.participatingTeachers.map(teacher => teacher.email);
+        const listEmail = [hostEmail, ...teacherEmailList, ...Event.listStudentRegistry].join(', ');
+
+        const subject = `Event: ${Event.name} Will begin SOON TODAY !!!`;
+
+        const info = await transporter.sendMail({
+            from: 'phamvqcuong99@gmail.com', // sender address
+            to: listEmail, // list of receivers
+            subject: subject ? subject : 'Event notification email', // Subject line
+            text: "Event notification email when event almost start", // plain text body
+            html: startNotiEventContent(Event.name, Event.host.name, Event.location, Event.startAt, Event.endAt),
         })
     }
 
