@@ -1,4 +1,6 @@
-var mongoose = require('mongoose');var EventSchema = new mongoose.Schema({
+var mongoose = require('mongoose');
+
+var EventSchema = new mongoose.Schema({
   name: { type: String, required: true },
   host: { type: mongoose.Types.ObjectId, required: true, ref: 'User' },
 
@@ -6,8 +8,10 @@ var mongoose = require('mongoose');var EventSchema = new mongoose.Schema({
   participatingStudents: [{ type: String, default: [], required: false }],
   listStudentRegistry:  [{ type: String, default: [], required: false }],
 
-  linkEvents: [{ type: mongoose.Types.ObjectId, default: [], ref: 'Event' }],
-  
+  linkEvents: [{ type: mongoose.Types.ObjectId, default: [], ref: 'Event' }], // links a sub events
+
+  linkFormRegistry: {type : String, required: false, default: ''},
+
   location: {type : String, required: true, default: ''},
   activitiesPoint: { type: Number, required: true, default: 0 },
   status: { type: String, required: true, default: 'todo' },
@@ -26,6 +30,9 @@ var mongoose = require('mongoose');var EventSchema = new mongoose.Schema({
   },
   created: { type: Date, required: true, default: new Date() },
 });
+
+EventSchema.index({ name: 1});
+EventSchema.index({ created: 1 });
 
 var Event = mongoose.model('Event', EventSchema);
 module.exports = Event;

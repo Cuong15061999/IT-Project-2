@@ -17,6 +17,11 @@ class userServices {
     return user;
   }
 
+  async getUserIdByEmail(email) {
+    const user = await userModel.findOne({email: email }).select('_id');
+    return user ? user._id : null;
+  }
+
   //Edit User
   async editUser(req) {
     const finduser = await userModel.findOne({ _id: req.params.id })

@@ -1,5 +1,6 @@
 var eventModel = require('../model/eventModel');
 var userModel = require('../model/userModel');
+const historyStudentServices = require("../services/historyStudentServices");
 const sendEmailService = require('../services/emailServices');
 const moment = require('moment');
 
@@ -226,13 +227,12 @@ class eventServices {
     const eventId = req.params.eventId
     const isCheckingFileString = req.query.isCheckingFile
     const isCheckingFile = isCheckingFileString === "true";
-
     try {
       const findEvent = await eventModel.findOne({ _id: eventId });
       if (!findEvent) {
         throw new Error(`Event not found: Event with ID ${eventId} does not exist.`);
       }
-
+      
       if (req.file) {
         if (isCheckingFile) {
           await eventModel.updateOne({ _id: eventId }, { participationList: req.file.filename, participatingStudents: mssvList });
@@ -241,6 +241,8 @@ class eventServices {
         } else {
           throw new Error('Invalid request: Specify either "registryList" in request params.');
         }
+
+        await historyStudentServices.addHistoryStudent(mssvList, findEvent)
       } else {
         throw new Error('No file uploaded!');
       }
