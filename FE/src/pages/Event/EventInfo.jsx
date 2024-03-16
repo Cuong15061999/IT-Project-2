@@ -381,6 +381,57 @@ export const EventInfo = () => {
                   labelledBy="Select"
                 />
               </Grid>
+              <Grid item xs={6}>
+                <h3>Activities Point</h3>
+                <TextField
+                  onChange={(e) => handleChangeEventInfo('activitiesPoint', e.target.value)}
+                  value={eventInfo.activitiesPoint}
+                  required
+                  type='number'
+                  inputProps={{ min: 0, max: 99 }}
+                  id="outlined-required"
+                  size='small'
+                  sx={{ minWidth: "100%" }}
+                />
+              </Grid>
+              <Grid item xs={6}>
+                <h3>Status</h3>
+                <TextField
+                  onChange={(e) => handleChangeEventInfo('status', e.target.value)}
+                  select
+                  required
+                  value={eventInfo.status}
+                  id="outlined-required"
+                  size='small'
+                  sx={{ minWidth: "100%" }}
+                >
+                  {statusList.map((option) => (
+                    <MenuItem key={option.value} value={option.value}>
+                      {option.label}
+                    </MenuItem>
+                  ))}
+                </TextField>
+              </Grid>
+              <Grid item xs={6}>
+                <h3>Start Date</h3>
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                  <DateTimePicker
+                    sx={{ minWidth: "100%" }}
+                    value={dayjs(eventInfo.startAt)}
+                    onChange={(newvalue) => handleChangeEventInfo('startAt', newvalue)}
+                  />
+                </LocalizationProvider>
+              </Grid>
+              <Grid item xs={6}>
+                <h3>End Date</h3>
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                  <DateTimePicker
+                    sx={{ minWidth: "100%" }}
+                    value={dayjs(eventInfo.endAt)}
+                    onChange={(newvalue) => handleChangeEventInfo('endAt', newvalue)}
+                  />
+                </LocalizationProvider>
+              </Grid>
               {/* 2 table register student and participate student */}
               <Grid item xs={6}>
                 <Stack direction="row" spacing={2} className="my-2 mb-2">
@@ -499,61 +550,6 @@ export const EventInfo = () => {
                 />
               </Grid>
               {/* ----- */}
-              <Grid item xs={6}>
-                <h3>Activities Point</h3>
-                <TextField
-                  disabled={userLogin.role === 'student'}
-                  onChange={(e) => handleChangeEventInfo('activitiesPoint', e.target.value)}
-                  value={eventInfo.activitiesPoint}
-                  required
-                  type='number'
-                  inputProps={{ min: 0, max: 99 }}
-                  id="outlined-required"
-                  size='small'
-                  sx={{ minWidth: "100%" }}
-                />
-              </Grid>
-              <Grid item xs={6}>
-                <h3>Status</h3>
-                <TextField
-                  disabled={userLogin.role === 'student'}
-                  onChange={(e) => handleChangeEventInfo('status', e.target.value)}
-                  select
-                  required
-                  value={eventInfo.status}
-                  id="outlined-required"
-                  size='small'
-                  sx={{ minWidth: "100%" }}
-                >
-                  {statusList.map((option) => (
-                    <MenuItem key={option.value} value={option.value}>
-                      {option.label}
-                    </MenuItem>
-                  ))}
-                </TextField>
-              </Grid>
-              <Grid item xs={6}>
-                <h3>Start Date</h3>
-                <LocalizationProvider dateAdapter={AdapterDayjs}>
-                  <DateTimePicker
-                    disabled={userLogin.role === 'student'}
-                    sx={{ minWidth: "100%" }}
-                    value={dayjs(eventInfo.startAt)}
-                    onChange={(newvalue) => handleChangeEventInfo('startAt', newvalue)}
-                  />
-                </LocalizationProvider>
-              </Grid>
-              <Grid item xs={6}>
-                <h3>End Date</h3>
-                <LocalizationProvider dateAdapter={AdapterDayjs}>
-                  <DateTimePicker
-                    disabled={userLogin.role === 'student'}
-                    sx={{ minWidth: "100%" }}
-                    value={dayjs(eventInfo.endAt)}
-                    onChange={(newvalue) => handleChangeEventInfo('endAt', newvalue)}
-                  />
-                </LocalizationProvider>
-              </Grid>
               <Grid item xs={12}>
                 <Typography variant='h5' align='right'>
                   {userLogin.role !== 'student' && <Button variant='contained' sx={{ m: 1 }} onClick={updateEvent}>

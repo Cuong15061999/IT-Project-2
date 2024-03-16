@@ -10,7 +10,6 @@ import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { setTabHomeSelected, setTasks } from '../../store/myTasks';
 import ModalEditTask from '../../components/ModalEditTask';
-import { useLocation } from 'react-router-dom';
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;

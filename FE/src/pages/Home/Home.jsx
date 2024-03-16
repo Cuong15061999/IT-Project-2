@@ -29,11 +29,11 @@ export const Home = () => {
     <>
       <NavBar></NavBar>
       <Box height={45}></Box>
-      <Box sx={{ display: 'flex' }}>
+      <Box sx={{ display: 'flex'}}>
         <SideNav></SideNav>
         <Box component="main" sx={{ flexGrow: 1, p: 3, backgroundColor: "#ECEFF4", minHeight: "100vh" }}>
-          <h1>Home</h1>
-          <Stack spacing={{ xs: 1, sm: 2 }} direction="row" useFlexGap flexWrap="wrap" justifyContent='flex-end'>
+          <Stack spacing={{ xs: 1, sm: 2 }} direction="row" useFlexGap flexWrap="wrap" justifyContent='space-between'>
+            <h1>Home</h1>
             {userLogin.role !== 'student' &&
               <Button style={{ marginBottom: '15px' }} variant="contained" endIcon={<AddCircle />} align="justify" onClick={handleAddTask}>
                 Add

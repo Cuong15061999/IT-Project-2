@@ -17,22 +17,25 @@ export default function CustomCalendar({ mainView = 'month' }) {
 
     const [listEventsMoment, setListEventsMoment] = useState([])
     const defaultDate = useMemo(() => new Date(), [])
+
     const handleSelectedEvent = (event) => {
         navigate(`/event/${event._id}`);
         dispatch(setTabHomeSelected(0));
     }
+
     function getColorBasedOnStatus(status) {
         switch (status) {
-          case 'todo':
-            return 'rgba(41, 244, 153, 1)';
-          case 'ongoing':
-            return 'rgb(178, 231, 19)';
-          case 'finished':
-            return 'rgba(255, 109, 136, 1)';
-          default:
-            return 'black'; // Or any default color
+            case 'todo':
+                return 'rgba(255, 109, 136, 1)';
+            case 'ongoing':
+                return 'rgb(178, 231, 19)';
+            case 'finished':
+                return 'rgba(41, 244, 153, 1)';
+            default:
+                return 'black'; // Or any default color
         }
-      }
+    }
+
     useEffect(() => {
         setListEventsMoment(listEvens.map(item => ({
             ...item,
@@ -41,6 +44,22 @@ export default function CustomCalendar({ mainView = 'month' }) {
             color: getColorBasedOnStatus(item.status)
         })))
     }, [listEvens]);
+
+    useEffect(() => {
+        console.log(listEventsMoment)
+    }, [listEventsMoment]);
+
+    const eventPropGetter = (event) => {
+        if (mainView === 'agenda') {
+            return {}; // No styling for agenda view
+        }
+        return {
+            style: {
+                backgroundColor: event.color,
+                color: '#000'
+            }
+        };
+    };
 
     return (
         <div className="myCustomHeight">
@@ -54,18 +73,12 @@ export default function CustomCalendar({ mainView = 'month' }) {
                 endAccessor="endAt"
                 titleAccessor="name"
                 onSelectEvent={handleSelectedEvent}
-                eventPropGetter={(event) => {
-                    return {
-                        style: {
-                            backgroundColor: event.color,
-                            color: '#000'
-                        }
-                    }
-                }}
+                eventPropGetter={eventPropGetter}
             />
         </div>
     )
 }
+
 CustomCalendar.propTypes = {
     localizer: PropTypes.instanceOf(DateLocalizer),
 }

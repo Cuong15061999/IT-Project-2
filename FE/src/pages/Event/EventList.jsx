@@ -98,6 +98,23 @@ export default function EventList() {
     }
   };
 
+  const getColorByStatus = (status) => {
+    switch (status) {
+      case 'todo':
+        return 'rgba(255, 109, 136, 1)';
+      case 'ongoing':
+        return 'rgb(178, 231, 19)';
+      case 'finished':
+        return 'rgba(41, 244, 153, 1)';
+      default:
+        return 'inherit'; // Default color
+    }
+  };
+
+  const capitalizeFirstLetter = (string) => {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+  };
+
   return (
     <Paper sx={{ p: 1, width: '98%', overflow: 'hidden' }}>
       <h1>Events List</h1>
@@ -140,28 +157,28 @@ export default function EventList() {
               .map((row) => {
                 return (
                   <TableRow key={row.id} hover role="checkbox" tabIndex={-1}>
-                    <TableCell align="left">
+                    <TableCell align="center">
                       {row.name}
                     </TableCell>
-                    <TableCell align="left">
+                    <TableCell align="center">
                       {row.host}
                     </TableCell>
-                    <TableCell align="left">
+                    <TableCell align="center">
                       {row.location}
                     </TableCell>
-                    <TableCell align="left">
-                      {row.status}
+                    <TableCell align="center" style={{ color: getColorByStatus(row.status), fontWeight: 'bold' }}>
+                      {capitalizeFirstLetter(row.status)}
                     </TableCell>
-                    <TableCell align="left">
+                    <TableCell align="center">
                       {row.activitiesPoint}
                     </TableCell>
-                    <TableCell align="left">
+                    <TableCell align="center">
                       {row.startDate}
                     </TableCell>
-                    <TableCell align="left">
+                    <TableCell align="center">
                       {row.endDate}
                     </TableCell>
-                    <TableCell align="left">
+                    <TableCell align="center">
                       <Stack spacing={2} direction="row">
                         <Info
                           style={{
