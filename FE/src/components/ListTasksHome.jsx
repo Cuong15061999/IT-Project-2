@@ -45,9 +45,6 @@ export default function ListTasksHome({ data }) {
   }
 
   const handleOpenEditModal = (task) => {
-    if (userLogin.role === 'student') {
-      return;
-    }
     dispatch(setTabHomeSelected(1));
     navigate(`/event/${task._id}`)
   }

@@ -29,13 +29,14 @@ import Swal from "sweetalert2";
 import axios from 'axios';
 import dayjs from 'dayjs';
 import ImportFile from '../../components/ImportFile';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { showNotify } from '../../store/myTasks';
 
 export const EventInfo = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
+  const userLogin = useSelector((state) => state.user_login.userLogin);
   const [registerStudentsFile, setRegisterStudentsFile] = useState(null);
   const [participateStudentsFile, setParticipateStudentsFile] = useState(null);
   const [registryListFile, setRegistryListFile] = useState(null);
@@ -188,6 +189,9 @@ export const EventInfo = () => {
 
   const updateEvent = async () => {
     try {
+      if (userLogin.role === 'student') {
+        return;
+      }
       const dayjsStartAtObject = dayjs(eventInfo.startAt);
       const dateStartAtObject = dayjsStartAtObject.toDate();
 
@@ -264,13 +268,22 @@ export const EventInfo = () => {
     }
   }
   const handleImportRegisterStudentsFile = (file) => {
+    if (userLogin === 'student') {
+      return;
+    }
     setRegisterStudentsFile(file);
   }
   const handleImportPaticipateStudentsFile = (file) => {
+    if (userLogin === 'student') {
+      return;
+    }
     setParticipateStudentsFile(file);
   }
 
   const handleDownloadFile = async (filename, fileType) => {
+    if (userLogin === 'student') {
+      return;
+    }
     try {
       if (!filename) {
         dispatch(showNotify({
@@ -281,7 +294,7 @@ export const EventInfo = () => {
       }
       const urlDownload = `http://localhost:3001/download-file/${filename}`;
       const response = await axios.get(urlDownload, {
-        responseType: 'blob' 
+        responseType: 'blob'
       });
 
       if (response.status === 200) {
@@ -341,6 +354,7 @@ export const EventInfo = () => {
                   onChange={(e) => handleChangeEventInfo('name', e.target.value)}
                   value={eventInfo.name}
                   required
+                  disabled={userLogin.role === 'student'}
                   id="outlined-required"
                   size='small'
                   sx={{ minWidth: "100%" }}
@@ -363,6 +377,7 @@ export const EventInfo = () => {
                   options={teacherListOption}
                   value={teacherList}
                   onChange={setTeacherList}
+                  disabled={userLogin.role === 'student'}
                   labelledBy="Select"
                 />
               </Grid>
@@ -375,8 +390,8 @@ export const EventInfo = () => {
                     component="div"
                     sx={{ flexGrow: 1 }}
                   ></Typography>
-                  <ImportFile id="import-register-students" fileUploaded={handleImportRegisterStudentsFile}></ImportFile>
-                  <FileDownload sx={{ cursor: "pointer" }} onClick={() => handleDownloadFile(registryListFile, 'register student')} />
+                  {userLogin.role !== 'student' && <><ImportFile id="import-register-students" fileUploaded={handleImportRegisterStudentsFile}></ImportFile>
+                    <FileDownload sx={{ cursor: "pointer" }} onClick={() => handleDownloadFile(registryListFile, 'register student')} /></>}
                 </Stack>
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '10px' }}>
                   {registerStudentsFile?.name}
@@ -433,8 +448,8 @@ export const EventInfo = () => {
                     component="div"
                     sx={{ flexGrow: 1 }}
                   ></Typography>
-                  <ImportFile id="import-participate-students" fileUploaded={handleImportPaticipateStudentsFile}></ImportFile>
-                  <FileDownload sx={{ cursor: "pointer" }} onClick={() => handleDownloadFile(participateStudents, 'participate students')} />
+                  {userLogin.role !== 'student' && <><ImportFile id="import-participate-students" fileUploaded={handleImportPaticipateStudentsFile}></ImportFile>
+                    <FileDownload sx={{ cursor: "pointer" }} onClick={() => handleDownloadFile(participateStudents, 'participate students')} /></>}
                 </Stack>
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '10px' }}>
                   {participateStudentsFile?.name}
@@ -487,6 +502,7 @@ export const EventInfo = () => {
               <Grid item xs={6}>
                 <h3>Activities Point</h3>
                 <TextField
+                  disabled={userLogin.role === 'student'}
                   onChange={(e) => handleChangeEventInfo('activitiesPoint', e.target.value)}
                   value={eventInfo.activitiesPoint}
                   required
@@ -500,6 +516,7 @@ export const EventInfo = () => {
               <Grid item xs={6}>
                 <h3>Status</h3>
                 <TextField
+                  disabled={userLogin.role === 'student'}
                   onChange={(e) => handleChangeEventInfo('status', e.target.value)}
                   select
                   required
@@ -519,6 +536,7 @@ export const EventInfo = () => {
                 <h3>Start Date</h3>
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                   <DateTimePicker
+                    disabled={userLogin.role === 'student'}
                     sx={{ minWidth: "100%" }}
                     value={dayjs(eventInfo.startAt)}
                     onChange={(newvalue) => handleChangeEventInfo('startAt', newvalue)}
@@ -529,6 +547,7 @@ export const EventInfo = () => {
                 <h3>End Date</h3>
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                   <DateTimePicker
+                    disabled={userLogin.role === 'student'}
                     sx={{ minWidth: "100%" }}
                     value={dayjs(eventInfo.endAt)}
                     onChange={(newvalue) => handleChangeEventInfo('endAt', newvalue)}
@@ -537,9 +556,10 @@ export const EventInfo = () => {
               </Grid>
               <Grid item xs={12}>
                 <Typography variant='h5' align='right'>
-                  <Button variant='contained' sx={{ m: 1 }} onClick={updateEvent}>
+                  {userLogin.role !== 'student' && <Button variant='contained' sx={{ m: 1 }} onClick={updateEvent}>
                     Save
                   </Button>
+                  }
                   <Button variant='contained' sx={{ m: 1 }} onClick={cancelEvent}>
                     Cancel
                   </Button>

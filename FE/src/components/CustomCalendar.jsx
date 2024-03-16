@@ -12,17 +12,12 @@ const localizer = momentLocalizer(moment) // or globalizeLocalizer
 
 export default function CustomCalendar({ mainView = 'month' }) {
     const listEvens = useSelector((state) => state.my_tasks.tasks);
-    const userLogin = useSelector((state) => state.user_login.userLogin);
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
     const [listEventsMoment, setListEventsMoment] = useState([])
     const defaultDate = useMemo(() => new Date(), [])
     const handleSelectedEvent = (event) => {
-        if (userLogin.role === 'student') {
-            return;
-        }
-        
         navigate(`/event/${event._id}`);
         dispatch(setTabHomeSelected(0));
     }
@@ -46,9 +41,7 @@ export default function CustomCalendar({ mainView = 'month' }) {
             color: getColorBasedOnStatus(item.status)
         })))
     }, [listEvens]);
-    useEffect(() => {
-        console.log(listEventsMoment)
-    }, [listEventsMoment]);
+
     return (
         <div className="myCustomHeight">
             <Calendar
