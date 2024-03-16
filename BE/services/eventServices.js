@@ -1,9 +1,7 @@
 var eventModel = require('../model/eventModel');
-var notificationModel = require('../model/notificationModel')
 const sendEmailService = require('../services/emailServices');
 
 class eventServices {
-  //Get all events in DB
   async getEvents() {
     return await eventModel
       .find()
@@ -195,7 +193,6 @@ class eventServices {
 
       //if event status set to finished then send finised mail
       if (findEvent.status !== 'finished' && req.body.status === 'finished') {
-        //Send email when event done
         const updatedEvent = await eventModel
           .findOne({ _id: req.params.id })
           .populate({
@@ -214,7 +211,6 @@ class eventServices {
     return
   }
 
-  //Delete event
   async delEvent(id) {
     const event = await eventModel.findOne({ _id: id });
     if (event) {
@@ -234,7 +230,7 @@ class eventServices {
       if (!findEvent) {
         throw new Error(`Event not found: Event with ID ${eventId} does not exist.`);
       }
-  
+
       if (req.file) {
         if (isCheckingFile) {
           await eventModel.updateOne({ _id: eventId }, { participationList: req.file.filename, participatingStudents: mssvList });
@@ -246,11 +242,46 @@ class eventServices {
       } else {
         throw new Error('No file uploaded!');
       }
-  
+
       return eventId;
     } catch (error) {
       console.error(error.message);
     }
+  }
+
+  async checkEventDaily() {
+    const today = moment().format('DD'); // Get today's day as DD format
+    const events = await eventModel.aggregate([
+      {
+        $match: {
+          $or: [
+            {
+              // Condition 1: todo status for startAt day before today
+              $and: [
+                { startAt: { $gte: moment().subtract(1, 'days').toDate() } }, // Start date is today or after
+                { $expr: { $eq: [{ $dayOfMonth: '$startAt' }, today] } }, // Day of startAt matches today
+                { status: { $ne: 'todo' } }, // Exclude existing 'todo' events
+              ],
+            },
+            {
+              // Condition 2: ongoing status for endAt day before today
+              $and: [
+                { endAt: { $gte: moment().subtract(1, 'days').toDate() } }, // End date is today or after
+                { $expr: { $eq: [{ $dayOfMonth: '$endAt' }, today] } }, // Day of endAt matches today
+                { status: { $ne: 'ongoing' } }, // Exclude existing 'ongoing' events
+              ],
+            },
+          ],
+        },
+      },
+    ]).populate({ path: 'host', model: 'User' })
+    .populate({ path: 'participatingTeachers', model: 'User' });
+
+    events.forEach(event => {
+      sendEmailService.sendEditEventEmail(event);
+    });
+
+    return 'Success';
   }
 }
 
