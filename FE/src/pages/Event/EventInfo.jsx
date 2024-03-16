@@ -176,7 +176,19 @@ export const EventInfo = () => {
     getEventInfo();
   }, [getTeachersListOption, getEventInfo])
 
+  function validateGoogleFormUrl(url) {
+    const regex = /^(https?:\/\/)?(docs.google.com)\/forms\/d\/[a-zA-Z0-9\-_]+\/edit$/i;
+    return regex.test(url);
+  }
+
   const handleChangeEventInfo = (fieldName, newValue) => {
+    if (fieldName === 'linkFormRegistry' && !validateGoogleFormUrl(newValue)) {
+      dispatch(showNotify({
+        show: true,
+        message: `This link is not google form`
+      }))
+      return;
+    }
     setEventInfo({ ...eventInfo, [fieldName]: newValue });
   };
 
