@@ -552,11 +552,11 @@ export const EventInfo = () => {
               {/* ----- */}
               <Grid item xs={12}>
                 <Typography variant='h5' align='right'>
-                  {userLogin.role !== 'student' && <Button variant='contained' sx={{ m: 1 }} onClick={updateEvent}>
+                  {userLogin.role !== 'student' && <Button style={{backgroundColor: 'rgb(0, 35, 102)'}} variant='contained' sx={{ m: 1 }} onClick={updateEvent}>
                     Save
                   </Button>
                   }
-                  <Button variant='contained' sx={{ m: 1 }} onClick={cancelEvent}>
+                  <Button style={{backgroundColor: 'rgb(0, 35, 102)'}} variant='contained' sx={{ m: 1 }} onClick={cancelEvent}>
                     Cancel
                   </Button>
                 </Typography>

@@ -35,7 +35,7 @@ export const Home = () => {
           <Stack spacing={{ xs: 1, sm: 2 }} direction="row" useFlexGap flexWrap="wrap" justifyContent='space-between'>
             <h1>Home</h1>
             {userLogin.role !== 'student' &&
-              <Button style={{ marginBottom: '15px' }} variant="contained" endIcon={<AddCircle />} align="justify" onClick={handleAddTask}>
+              <Button style={{ marginBottom: '15px', backgroundColor: 'rgb(0, 35, 102)' }} variant="contained" endIcon={<AddCircle />} align="justify" onClick={handleAddTask}>
                 Add
               </Button>}
           </Stack>

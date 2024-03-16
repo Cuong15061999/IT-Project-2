@@ -11,7 +11,8 @@ import { useSelector } from 'react-redux';
 const AppBar = styled(MuiAppBar, {
   shouldForwardProp: (prop) => prop !== 'open',
 })(({ theme }) => ({
-  zIndex: theme.zIndex.drawer + 1
+  zIndex: theme.zIndex.drawer + 1,
+  backgroundColor: 'rgb(0, 35, 102)',
 }));
 
 export default function MenuAppBar() {

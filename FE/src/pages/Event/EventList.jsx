@@ -135,7 +135,7 @@ export default function EventList() {
           component="div"
           sx={{ flexGrow: 1 }}
         ></Typography>
-        <Button variant="contained" endIcon={<AddCircle />} onClick={() => { navigate(`/event/add`) }}>
+        <Button style={{backgroundColor: 'rgb(0, 35, 102)'}} variant="contained" endIcon={<AddCircle />} onClick={() => { navigate(`/event/add`) }}>
           Add
         </Button>
       </Stack>
