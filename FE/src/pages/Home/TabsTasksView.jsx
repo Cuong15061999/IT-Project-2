@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { Tabs, Tab, Typography, Box, Backdrop, CircularProgress } from '@mui/material';
 import CustomCalendar from '../../components/CustomCalendar';
@@ -44,7 +44,7 @@ function a11yProps(index) {
   };
 }
 
-export default function TabsTasksView() {
+export default function TabsTasksView({ user_id }) {
   const tabHomeSelected = useSelector((state) => state.my_tasks.tabHomeSelected);
   const [value, setValue] = useState(tabHomeSelected);
   const isLoading = useSelector((state) => state.my_tasks.isLoading);
@@ -55,9 +55,9 @@ export default function TabsTasksView() {
     setValue(newValue);
   };
 
-  const getEvents = async () => {
+  const getEvents = useCallback(async () => {
     try {
-      const urlGetEvents = `http://localhost:3001/events`;
+      const urlGetEvents = `http://localhost:3001/events/userId/${user_id}`;
       const { data } = await axios.get(urlGetEvents);
       if (data.data) {
         dispatch(setTasks(data.data));
@@ -65,20 +65,21 @@ export default function TabsTasksView() {
     } catch (error) {
       console.log(error)
     }
-  }
+  },[dispatch, user_id]);
+
   useEffect(() => {
     getEvents();
-  }, []);
+  }, [getEvents]);
 
   useEffect(() => {
     dispatch(setTabHomeSelected(value));
-  }, [value])
+  }, [value, dispatch])
 
   return (
     <>
       <Backdrop
         style={{ zIndex: 1500 }}
-        sx={{ color: '#fff'}}
+        sx={{ color: '#fff' }}
         open={isLoading}
       >
         <CircularProgress color="inherit" />

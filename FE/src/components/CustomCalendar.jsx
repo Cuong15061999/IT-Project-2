@@ -45,10 +45,6 @@ export default function CustomCalendar({ mainView = 'month' }) {
         })))
     }, [listEvens]);
 
-    useEffect(() => {
-        console.log(listEventsMoment)
-    }, [listEventsMoment]);
-
     const eventPropGetter = (event) => {
         if (mainView === 'agenda') {
             return {}; // No styling for agenda view

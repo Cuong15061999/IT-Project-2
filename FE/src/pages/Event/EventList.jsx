@@ -40,7 +40,7 @@ export default function EventList() {
 
   const getEvents = useCallback(async () => {
     try {
-      const response = await axios.get(`http://localhost:3001/events`);
+      const response = await axios.get(`http://localhost:3001/events/userId/`);
       const filterData = response.data.data.map((row) => ({
         id: row._id,
         name: row.name,

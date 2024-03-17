@@ -4,9 +4,15 @@ const sendEmailService = require('../services/emailServices');
 var router = express.Router();
 
 /* GET All event. */
-router.get('/', async function (req, res, next) {
+router.get('/userId/:userId?', async function (req, res, next) {
   try {
-    const allEvents = await eventServices.getEvents();
+    let allEvents = []
+    if (req.params.userId) {
+      allEvents = await eventServices.getEventsByUserId(req.params.userId);
+    }
+    else {
+      allEvents = await eventServices.getEvents();
+    }
     res.status(200).json({
       data: allEvents,
       message: 'Get all events',
