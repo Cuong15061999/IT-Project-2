@@ -45,10 +45,6 @@ export default function CustomCalendar({ mainView = 'month' }) {
         })))
     }, [listEvens]);
 
-    useEffect(() => {
-        console.log(listEventsMoment)
-    }, [listEventsMoment]);
-
     const eventPropGetter = (event) => {
         if (mainView === 'agenda') {
             return {}; // No styling for agenda view
@@ -56,14 +52,22 @@ export default function CustomCalendar({ mainView = 'month' }) {
         return {
             style: {
                 backgroundColor: event.color,
-                color: '#000'
+                color: event.color === 'black' ? '#fff' : '#000'
             }
         };
     };
-
+    const CustomEvent = ({ event }) => {
+        return (
+            <span>
+                <strong style={{ fontSize: '14px' }}>{event.name}</strong>
+                <div style={{ fontSize: '12px' }}>{event.location}</div>
+            </span>
+        );
+    };
     return (
         <div className="myCustomHeight">
             <Calendar
+                showAllEvents={true}
                 defaultView={mainView}
                 defaultDate={defaultDate}
                 events={listEventsMoment}
@@ -74,6 +78,12 @@ export default function CustomCalendar({ mainView = 'month' }) {
                 titleAccessor="name"
                 onSelectEvent={handleSelectedEvent}
                 eventPropGetter={eventPropGetter}
+                components={{
+                    event: CustomEvent,
+                    week: {
+                        event: CustomEvent
+                    }
+                }}
             />
         </div>
     )
