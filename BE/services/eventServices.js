@@ -78,9 +78,65 @@ class eventServices {
     }
   }
 
+    //Get all events filter by user_id
+    async getEventsHistoryByUserId(userId) {
+      const user = await userModel.findOne({ _id: userId });
+      if (user.role === 'student') {
+        const events = await eventModel
+          .find({
+            $or: [
+              { "participatingStudents": { $in: [user.email] } },
+            ]
+          })
+          .sort({ created: -1 })
+          .populate({
+            path: 'host',
+            model: 'User'
+          })
+          .populate({
+            path: 'participatingTeachers',
+            model: 'User'
+          });
+        return events
+      }
+      if (user.role === 'teacher') {
+        const events = await eventModel
+          .find({
+            $or: [
+              { "participatingTeachers": { $in: [userId] } },
+              { "host": userId }
+            ]
+  
+          })
+          .sort({ created: -1 })
+          .populate({
+            path: 'host',
+            model: 'User'
+          })
+          .populate({
+            path: 'participatingTeachers',
+            model: 'User'
+          });
+        return events
+      }
+      else {
+        return await eventModel
+          .find()
+          .sort({ created: -1 })
+          .populate({
+            path: 'host',
+            model: 'User'
+          })
+          .populate({
+            path: 'participatingTeachers',
+            model: 'User'
+          });
+      }
+    }
+
   //Get total attend event and activities point in year
   async getHistorySummary(userId) {
-    const events = await this.getEventsByUserId(userId);
+    const events = await this.getEventsHistoryByUserId(userId); // getEventsByUserId only participate one not register
 
     const currentYear = new Date().getFullYear();
 

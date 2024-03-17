@@ -46,7 +46,7 @@ export default function AccountHistory() {
 
   const getEvents = useCallback(async () => {
     try {
-      const response = await axios.get(`http://localhost:3001/events/userId/${user_id}`);
+      const response = await axios.get(`http://localhost:3001/events/history/userId/${user_id}`);
       const filterData = response.data.data.map((row) => ({
         id: row._id,
         name: row.name,

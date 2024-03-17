@@ -24,6 +24,27 @@ router.get('/userId/:userId?', async function (req, res, next) {
   }
 });
 
+/* GET All event participate history. */
+router.get('/history/userId/:userId?', async function (req, res, next) {
+  try {
+    let allEvents = []
+    if (req.params.userId) {
+      allEvents = await eventServices.getEventsHistoryByUserId(req.params.userId);
+    }
+    else {
+      allEvents = await eventServices.getEvents();
+    }
+    res.status(200).json({
+      data: allEvents,
+      message: 'Get all events',
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: error.message
+    })
+  }
+});
+
 /* GET event total attend and activities point in year. */
 router.get('/history-summary/:userId', async function (req, res, next) {
   try {
