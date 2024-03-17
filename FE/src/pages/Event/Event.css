@@ -1,0 +1,11 @@
+.label-link-form-registry {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.edit-action {
+    cursor: pointer;
+}
+.edit-action:hover {
+    text-decoration: underline;
+}

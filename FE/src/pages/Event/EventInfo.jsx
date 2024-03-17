@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react'
-import { useParams, useNavigate, useLocation } from 'react-router-dom';
+import { useParams, useNavigate, useLocation, Link } from 'react-router-dom';
 import { FileDownload } from "@mui/icons-material";
 import {
   Box,
@@ -41,6 +41,7 @@ export const EventInfo = () => {
   const [participateStudentsFile, setParticipateStudentsFile] = useState(null);
   const [registryListFile, setRegistryListFile] = useState(null);
   const [participateStudents, setParticipateStudents] = useState(null);
+  const [isEditLinkFormRegistry, setIsEditLinkFormRegistry] = useState(false);
   // data table student register
   const headerList = ["STT", "Email", "Student ID"];
   const [page, setPage] = useState(0);
@@ -176,13 +177,8 @@ export const EventInfo = () => {
     getEventInfo();
   }, [getTeachersListOption, getEventInfo])
 
-  function validateGoogleFormUrl(url) {
-    const regex = /^(https?:\/\/)?(docs.google.com)\/forms\/d\/[a-zA-Z0-9\-_]+\/edit$/i;
-    return regex.test(url);
-  }
-
   const handleChangeEventInfo = (fieldName, newValue) => {
-    if (fieldName === 'linkFormRegistry' && !validateGoogleFormUrl(newValue)) {
+    if (fieldName === 'linkFormRegistry' && newValue.indexOf('docs.google.com') === -1) {
       dispatch(showNotify({
         show: true,
         message: `This link is not google form`
@@ -397,8 +393,11 @@ export const EventInfo = () => {
                 />
               </Grid>
               <Grid item xs={6}>
-                <h3>Link Form Registry</h3>
-                <TextField
+                <div className='label-link-form-registry'>
+                  <h3>Link Form Registry</h3> |
+                  {!isEditLinkFormRegistry ? <span className='edit-action' onClick={() => setIsEditLinkFormRegistry(true)}>Edit</span> : <span className='edit-action' onClick={() => setIsEditLinkFormRegistry(false)}>Cancel</span>}
+                </div>
+                {isEditLinkFormRegistry ? <TextField
                   onChange={(e) => handleChangeEventInfo('linkFormRegistry', e.target.value)}
                   value={eventInfo.linkFormRegistry}
                   required
@@ -406,7 +405,8 @@ export const EventInfo = () => {
                   id="outlined-required"
                   size='small'
                   sx={{ minWidth: "100%" }}
-                />
+                /> : <a target='blank' href={eventInfo.linkFormRegistry}>{eventInfo.linkFormRegistry}</a>}
+
               </Grid>
               <Grid item xs={6}>
                 <h3>Activities Point</h3>
