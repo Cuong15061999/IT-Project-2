@@ -24,6 +24,23 @@ router.get('/userId/:userId?', async function (req, res, next) {
   }
 });
 
+/* GET event total attend and activities point in year. */
+router.get('/history-summary/:userId', async function (req, res, next) {
+  try {
+    const historySummary = await eventServices.getHistorySummary(req.params.userId);
+
+    res.status(200).json({
+      data: historySummary,
+      message: 'Get History summary',
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: error.message
+    })
+  }
+})
+
+
 /* Send email when some change happen in the Event */
 router.post('/sendEmail/:id', async function (req, res, next) {
   try {

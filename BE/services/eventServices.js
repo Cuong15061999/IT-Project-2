@@ -41,26 +41,26 @@ class eventServices {
           path: 'participatingTeachers',
           model: 'User'
         });
-        return events
+      return events
     }
     if (user.role === 'teacher') {
       const events = await eventModel
-      .find({
-        $or: [
-          { "participatingTeachers": { $in: [userId] } },
-          { "host": userId }
-        ]
-        
-      })
-      .sort({ created: -1 })
-      .populate({
-        path: 'host',
-        model: 'User'
-      })
-      .populate({
-        path: 'participatingTeachers',
-        model: 'User'
-      });
+        .find({
+          $or: [
+            { "participatingTeachers": { $in: [userId] } },
+            { "host": userId }
+          ]
+
+        })
+        .sort({ created: -1 })
+        .populate({
+          path: 'host',
+          model: 'User'
+        })
+        .populate({
+          path: 'participatingTeachers',
+          model: 'User'
+        });
       return events
     }
     else {
@@ -75,6 +75,32 @@ class eventServices {
           path: 'participatingTeachers',
           model: 'User'
         });
+    }
+  }
+
+  //Get total attend event and activities point in year
+  async getHistorySummary(userId) {
+    const events = await this.getEventsByUserId(userId);
+
+    const currentYear = new Date().getFullYear();
+
+    const totalEvents = events.reduce((acc, event) => {
+      if (event.created.getFullYear() === currentYear) {
+        acc += 1 || 0; 
+      }
+      return acc;
+    }, 0);
+
+    const totalPoints = events.reduce((acc, event) => {
+      if (event.status === 'finished' && event.created.getFullYear() === currentYear) {
+        acc += event.activitiesPoint || 0;
+      }
+      return acc;
+    }, 0);
+
+    return {
+      totalEvents: totalEvents,
+      totalPoints: totalPoints,
     }
   }
 
