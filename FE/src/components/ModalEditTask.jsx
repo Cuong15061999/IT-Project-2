@@ -3,15 +3,15 @@ import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Modal from '@mui/material/Modal';
 import { Grid, MenuItem, Paper, TextField } from '@mui/material';
-import dayjs from 'dayjs';
 import { MultiSelect } from 'react-multi-select-component';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import { useDispatch, useSelector } from 'react-redux';
 import { closeModalEditTask, editTask, updateTask, addTask } from '../store/myTasks';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import axios from 'axios';
+import dayjs from 'dayjs';
 
 const style = {
   position: 'absolute',
@@ -60,7 +60,7 @@ export default function ModalEditTask() {
     } else {
       dispatch(updateTask(taskSelected));
     }
-  }
+  };
 
   const handleChangeTaskInfo = (fieldName, newValue) => {
     dispatch(editTask({ fieldName, newValue }));
@@ -72,23 +72,23 @@ export default function ModalEditTask() {
       const response = await axios.get(urlGetUser);
       if (role === 'student') {
         setStudentListOption(response.data.data.map(({ name, _id }) => ({ label: name, value: _id })));
-        console.log(response.data.data.map(({ name, _id }) => ({ label: name, value: _id })))
+        // console.log(response.data.data.map(({ name, _id }) => ({ label: name, value: _id })))
       } else {
         setTeacherListOption(response.data.data.map(({ name, _id }) => ({ label: name, value: _id })));
       }
     } catch (error) {
       console.log(error)
     }
-  }
+  };
 
-  const getTeacherAndStudent = async () => {
+  const getTeacherAndStudent = useCallback(async () => {
     const promises = [getUser('student'), getUser('teacher')];
     await Promise.all(promises);
-  }
+  }, []);
 
   useEffect(() => {
     getTeacherAndStudent();
-  }, [isOpenModalEdit])
+  }, [isOpenModalEdit, getTeacherAndStudent]);
 
 
   return (

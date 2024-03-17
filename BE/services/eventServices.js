@@ -5,6 +5,8 @@ const sendEmailService = require('../services/emailServices');
 const moment = require('moment');
 
 class eventServices {
+
+  //Get all evetns
   async getEvents() {
     return await eventModel
       .find()
@@ -17,6 +19,63 @@ class eventServices {
         path: 'participatingTeachers',
         model: 'User'
       });
+  }
+
+  //Get all events filter by user_id
+  async getEventsByUserId(userId) {
+    const user = await userModel.findOne({ _id: userId });
+    if (user.role === 'student') {
+      const events = await eventModel
+        .find({
+          $or: [
+            { "participatingStudents": { $in: [user.email] } },
+            { "listStudentRegistry": { $in: [user.email] } }
+          ]
+        })
+        .sort({ created: -1 })
+        .populate({
+          path: 'host',
+          model: 'User'
+        })
+        .populate({
+          path: 'participatingTeachers',
+          model: 'User'
+        });
+        return events
+    }
+    if (user.role === 'teacher') {
+      const events = await eventModel
+      .find({
+        $or: [
+          { "participatingTeachers": { $in: [userId] } },
+          { "host": userId }
+        ]
+        
+      })
+      .sort({ created: -1 })
+      .populate({
+        path: 'host',
+        model: 'User'
+      })
+      .populate({
+        path: 'participatingTeachers',
+        model: 'User'
+      });
+      return events
+    }
+    else {
+      return await eventModel
+        .find()
+        .sort({ created: -1 })
+        .populate({
+          path: 'host',
+          model: 'User'
+        })
+        .populate({
+          path: 'participatingTeachers',
+          model: 'User'
+        });
+    }
   }
 
   //Get all event in specific year
@@ -232,7 +291,7 @@ class eventServices {
       if (!findEvent) {
         throw new Error(`Event not found: Event with ID ${eventId} does not exist.`);
       }
-      
+
       if (req.file) {
         if (isCheckingFile) {
           await eventModel.updateOne({ _id: eventId }, { participationList: req.file.filename, participatingStudents: mssvList });
@@ -282,12 +341,12 @@ class eventServices {
 
     events.forEach(async event => {
       const participatingTeachersInfo = [];
-      
+
       await Promise.all(event.participatingTeachers.map(async teacherId => {
         const teacherInfo = await userModel.findOne({ _id: teacherId });
         participatingTeachersInfo.push(teacherInfo);
       }));
-    
+
       event.participatingTeachers = participatingTeachersInfo;
       sendEmailService.sendNotificationBeginEventEmail(event);
     });
