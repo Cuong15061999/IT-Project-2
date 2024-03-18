@@ -282,12 +282,26 @@ export const EventInfo = () => {
     if (userLogin === 'student') {
       return;
     }
+    Swal.fire({
+      icon: "info",
+      html: `Please ensure that your file has the three main columns: <strong>‘Student Name’, ‘Class’, and ‘Email’ or ‘Student ID’<strong>.`,
+      showCloseButton: true,
+      focusConfirm: false,
+      confirmButtonText: `<i class="fa fa-thumbs-up"></i> OK!`,
+    });
     setRegisterStudentsFile(file);
   }
   const handleImportPaticipateStudentsFile = (file) => {
     if (userLogin === 'student') {
       return;
     }
+    Swal.fire({
+      icon: "info",
+      html: `Please ensure that your file has the three main columns: <strong>‘Student Name’, ‘Class’, and ‘Email’ or ‘Student ID’<strong>.`,
+      showCloseButton: true,
+      focusConfirm: false,
+      confirmButtonText: `<i class="fa fa-thumbs-up"></i> OK!`,
+    });
     setParticipateStudentsFile(file);
   }
 
